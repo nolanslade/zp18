@@ -5,23 +5,20 @@ using UnityEngine;
 public class cameraBehaviour : MonoBehaviour {
 
     //private GameObject physicalCamera = GameObject.FindGameObjectWithTag("physicalCamera");
-    const float UNIT_RATIO = 2.5f / 65.0f;    // Ratio of Camera object 1M to Unity units. E.g. 1m =
+    const float UNIT_RATIO = 18.77f;    // Ratio of 1 meter to unity units
+    GameObject physicalCamera;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    // Use this for initialization
+    void Start () {
+        physicalCamera = GameObject.FindGameObjectWithTag("physicalCamera");
+    }
 	
 	// Update relative to absolute time
 	void FixedUpdate () {
-
-        GameObject physicalCamera = GameObject.FindGameObjectWithTag("physicalCamera");
-
         transform.position = new Vector3 (
-            physicalCamera.transform.localPosition.x / UNIT_RATIO,
-            physicalCamera.transform.localPosition.y / UNIT_RATIO,
-           physicalCamera.transform.localPosition.z / UNIT_RATIO
+            physicalCamera.transform.localPosition.x * UNIT_RATIO,
+            physicalCamera.transform.localPosition.y * UNIT_RATIO,
+            physicalCamera.transform.localPosition.z * UNIT_RATIO
         );
-    
 	}
 }
