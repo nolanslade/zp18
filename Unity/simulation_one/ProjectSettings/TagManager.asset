@@ -7,6 +7,9 @@ TagManager:
   - projectile
   - FxTemporaire
   - physicalCamera
+  - Drainage
+  - Water
+  - Target_Drainage
   layers:
   - Default
   - TransparentFX
