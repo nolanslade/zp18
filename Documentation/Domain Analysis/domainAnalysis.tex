@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+
+\title{\textbf{McDSL Simulations: Domain Analysis}\\CS4ZP6}
+\author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Abstract}
+
+Described in this document is an analysis of experimental economics research simulations within the context of the McMaster Decision Science Laboratory. Specifically, we highlight their static and dynamic elements in an effort to form a basis upon which to design future simulations that will accomplish the research goals of the lab.
+
+Following is a proposal for an intuitive configuration language that will be consumed by virtual reality-ready Unity applications at runtime to support dynamic and easy-to-configure simulations.
+
+
+\section*{Simulation Analysis}
+
+% TODO
+
+
+\section*{Configuration Language Proposal}
+
+In order to provide a simulation that is truly dynamic, we propose a simple configuration file with domain-specific syntax. This file and syntax will encapsulate key elements of experimental economics research simulations such that they may be easily modified.
+
+\subsection*{Basics}
+
+The file, stored as a simple \textit{.txt}, will be parsed by the Unity application by tab indentation. 
+
+% TODO -- WE SHOULD OFFER COMMENT FUNCTIONALITY
+% TODO -- IGNORE WHITE SPACE, COLON SEPARATED VALUES?
+
+\subsection*{Notable Keywords}
+
+\subsubsection*{Simulation}
+
+The \textit{Simulation} keyword is used once at the very beginning of the configuration file. Below this keyword, values such as configuration ID and output type can be specified.
+
+\subsubsection*{Day}
+
+This keyword is used to separate configurations on a per simulation-day basis. The \textit{Day} keyword is equivalent to \textit{Simulation} in rank, meaning that it should not be indented. Day length and impairment parameters are included underneath this keyword.
+
+\subsubsection*{Impairment}
+
+The \textit{Impairment} keyword is to be used within per-Day configurations, meaning that it should be tabbed once. Parameters such as impairment type and strength factor can then be specified. 
+
+
+% TODO - treatment?
+
+
+
+\subsection*{Sample File Contents}
+
+The following is an example of a configuration file for a two day-long simulation. Note that key-value pairs are colon separated, with values always enclosed in double quotes. 
+\\
+\begin{lstlisting}
+Simulation
+    Name:"Sample_Config"
+    Output:".txt,database"
+    Description:"This is a sample configuration file."	
+Day
+    Duration:"5:00"             # Minutes:Seconds
+    Impairment
+        Type:"Visual/Fog"       # Type/Subtype
+        Factor:"50%"            # Percentage of Maximum
+Day
+    Duration:"5:00"
+    Impairment
+        Type:"Physical/Shake"
+        Factor:"70%"
+        Treatment
+            Wait:"10"           # Seconds
+    Impairment
+        Type:"Physical/Gravity"
+        Factor:"50%"
+        Treatment
+            Cost:"50"           # Dollars
+\end{lstlisting}
+
+
+
+%\begin{figure}[H]
+%    \includegraphics[width=180pt]{...}
+%    \centering
+%    \caption{...}
+%\end{figure}
+
+\end{document}
