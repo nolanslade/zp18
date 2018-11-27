@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cameraBehaviour : MonoBehaviour {
+public class CameraBehaviour : MonoBehaviour {
 
     //private GameObject physicalCamera = GameObject.FindGameObjectWithTag("physicalCamera");
     const float UNIT_RATIO = 18.77f;    // Ratio of 1 meter to unity units
