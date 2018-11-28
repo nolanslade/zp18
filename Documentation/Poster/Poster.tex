@@ -32,7 +32,7 @@
 
 \title{Virtual Reality in Experimental Economics}
 \subtitle{Computer Science Capstone Project} 
-  \author[Shah, Slade, Kishore, Brendon \& Carette]{Aaska Shah, Nolan Slade, Vyome Kishore, Kerala Brendon, supervised by Dr.~Jacques Carette$^\dagger$ \vspace{0.3cm} \newline \small \{vermaa5, yazdinip, irfany1, schankuc, anandc\}@mcmaster.ca}
+  \author[Shah, Brendon, Slade, Kishore \& Carette]{Aaska Shah, Kerala Brendon, Nolan Slade, Vyome Kishore, supervised by Dr.~Jacques Carette$^\dagger$ \vspace{0.3cm} \newline \small \{shaha8, brendokh, sladenj, kishov, anandc\}@mcmaster.ca, stephanie.thomas1@curtin.edu.au and Team}
   \institute[McMaster University]{$^\dagger$Department of Computing and Software, McMaster University
 
 1280 Main St. W, Hamilton, Ontario, Canada L8S 4L8}
@@ -58,13 +58,12 @@
 %this needs help
 \begin{block}{Introduction}
 \begin{itemize}
-\item Creating 2 virtual reality-based economics research simulations in collaboration with the McMaster Decision Science Laboratory.
+\item Creating two virtual reality-based economics research simulations in collaboration with the McMaster Decision Science Laboratory.
 \item The participant repetitively completes a basic task with the goal of maximizing
 earnings that are awarded on every completed iteration of the task.
 \item The simulation's lifetime is separated into discrete time periods, days, in which the participant's ability to perform the repetitive task can be hindered by an impairment(s).
-\item The participant is can reduce the
-effects of such an impairment by receiving a treatment.
-\item Teatments can be paid for, or received for free after waiting a predetermined duration.
+\item The participant can reduce the
+effects of such an impairment by receiving a treatment, which can be paid for or received for free after waiting for a predetermined duration
 \item Each simulation will feature both a virtual environment designed within Unity
 and HTC Vive support to offer a truly immersive simulation experience to the
 participant.
@@ -72,26 +71,13 @@ participant.
 
 \end{block}
 
-\begin{block}{The Original Simulation}
-\begin{itemize}
-\item User task is to carry crates to the designated point.
-\item Large environment that does not scale to Vive equiped testing room (Figure \ref{fig:orig}).
-\item No extensive customization of configuration variables.
-\end{itemize}
-
-\begin{figure}
-    \includegraphics[height=13cm]{CrateOriginal.png}
-  \caption{Original Experiment Simulation}
-\label{fig:orig}
-\end{figure}
-\end{block}
 
 \begin{block}{Our Simulations}
 \begin{itemize}
 \item Two new participant tasks to use in experiments.
 \item Allow for complete customization of the experiment domain through a  comprehensive configuration file.
 \item Use a SQL database for improved data storage.
-\item Scaled to the size of the Vive equiped the testing room (Figure \ref{fig:room}).
+\item Scaled to the size of the Vive equipped testing room (Figure \ref{fig:room}).
 \end{itemize}
 \begin{figure}
     \includegraphics[height=13cm]{NolanVRRoom.png}
@@ -100,12 +86,55 @@ participant.
 \end{figure}
 \end{block}
 
+\begin{block}{Simulation 2}
+\begin{itemize}
+\item The participant is required to sort a set of three-dimensional
+shapes into separate containers by passing them
+through a filter that only permits one particular shape.
+\item The goal is to maximize the total number of shapes successfully sorted into
+their respective containers.
+\end{itemize}
+\begin{figure}
+  \begin{subfigure}[b]{0.40\textwidth}
+    \includegraphics[height=11cm]{shape_sorting_environment.png}
+        \caption{Layout of simulation environment.}
+  \end{subfigure}
+ %
+  \begin{subfigure}[b]{0.40\textwidth}
+    \includegraphics[height=11cm]{shape_shorting_filter.png}
+        \caption{Shape sorting filter.}
+    \end{subfigure}
+ \end{figure}
+\end{block}
+
+
+\begin{block}{Conclusions \& Future Work}
+\begin{itemize}
+\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
+\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
+\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
+\end{itemize}
+\end{block}
 
 \end{textblock}
 
 
 
+
 \begin{textblock}{7.25}(8.25,3.1)
+
+\begin{block}{The Original Simulation}
+\begin{itemize}
+\item User task is to carry crates to the designated point.
+\item Large environment that does not scale to Vive equipped testing room (Figure \ref{fig:orig}).
+\item No extensive customization of configuration variables.
+\end{itemize}
+\begin{figure}
+    \includegraphics[height=13cm]{CrateOriginal.PNG}
+  \caption{Original Experiment Simulation}
+\label{fig:orig}
+\end{figure}
+\end{block}
 
 \begin{block}{Simulation 1}
 \begin{itemize}
@@ -130,48 +159,22 @@ reaches the destination.
 
 
 \end{block}
-\begin{block}{Simulation 2}
-\begin{itemize}
-\item The participant is required to sort a set of three-dimensional
-shapes into separate containers by passing them
-through a filter that only permits one particular shape.
-\item The goal is to maximize the total number of shapes successfully sorted into
-their respective containers.
-\end{itemize}
-\begin{figure}
-  \begin{subfigure}[b]{0.40\textwidth}
-    \includegraphics[height=11cm]{shape_sorting_environment.png}
-        \caption{Layout of simulation environment.}
-  \end{subfigure}
- %
-  \begin{subfigure}[b]{0.40\textwidth}
-    \includegraphics[height=11cm]{shape_shorting_filter.png}
-        \caption{Shape sorting filter.}
-    \end{subfigure}
- \end{figure}
-\end{block}
-
 
 \begin{block}{Summary of Configuration Variables}
-Experiment varibles to be set in the configuration file.
+Experiment variables to be set in the configuration file.
 \begin{itemize}
 \item Money acquired per accomplished task
 \item Cost of treatment
 \item Waiting duration for option to purchase treatment, or receive free of charge
-\item Waiting time after treatment before health restored
+\item Waiting time between treatment and health restored
 \item "Day" configurations, such as the days the participants are impaired
 \item Health level on impaired days and the health gained from a treatment
 \item Impairment type and the intensity of impairment
 \end{itemize}
 \end{block}
 
-\begin{block}{Conclusions \& Future Work}
-\begin{itemize}
-\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory we have developed a plan to implement the two simulations as described.
-\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
-\item The simulations will be tailored to the Vive equiped test room so the overall experience is as realistic as possible.
-\end{itemize}
-\end{block}
+
+
 
 \begin{block}{Acknowledgements}
 Thank you to the faculty and staff at the McMaster Decision Science Laboratory for you guidance and use of lab space.
@@ -183,6 +186,7 @@ Thank you to the faculty and staff at the McMaster Decision Science Laboratory f
 {\scriptsize
 \bibliography{bib}}
 \end{block}
+
 
 \begin{comment}
 %these aren't in any particular style, it's just the basic idea
