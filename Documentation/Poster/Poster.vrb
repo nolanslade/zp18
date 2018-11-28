@@ -1,0 +1,221 @@
+
+\begin{textblock}{2}(0.7,1)
+\includegraphics[height=8.5cm]{englogo.png} % We can use CAS logo as well?
+\end{textblock}
+
+\begin{textblock}{2}(12.7,0.80)
+\includegraphics[height=10.5cm]{outreachlogo.png}
+\end{textblock}
+
+\begin{textblock}{8}(4,1)
+\titlepage
+\end{textblock}
+
+\begin{textblock}{7.25}(0.5,3.1)
+
+%this needs help
+\begin{block}{Introduction}
+At McMaster Computing and Software outreach, we designed a tool that incorporates educational psychology with our software used for computer science outreach. Kids as young as 10 years old construct images using shapes in the Elm programming language.
+Our tool introduces the outputted shapes and the code simultaneously, which creates an instructional design that makes associations between code and output clear, thus reducing load on the working memory. This process allows us to take advantage of cognitive load theory to improve student learning.
+
+\end{block}
+
+\begin{block}{The Original Experiment}
+%Written by Paul Chandler and John Sweller, ``Cognitive Load Theory and the Format of Instruction'', includes some of the preliminary experiments on the cognitive load on human brain. In one of the experiments, they created three pictures on wiring of mixed circuits and presented them to three different group of people. A first (diagram-only) group, was shown only the diagram of the circuit, shown in figure. A second (conventional) group was presented the instructions with informational material written in a separate space and so they would have to assimilate the text with the diagram. Finally, a third (modified) group was given the instructions in a modified, integrated version shown in figure shown. As predicted, the first group exhibited the highest performance since they could input all their attention and mental resources into learning diagram in comparison to the second and third group where they had to do mental integrations and process the redundant information.
+\begin{itemize}
+\item Paul Chandler and John Sweller describe preliminary experiments on cognitive load \cite{cerpa1996some}
+\item Created diagrams of wiring of mixed circuits, presented to different groups of people
+\item Case A: diagram with information separately (Figure \ref{fig:orig} (a))
+\item Case B: modified, integrated version (Figure \ref{fig:orig} (b))
+\item Group B$^1$ exhibited highest performance as mental resources were better utilized.
+\end{itemize}
+%\includegraphics[height=12cm, width=15cm]{experiment.png}. %diagram only/control
+%\includegraphics[height=12cm, width=15cm]{experiment2.png} %second group
+%\includegraphics[height=12cm, width=15cm]{3rd image?}
+
+\begin{figure}
+  %
+  \begin{subfigure}[t]{0.30\textwidth}
+    \includegraphics[height=13cm]{ExperimentSeparate.png}
+    \caption{Diagram, information separate}				%confirm the cases
+    \label{a}
+  \end{subfigure}
+    \begin{subfigure}[t]{0.41\textwidth}
+    \includegraphics[height=13cm]{experiment.png}
+    \caption{Diagram with integrated captions}				%confirm the cases
+    \label{a}
+  \end{subfigure}
+  \caption{Original cognition figure from \cite{cerpa1996some}. a) shows the diagram with separate captioning, presented to group A; b) with integrated captioning was presented to group B\label{fig:orig}}
+\end{figure}
+{\tiny $^1$ There was a third case in the original study which is not relevant to the current study.}
+\end{block}
+
+\begin{block}{Our ``Cool Demo'' Tool}
+\begin{itemize}
+\item Teaches aspects of our graphics library in bite-sized pieces
+\item Automatically generated animation introduces code alongside the output, step-by-step
+\item Slider allows students to replay the animation in any order and at any pace
+\end{itemize}
+\end{block}
+
+\begin{block}{Example 1}
+%At McMaster Outreach we are constantly trying to evolve our methods to achieve the most performance out of students. Inspired by the original experiment, we were able to create a unique style of teaching programming through the resources provided for us in Outreach. Looking at the traditional ways, kids are first represented by a picture or the outcome of the code that runs which means that the cognitive load on the student increases since it also has to do mental integration or in other words, ?connect the dots?. Nevertheless, Cool Demos allows us to reduce the cognitive load and increase efficiency and performance among the kids.
+
+
+
+\begin{figure}
+  \begin{subfigure}[b]{0.34\textwidth}
+    \includegraphics[width=\textwidth]{Demo_1.png}
+    \caption{}
+    \label{fig:1}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.339\textwidth}
+    \includegraphics[width=\textwidth]{Demo_12.png}
+    \caption{}
+    \label{fig:2}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.34\textwidth}
+    \includegraphics[width=\textwidth]{Demo_13.png}
+    \caption{}
+  \end{subfigure}
+      \caption{An example teaching the code for creating transparent shapes, corresponding to \#4 on Table \ref{tab:summ}. Parts a), b) and c) gradually introduce circles of different transparencies alongside the code used to generate the output.}
+\end{figure}
+
+%%Have to add these
+ %Figure #. Taken from the night demo shows the application of transparency in animation
+
+
+
+\begin{comment}
+\includegraphics[height = 9.5cm, width = 12cm]{Demo_1.png}.
+\includegraphics[height = 9.5cm, width = 12cm]{Demo1mid.png}.
+\includegraphics[height = 9.5cm, width = 12cm]{Demo_12.png}\newline. % Figure #. Taken from the Transparecny cool demo, each picture represents the animation at 3 differnet stages highlighting the different between the value given to the fucntion
+\end{comment}
+
+
+
+\end{block}
+\end{textblock}
+
+
+
+\begin{textblock}{7.25}(8.25,3.1)
+\begin{block}{Example 2}
+\begin{figure}
+  \begin{subfigure}[b]{0.40\textwidth}
+    \includegraphics[height=11cm]{Demo2.png}
+        \caption{}
+  \end{subfigure}
+  %
+  \begin{subfigure}[b]{0.40\textwidth}
+    \includegraphics[height=11cm]{Demo22.png}
+        \caption{}
+    \end{subfigure}
+     \caption{Example creating an animated starry night, corresponding to \#9 on table \ref{tab:summ}. a) shows the moon and first star having been added. b) shows the second star having been added.}
+ \end{figure}
+\end{block}
+
+
+\begin{block}{Summary of Demos}
+%The Cool Demos are constructed to cover a wide variety of topics. The are approximately fundamental aspects of the code that we are teaching, then there about 25 other demos that apply these fundamentals together to create more complicated pictures and scenes and even these are made so they only contain two or three aspect at a time. Each shape appears the same time its code appears so the students can easily associate them, then there are even signals, showing the moment a new shape is going to appear. In addition, They are designed as a animation that can be controlled very similar to a media play, meaning one can jump back and forth or stop and resume the animation at any point or time. Currently, our repository of cool demos includes:
+\begin{itemize}
+\item Constructed to cover a wide variety of topics within our Outreach library
+\item 15 demos covering the fundamentals, a further 25 combining these fundamentals. See Table 1.
+\end{itemize}
+
+
+
+
+
+\begin{center}
+\begin{table}
+\caption{Descriptions of selected demos\label{tab:summ}}
+\begin{tabular}{ | m{1.2em} | m{7em} | m{25cm}| }
+\hline
+\# & Name & Purpose  \\
+\hline
+1 & Ngon & Introduction to polygons with equal-length sides\\
+\hline
+2 & Scale & Introduction to scale function\\
+\hline
+3 & Outline & Styles of Outlines \\
+\hline
+4 & Transparency & Controlling the transparency of shapes\\
+\hline
+5 & Cookies & Introduction to move \\
+\hline
+6 & Rotation & Rotating objects using degrees\\
+\hline
+7 & Pile Up & Explaining how order code affects layering of shapes\\
+\hline
+8 & Rainbow & Application of order\\
+\hline
+9 & Night & Application of draw order and transparency \\
+\hline
+10 & Candles & Application of scale and colours  \\
+\hline
+11 &  Colourful Flower & Application of rotation \\
+ \hline
+ 12 & Apple & Introduction to animation in rotation \\
+ \hline
+13 &  Car & Creating simple scenes \\
+ \hline
+14 &  Door & Inverting shape using negative scale \\
+\hline
+15 &  PacMan & Animating movement \\
+\hline
+16 &  Raindrop & Introduction to creating objects \\
+ \hline
+
+
+\end{tabular}
+\end{table}
+\end{center}
+
+\end{block}
+
+\begin{block}{Conclusions \& Future Work}
+Using a modern take on Cognitive Load Theory, we have created an effective and engaging teaching tool.
+Further work includes expanding upon the existing demos to cover a larger breadth of information. The library
+will be expanded upon to support more and different types of demos. Additionally,
+a study should be performed to determine whether this creates a measurable quantitative improvement in
+learning.
+\end{block}
+
+\begin{block}{Acknowledgements}
+McMaster Outreach thanks the Dean of Engineering and NSERC PromoScience \& Science Odyssey 2018 for funding.
+We appreciate all the volunteers that make this possible and are constantly inspired by the passion and energy
+of the K-12 students we teach.
+\end{block}
+
+\begin{block}{References}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\bibliographystyle{ieeetr}
+{\scriptsize
+\bibliography{bib}}
+\end{block}
+
+\begin{comment}
+%these aren't in any particular style, it's just the basic idea
+\begin{block}{References}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\bibliographystyle{ieeetr}
+{\scriptsize
+\bibliography{bib}}
+\end{block}
+\vspace{-1.8mm}
+%will need some more graphics to thank the various people
+\end{comment}
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=5cm]{nserc-logo.jpg}
+\hspace{1cm}
+\includegraphics[height=5cm]{sciod-logo.jpg}
+\hspace{1cm}
+\includegraphics[height=5cm]{elm-logo.png}
+\hspace{1cm}
+\includegraphics[height=5cm]{edcog-logo.png}
+\end{figure}
+\end{textblock}
+
+
