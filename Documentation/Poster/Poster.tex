@@ -56,9 +56,9 @@
 \begin{textblock}{7.25}(0.5,3.1)
 
 %this needs help
-\begin{block}{Project Overview}
+\begin{block}{Project Overview}\newline
 \begin{itemize}
-\item \textbf{Goal}: develop immersive virtual reality environments to carry out experimental economics research simulations with the goal of gaining insight into how participants make health-related decisions.
+\item \textbf{Goal}: develop immersive virtual reality environments to carry out experimental economics research simulations with the goal of gaining insight into how participants make health-related decisions. 
 \item Simulations are structured around the participant maximizing earnings that are awarded on every completed iteration of some basic task.
 \item The simulations’ lifetimes are separated into discrete time periods, days, in which the participant’s
 ability to perform the repetitive task can be hindered by an impairment(s).
@@ -68,27 +68,73 @@ ability to perform the repetitive task can be hindered by an impairment(s).
 \end{block}
 
 
-\begin{block}{Our Simulations}
+\begin{block}{Our Simulations}\newline
 \begin{itemize}
-\item Two new participant tasks to use in experiments.
-\item Allow for complete customization of the experiment domain through a  comprehensive configuration file.
-\item Use a SQL database for improved data storage.
-\item Scaled to the size of the Vive equipped testing room (Figure \ref{fig:room}).
+\item Each simulation features its own basic task for the experiment participant to complete.
+\item Their respective virtual environments and experiment structures will be highly customizable through the usage of a proprietary configuration filetype. 
+\item Key metrics will be tracked throughout the simulations' lifetimes and persisted into a database for analysis.
+\item Each environment is carefully designed with consideration towards the physical constraints of the Vive-equipped testing room (Figure \ref{fig:room}).
 \end{itemize}
+\newline
 \begin{figure}
-    \includegraphics[height=13cm]{NolanVRRoom.png}
-  \caption{VR Experiment Room}
+  \includegraphics[height=10cm]{NolanVRRoom.png}
+  \caption{Experiment room \& first simulation environment}
 \label{fig:room}
 \end{figure}
 \end{block}
 
-\begin{block}{Simulation 2}
+
+\begin{block}{Summary of Configuration Variables}\newline
+Experiment variables to be set in the aforementioned configuration file. These variables include:
 \begin{itemize}
-\item The participant is required to sort a set of three-dimensional
-shapes into separate containers by passing them
-through a filter that only permits one particular shape.
-\item The goal is to maximize the total number of shapes successfully sorted into
-their respective containers.
+\item Reward obtained by the participant for every completed task iteration.
+\item Impairment types and their respective intensities.
+\item Treatment methods, costs, and effectiveness.
+\item Per-day settings such as duration and active impairment(s).
+\end{itemize}
+\end{block}
+
+\begin{block}{Simulation One}\newline
+\begin{itemize}
+\item The participant is required to repeatedly transport a
+volume of liquid between a source and destination using a single hand-carried
+vessel.
+\item Their goal is to maximize the total volume of liquid that successfully
+reaches the destination.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=10cm]{SimulationOne.png}
+  \caption{First simulation environment}
+\label{fig:simOne}
+\end{figure}
+
+%%Have to add these
+ %Figure #. Taken from the night demo shows the application of transparency in animation
+\end{block}
+
+
+%\begin{block}{Conclusions \& Future Work}
+%\begin{itemize}
+%\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
+%\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
+%\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
+%\end{itemize}
+%\end{block}
+
+\end{textblock}
+
+
+
+
+\begin{textblock}{7.25}(8.25,3.1)
+
+
+\begin{block}{Simulation Two}\newline
+\begin{itemize}
+\item The participant is required to sort a set of three-dimensional shapes into separate containers by passing them through a filter that only permits one particular shape.
+\item The goal is to maximize the total number of shapes successfully sorted into their respective containers.
 \end{itemize}
 \begin{figure}
   \begin{subfigure}[b]{0.40\textwidth}
@@ -104,85 +150,41 @@ their respective containers.
 \end{block}
 
 
-\begin{block}{Conclusions \& Future Work}
-\begin{itemize}
-\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
-\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
-\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
-\end{itemize}
-\end{block}
+\begin{block}{Sound Interesting?}\newline
+Send us what you think of our project, and tell us if you'd like to participate in experimental trials.
 
-\end{textblock}
-
-
-
-
-\begin{textblock}{7.25}(8.25,3.1)
-
-\begin{block}{The Original Simulation}
-\begin{itemize}
-\item User task is to carry crates to the designated point.
-\item Large environment that does not scale to Vive equipped testing room (Figure \ref{fig:orig}).
-\item No extensive customization of configuration variables.
-\end{itemize}
-\begin{figure}
-    \includegraphics[height=13cm]{CrateOriginal.PNG}
-  \caption{Original Experiment Simulation}
-\label{fig:orig}
-\end{figure}
-\end{block}
-
-\begin{block}{Simulation 1}
-\begin{itemize}
-\item The participant is required to repeatedly transport a
-volume of liquid between a source and destination using a single hand-carried
-vessel.
-\item Their goal is to maximize the total volume of liquid that successfully
-reaches the destination.
-\end{itemize}
-
-\begin{figure}
-\begin{figure}
-    \includegraphics[height=13cm]{SimulationOne.png}
-  \caption{Simulation One Environment}
-\label{fig:room}
-\end{figure}
-\end{figure}
-
-%%Have to add these
- %Figure #. Taken from the night demo shows the application of transparency in animation
-
-
-
-\end{block}
-
-\begin{block}{Summary of Configuration Variables}
-Experiment variables to be set in the configuration file.
-\begin{itemize}
-\item Money acquired per accomplished task
-\item Cost of treatment
-\item Waiting duration for option to purchase treatment, or receive free of charge
-\item Waiting time between treatment and health restored
-\item "Day" configurations, such as the days the participants are impaired
-\item Health level on impaired days and the health gained from a treatment
-\item Impairment type and the intensity of impairment
-\end{itemize}
+\newline
+\newline
+Email any of us: \newline
+\newline
+Aaska: shaha8@mcmaster.ca\newline
+Nolan: sladenj@mcmaster.ca\newline
+Kerala: brendokh@mcmaster.ca\newline
+Vyome: kishov@mcmaster.ca\newline
+\newline
+And CC our coordinator:\newline
+Dr. Christopher Anand: anandc@mcmaster.ca
+\newline
+\newline
+Experimental trials will likely be scheduled for February 2019.
 \end{block}
 
 
-
-
-\begin{block}{Acknowledgements}
-Thank you to the faculty and staff at the McMaster Decision Science Laboratory for you guidance and use of lab space.
+\begin{block}{Acknowledgements}\newline
+We wish to extend our thanks to the faculty and staff at the McMaster Decision Science Laboratory for their guidance as well as their accomodation in allowing us access to lab resources as we move forward with this exciting project. Notably:\newline
+\newline
+Stephanie Thomas: \textit{School of Economics and Finance, Curtin University}\newline
+David Cameron: \textit{Manager, McMaster Decision Science Laboratory}\newline
+Neil Buckley: \textit{Associate Professor, York University}\newline
+Courtney Sheppard: \textit{IT Advisor, McMaster Decision Science Laboratory}
 \end{block}
 
-\begin{block}{References}
-\setbeamertemplate{bibliography item}{\insertbiblabel}
-\bibliographystyle{ieeetr}
-{\scriptsize
-\bibliography{bib}}
-\end{block}
-
+% \begin{block}{References}
+% \setbeamertemplate{bibliography item}{\insertbiblabel}
+% \bibliographystyle{ieeetr}
+% {\scriptsize
+% \bibliography{bib}}
+% \end{block}
 
 \begin{comment}
 %these aren't in any particular style, it's just the basic idea
