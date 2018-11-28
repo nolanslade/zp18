@@ -58,13 +58,27 @@
 %this needs help
 \begin{block}{Project Overview}\newline
 \begin{itemize}
-\item \textbf{Goal}: develop immersive virtual reality environments to carry out experimental economics research simulations with the goal of gaining insight into how participants make health-related decisions. 
+\item \textbf{Goal}: develop immersive virtual reality environments, as an extension of previous work done by the McMaster Decision Science Laboratory, to carry out experimental economics research simulations to gain insight into how participants make health-related decisions. 
 \item Simulations are structured around the participant maximizing earnings that are awarded on every completed iteration of some basic task.
-\item The simulations’ lifetimes are separated into discrete time periods, days, in which the participant’s
+\item The simulations\textsc{\char13} lifetimes are separated into discrete time periods, days, in which the participant\textsc{\char13}s
 ability to perform the repetitive task can be hindered by an impairment(s).
 \item Participants can choose to alleviate the symptoms of such impairments by receiving treatment; but, it comes at a cost. The question is when will the participant resort to paying the necessary cost, or will they do so at all? 
 \item A suite of simulation environments will be designed within the Unity game engine; participants will interact with each simulation through an HTC Vive. 
 \end{itemize}
+\end{block}
+
+\begin{block}{Existing Simulation}\newline
+\begin{itemize}
+\item The participant's task is to move crates from a pile to the target block.
+\item The environment is large and does not scale to the Vive-equipped testing room (Figure \ref{fig:crate}).
+\item No extensive customization of configuration variables.
+\end{itemize}
+\newline
+\begin{figure}
+  \includegraphics[height=10cm]{CrateOriginal.PNG}
+  \caption{Experiment room}
+\label{fig:crate}
+\end{figure}
 \end{block}
 
 
@@ -72,13 +86,13 @@ ability to perform the repetitive task can be hindered by an impairment(s).
 \begin{itemize}
 \item Each simulation features its own basic task for the experiment participant to complete.
 \item Their respective virtual environments and experiment structures will be highly customizable through the usage of a proprietary configuration filetype. 
-\item Key metrics will be tracked throughout the simulations' lifetimes and persisted into a database for analysis.
+\item Key metrics will be tracked throughout the simulations\textsc{\char13} lifetimes and persisted into a database for analysis.
 \item Each environment is carefully designed with consideration towards the physical constraints of the Vive-equipped testing room (Figure \ref{fig:room}).
 \end{itemize}
 \newline
 \begin{figure}
   \includegraphics[height=10cm]{NolanVRRoom.png}
-  \caption{Experiment room \& first simulation environment}
+  \caption{Experiment room}
 \label{fig:room}
 \end{figure}
 \end{block}
@@ -93,6 +107,23 @@ Experiment variables to be set in the aforementioned configuration file. These v
 \item Per-day settings such as duration and active impairment(s).
 \end{itemize}
 \end{block}
+
+
+
+%\begin{block}{Conclusions \& Future Work}
+%\begin{itemize}
+%\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
+%\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
+%\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
+%\end{itemize}
+%\end{block}
+
+\end{textblock}
+
+
+
+
+\begin{textblock}{7.25}(8.25,3.1)
 
 \begin{block}{Simulation One}\newline
 \begin{itemize}
@@ -115,21 +146,6 @@ reaches the destination.
 \end{block}
 
 
-%\begin{block}{Conclusions \& Future Work}
-%\begin{itemize}
-%\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
-%\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
-%\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
-%\end{itemize}
-%\end{block}
-
-\end{textblock}
-
-
-
-
-\begin{textblock}{7.25}(8.25,3.1)
-
 
 \begin{block}{Simulation Two}\newline
 \begin{itemize}
@@ -151,7 +167,7 @@ reaches the destination.
 
 
 \begin{block}{Sound Interesting?}\newline
-Send us what you think of our project, and tell us if you'd like to participate in experimental trials.
+Send us what you think of our project, and tell us if you\textsc{\char13}d like to participate in experimental trials.
 
 \newline
 \newline
