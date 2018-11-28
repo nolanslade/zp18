@@ -31,7 +31,7 @@
 \setbeamertemplate{navigation symbols}{}
 
 \title{Virtual Reality in Experimental Economics}
-\subtitle{}  %probably want a better subtitle
+\subtitle{Computer Science Capstone Project} 
   \author[Shah, Slade, Kishore, Brendon \& Carette]{Aaska Shah, Nolan Slade, Vyome Kishore, Kerala Brendon, supervised by Dr.~Jacques Carette$^\dagger$ \vspace{0.3cm} \newline \small \{vermaa5, yazdinip, irfany1, schankuc, anandc\}@mcmaster.ca}
   \institute[McMaster University]{$^\dagger$Department of Computing and Software, McMaster University
 
@@ -57,65 +57,46 @@
 
 %this needs help
 \begin{block}{Introduction}
-For our final year computer science capstone project at McMaster University, we are partnering with the McMaster Decision Science Laboratory to create 2 virtual reality-based economics research simulations. Each simulation is designed
-around the user repetitively completing a basic task with the goal of maximizing
-earnings that are awarded on every completed iteration of the task. The
-simulations are structured such that their lifetimes are separated into discrete
-time periods, days, in which the user’s ability to perform the repetitive task is
-hindered by an impairment(s). The user will be given the option to reduce the
-effects of such an impairment by receiving a treatment - such treatments can be
-paid for, or received for free after waiting a predetermined duration. Each simulation will feature both a virtual environment designed within Unity
+\begin{itemize}
+\item Creating 2 virtual reality-based economics research simulations in collaboration with the McMaster Decision Science Laboratory.
+\item The participant repetitively completes a basic task with the goal of maximizing
+earnings that are awarded on every completed iteration of the task.
+\item The simulation's lifetime is separated into discrete time periods, days, in which the participant's ability to perform the repetitive task can be hindered by an impairment(s).
+\item The participant is can reduce the
+effects of such an impairment by receiving a treatment.
+\item Teatments can be paid for, or received for free after waiting a predetermined duration.
+\item Each simulation will feature both a virtual environment designed within Unity
 and HTC Vive support to offer a truly immersive simulation experience to the
 participant.
+\end{itemize}
 
 \end{block}
 
 \begin{block}{The Original Simulation}
 \begin{itemize}
-\item Crate carrying exercise (Figure \ref{fig:orig} (a))
-\item Large environment that does not scale to experiment room (Figure \ref{fig:orig} (b))
+\item User task is to carry crates to the designated point.
+\item Large environment that does not scale to Vive equiped testing room (Figure \ref{fig:orig}).
 \item No extensive customization of configuration variables.
 \end{itemize}
-%\includegraphics[height=12cm, width=15cm]{experiment.png}. %diagram only/control
-%\includegraphics[height=12cm, width=15cm]{experiment2.png} %second group
-%\includegraphics[height=12cm, width=15cm]{3rd image?}
 
 \begin{figure}
-  %
-  \begin{subfigure}[t]{0.30\textwidth}
-    \includegraphics[height=13cm]{ExperimentSeparate.png}
-    \caption{Diagram, information separate}				%confirm the cases 
-    \label{a} 
-  \end{subfigure}
-    \begin{subfigure}[t]{0.41\textwidth}
-    \includegraphics[height=13cm]{experiment.png}
-    \caption{Diagram with integrated captions}				%confirm the cases 
-    \label{a} 
-  \end{subfigure}    
-  \caption{Original cognition figure from \cite{cerpa1996some}. a) shows the diagram with separate captioning, presented to group A; b) with integrated captioning was presented to group B\label{fig:orig}}
+    \includegraphics[height=13cm]{CrateOriginal.png}
+  \caption{Original Experiment Simulation}
+\label{fig:orig}
 \end{figure}
-{\tiny $^1$ There was a third case in the original study which is not relevant to the current study.}
 \end{block}
 
 \begin{block}{Our Simulations}
 \begin{itemize}
-\item Allow for complete customization of the experiment domain through a  comprehensive configuration file
-\item Uses a SQL database for improved data storage
-\item Scaled to the size of Vive equiped the testing room
+\item Two new participant tasks to use in experiments.
+\item Allow for complete customization of the experiment domain through a  comprehensive configuration file.
+\item Use a SQL database for improved data storage.
+\item Scaled to the size of the Vive equiped the testing room (Figure \ref{fig:room}).
 \end{itemize}
 \begin{figure}
-  \begin{subfigure}[b]{0.34\textwidth}
-    \includegraphics[width=\textwidth]{Demo_1.png}
-    \caption{}
-    \label{fig:1}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.339\textwidth}
-    \includegraphics[width=\textwidth]{Demo_12.png}
-    \caption{}
-    \label{fig:2}
-  \end{subfigure}
-
-      \caption{An example teaching the code for creating transparent shapes, corresponding to \#4 on Table \ref{tab:summ}. Parts a), b) and c) gradually introduce circles of different transparencies alongside the code used to generate the output.}
+    \includegraphics[height=13cm]{NolanVRRoom.png}
+  \caption{VR Experiment Room}
+\label{fig:room}
 \end{figure}
 \end{block}
 
@@ -127,24 +108,20 @@ participant.
 \begin{textblock}{7.25}(8.25,3.1)
 
 \begin{block}{Simulation 1}
-In this simulation, the participant will be required to repeatedly transport a
+\begin{itemize}
+\item The participant is required to repeatedly transport a
 volume of liquid between a source and destination using a single hand-carried
-vessel. Their goal will be to maximize the total volume of liquid that successfully
+vessel.
+\item Their goal is to maximize the total volume of liquid that successfully
 reaches the destination.
+\end{itemize}
 
 \begin{figure}
-  \begin{subfigure}[b]{0.34\textwidth}
-    \includegraphics[width=\textwidth]{Demo_1.png}
-    \caption{}
-    \label{fig:1}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.339\textwidth}
-    \includegraphics[width=\textwidth]{Demo_12.png}
-    \caption{}
-    \label{fig:2}
-  \end{subfigure}
-
-      \caption{An example teaching the code for creating transparent shapes, corresponding to \#4 on Table \ref{tab:summ}. Parts a), b) and c) gradually introduce circles of different transparencies alongside the code used to generate the output.}
+\begin{figure}
+    \includegraphics[height=13cm]{SimulationOne.png}
+  \caption{Simulation One Environment}
+\label{fig:room}
+\end{figure}
 \end{figure}
 
 %%Have to add these
@@ -152,27 +129,21 @@ reaches the destination.
 
 
 
-\begin{comment}
-\includegraphics[height = 9.5cm, width = 12cm]{Demo_1.png}. 
-\includegraphics[height = 9.5cm, width = 12cm]{Demo1mid.png}. 
-\includegraphics[height = 9.5cm, width = 12cm]{Demo_12.png}\newline. % Figure #. Taken from the Transparecny cool demo, each picture represents the animation at 3 differnet stages highlighting the different between the value given to the fucntion
-\end{comment}
-
-
-
 \end{block}
 \begin{block}{Simulation 2}
-The second simulation will provide the participant with a set of three-dimensional
-shapes, and task them to sort them into separate containers by passing them
-through a filter that only permits one particular shape. The aim of the participant
-will be to maximize the total number of shapes successfully sorted into
+\begin{itemize}
+\item The participant is required to sort a set of three-dimensional
+shapes into separate containers by passing them
+through a filter that only permits one particular shape.
+\item The goal is to maximize the total number of shapes successfully sorted into
 their respective containers.
+\end{itemize}
 \begin{figure}
   \begin{subfigure}[b]{0.40\textwidth}
     \includegraphics[height=11cm]{shape_sorting_environment.png}
         \caption{Layout of simulation environment.}
   \end{subfigure}
-  %
+ %
   \begin{subfigure}[b]{0.40\textwidth}
     \includegraphics[height=11cm]{shape_shorting_filter.png}
         \caption{Shape sorting filter.}
@@ -186,76 +157,24 @@ Experiment varibles to be set in the configuration file.
 \begin{itemize}
 \item Money acquired per accomplished task
 \item Cost of treatment
-\item Waiting time for option to purchase treatment
-\item Waiting time for option to receive treatment free of charge
+\item Waiting duration for option to purchase treatment, or receive free of charge
 \item Waiting time after treatment before health restored
-\item Number of "days" the experiment runs
-\item "Days" the participant is impaired
-\item "Days" free treatment is offered
-\item "Days" payed treatment is offered
-\item Health level on impaired days
-\item Health gained from treatment
-\item Impairment type
-\item Intensity of impairment
+\item "Day" configurations, such as the days the participants are impaired
+\item Health level on impaired days and the health gained from a treatment
+\item Impairment type and the intensity of impairment
 \end{itemize}
-
-
-
-
-\begin{comment}
-\begin{center}
-\begin{table}
-\caption{Descriptions of selected demos\label{tab:summ}}
-\begin{tabular}{ | m{1.2em} | m{7em} | m{25cm}| } 
-\hline
-\# & Name & Purpose  \\ 
-\hline
-1 & Ngon & Introduction to polygons with equal-length sides\\ 
-\hline
-2 & Scale & Introduction to scale function\\
-\hline
-3 & Outline & Styles of Outlines \\
-\hline
-4 & Transparency & Controlling the transparency of shapes\\
-\hline
-5 & Cookies & Introduction to move \\  
-\hline
-6 & Rotation & Rotating objects using degrees\\
-\hline
-7 & Pile Up & Explaining how order code affects layering of shapes\\ 
-\hline
-8 & Rainbow & Application of order\\ 
-\hline
-9 & Night & Application of draw order and transparency \\ 
-\hline
-10 & Candles & Application of scale and colours  \\ 
-\hline
-11 &  Colourful Flower & Application of rotation \\ 
- \hline
- 12 & Apple & Introduction to animation in rotation \\ 
- \hline
-13 &  Car & Creating simple scenes \\ 
- \hline
-14 &  Door & Inverting shape using negative scale \\  
-\hline
-15 &  PacMan & Animating movement \\ 
-\hline
-16 &  Raindrop & Introduction to creating objects \\  
- \hline
-
-
-\end{tabular}
-\end{table}
-\end{center}
-\end{comment}
 \end{block}
 
 \begin{block}{Conclusions \& Future Work}
-Using the existing experiment and while consulting with the McMaster Decision Science Laboratory we have developed a plan and have begun implementing the two simulations as described here. These simulations will allow the laboratory to run dynamic a unique experiments using either of the simulations with specific configurations. The simulations will be tailored to the test room so the overall experience is as realistic as possible.
+\begin{itemize}
+\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory we have developed a plan to implement the two simulations as described.
+\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
+\item The simulations will be tailored to the Vive equiped test room so the overall experience is as realistic as possible.
+\end{itemize}
 \end{block}
 
 \begin{block}{Acknowledgements}
-
+Thank you to the faculty and staff at the McMaster Decision Science Laboratory for you guidance and use of lab space.
 \end{block}
 
 \begin{block}{References}
