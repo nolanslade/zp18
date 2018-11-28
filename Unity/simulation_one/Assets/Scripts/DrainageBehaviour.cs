@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DrainageBehaviour : MonoBehaviour {
 
-    bool isTargetDrain;
-    GameObject simManager;
+    public bool isTargetDrain;
+    public GameObject simManager;
 
     void OnCollisionEnter(Collision col)
     {
@@ -13,7 +13,7 @@ public class DrainageBehaviour : MonoBehaviour {
         {
             if (this.isTargetDrain)
             {
-                simManager.payReward();
+                simManager.GetComponent<SimManager>().payReward();
             }
             Destroy(col.collider.gameObject);
         }

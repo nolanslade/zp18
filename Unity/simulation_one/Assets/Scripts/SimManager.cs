@@ -5,7 +5,7 @@ using UnityEngine;
 public class SimManager : MonoBehaviour {
     
     // State management
-    enum GameState
+    public enum GameState
     {
         PAUSED,
         RUNNING
@@ -17,11 +17,8 @@ public class SimManager : MonoBehaviour {
 
     // Key scene objects
     public GameObject container;           // Vessel to carry water
-    public GameObject sourceSink;
-    public GameObject sourceFaucet;
-    public GameObject destinationSink;
-    public GameObject virtualHeadset;      // [CameraRig] object - position relative to Unity Units
-    public GameObject physicalHeadset;     // Child object of [CameraRig]
+    public GameObject virtualCamera;       // [CameraRig] object - position relative to Unity Units
+    public GameObject physicalCamera;      // Child object of [CameraRig]
     public GameObject waterDroplet;        // Water drop prefab
 
 
@@ -40,19 +37,19 @@ public class SimManager : MonoBehaviour {
 	}
 
 
-    GameState currentState () {
+    public GameState currentState () {
         return currentGameState;
     }
 
 
-    void payReward ()
+    public void payReward ()
     {
         this.currentScore++;
         Debug.Log ("Reward payed (1). New Score:" + currentScore);
     }
 
 
-    void payReward (int customAmount)
+    public void payReward (int customAmount)
     {
         this.currentScore += customAmount;
         Debug.Log("Reward payed ("+ customAmount + "). New Score:" + currentScore);
