@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23386145595806410}
   - component: {fileID: 135902371052795814}
   - component: {fileID: 54862893668328962}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water_Droplet
   m_TagString: Water
   m_Icon: {fileID: 0}
