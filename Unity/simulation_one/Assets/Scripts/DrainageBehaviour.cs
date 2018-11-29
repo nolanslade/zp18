@@ -7,15 +7,11 @@ public class DrainageBehaviour : MonoBehaviour {
     public bool isTargetDrain;
     public GameObject simManager;
 
-    void OnCollisionEnter(Collision col)
-    {
-        if (col.collider.gameObject.tag == "Water")
-        {
-            if (this.isTargetDrain)
-            {
+    void OnCollisionEnter(Collision col) {
+        if (col.collider.gameObject.tag == "Water") {
+            if (this.isTargetDrain) {
                 simManager.GetComponent<SimManager>().payReward();
-            }
-            Destroy(col.collider.gameObject);
+            } Destroy(col.collider.gameObject);
         }
     }
 }

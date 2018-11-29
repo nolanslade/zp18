@@ -16,18 +16,17 @@ public class SimManager : MonoBehaviour {
 
 
     // Key scene objects
-    public GameObject container;           // Vessel to carry water
-    public GameObject virtualCamera;       // [CameraRig] object - position relative to Unity Units
-    public GameObject physicalCamera;      // Child object of [CameraRig]
-    public GameObject waterDroplet;        // Water drop prefab
-
+    public GameObject container;            // Vessel to carry water
+    public GameObject flowManager;          // Manages tap flow 
+    public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
+    public GameObject physicalCamera;       // Child object of [CameraRig]
 
 	// Run once  on initialization
 	void Start () {
-
         // Hard coding this for now
         currentScore = 0;
-        currentGameState    = GameState.RUNNING;
+        currentGameState = GameState.RUNNING;
+        flowManager.GetComponent<FlowManager>().startFlow();
     }
 	
 
@@ -42,15 +41,13 @@ public class SimManager : MonoBehaviour {
     }
 
 
-    public void payReward ()
-    {
+    public void payReward () {
         this.currentScore++;
         Debug.Log ("Reward payed (1). New Score:" + currentScore);
     }
 
 
-    public void payReward (int customAmount)
-    {
+    public void payReward (int customAmount) {
         this.currentScore += customAmount;
         Debug.Log("Reward payed ("+ customAmount + "). New Score:" + currentScore);
     }
