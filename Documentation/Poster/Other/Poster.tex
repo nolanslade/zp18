@@ -1,0 +1,206 @@
+\documentclass[22pt]{beamer}
+\usepackage[orientation=portrait, size=custom, width=91.44, height=91.44,scale=1.2]{beamerposter} % 36in*2.5 = 90cm
+\usepackage[absolute,overlay]{textpos}
+\usepackage{bookmark} %pdflatex says to use this to avoid errors...
+\usepackage{graphicx} %for including images
+\graphicspath{{figs/}} %location of images
+\usepackage{wrapfig} %wrap text around the images
+\usepackage{listingsutf8}    %package for code environment; use this instead of verbatim to get automatic line break; use this instead of listings to get (•)
+\usepackage{amsmath}
+\usepackage{gensymb}
+\usepackage[export]{adjustbox}
+\usepackage[skins,theorems]{tcolorbox}
+\usepackage{tikz}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+\usepackage{array}
+\usepackage{booktabs,adjustbox}
+\usepackage{subcaption} 
+
+%\mode<presentation>
+%this doesn't seem to make any difference; leave for now for trying out
+\usetheme{Berlin}
+\definecolor{MacBlue}{rgb}{0.10196,0.22353,0.53725}
+\definecolor{MacMaroon} {rgb}{0.47843, 0, 0.23137}
+\definecolor{MacMaroon2} {rgb}{0.47451, 0, 0}
+\definecolor{MacGray}{rgb}{0.50196,0.49804,0.51765}
+\definecolor{MacMaroon3}{rgb}{00.47,0.2,0.31}
+\definecolor{MacGold}{rgb}{1, 0.75,0.35}
+\usecolortheme[named=MacMaroon2]{structure}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{navigation symbols}{}
+
+\title{Virtual Reality in Experimental Economics}
+\subtitle{Capstone Project: Computer Science} 
+  \author[Shah, Brendon, Slade, Kishore \& Carette]{Aaska Shah, Kerala Brendon, Nolan Slade, Vyome Kishore, supervised by Dr.~Jacques Carette$^\dagger$ and Dr.~Stephanie Thomas \vspace{0.3cm} \newline \small \{shaha8, brendokh, sladenj, kishov, carette\}@mcmaster.ca, stephanie.thomas1@curtin.edu.au and Team}
+  \institute[McMaster University]{$^\dagger$Department of Computing and Software, McMaster University
+
+1280 Main St. W, Hamilton, Ontario, Canada L8S 4L8}
+  \date{December 5th, 2018}
+
+\begin{document}
+%compile with pdflatex
+
+%there is only one frame, because there is only one page; yeah, it's a poster
+%textblock and block seem to work nicely to organize layout
+\begin{frame}[fragile]
+
+\begin{textblock}{2}(0.7,1)
+\includegraphics[height=8.5cm]{englogo.png} % We can use CAS logo as well? 
+\end{textblock}
+
+\begin{textblock}{8}(4,1)
+\titlepage
+\end{textblock}
+
+\begin{textblock}{7.25}(0.5,3.1)
+
+%this needs help
+\begin{block}{Project Overview}\newline
+\begin{itemize}
+\item \textbf{What}: develop virtual reality environments, as an extension of previous work done by the McMaster Decision Science Laboratory, to carry out experimental economics research.
+\item \textbf{Why}: gain insight into how participants make decisions when they are impaired.
+\item The focus of the simulations is a basic task.
+\item Participants are paid cash for successful task completions.
+\item Participants will be virtually impaired and required to choose between methods of treatment.
+\item Simulation environments are designed in Unity; to be used with an HTC Vive. 
+\end{itemize}
+\end{block}
+
+\begin{block}{Existing Simulation}\newline
+\begin{itemize}
+\item \textbf{Task}: move crates from a pile to the target block.
+\item The environment does not scale to the Vive-equipped testing room (Figure \ref{fig:crate}).
+\item No extensive customization of configuration variables.
+\end{itemize}
+\newline
+\begin{figure}
+  \includegraphics[height=17cm]{CrateOriginal.PNG}
+  \caption{Experiment room}
+\label{fig:crate}
+\end{figure}
+\end{block}
+
+
+\begin{block}{Our Simulations}\newline
+\begin{itemize}
+\item The virtual environments and experiment structures will be highly customizable. 
+\item Metrics will be tracked and persisted in a database for analysis.
+\item Environments are designed according to the physical constraints of the Vive-equipped testing room (Figure \ref{fig:room}).
+\end{itemize}
+\newline
+\begin{figure}
+  \includegraphics[height=22cm]{NolanVRRoom.png}
+  \caption{Experiment room}
+\label{fig:room}
+\end{figure}
+\end{block}
+
+
+
+
+
+
+%\begin{block}{Conclusions \& Future Work}
+%\begin{itemize}
+%\item Using the existing experiment and consulting with the McMaster Decision Science Laboratory, we have developed a plan to implement the two simulations as described.
+%\item These simulations will allow the laboratory to run unique experiments using either of the simulations with specific configurations while collecting data in a SQL database.
+%\item The simulations will be tailored to the Vive equipped test room so the overall experience is as realistic as possible.
+%\end{itemize}
+%\end{block}
+
+\end{textblock}
+
+
+
+
+\begin{textblock}{7.25}(8.25,3.1)
+
+\begin{block}{Summary of Configuration Variables}\newline
+\begin{itemize}
+\item Cash obtained by the participant for completed task iterations.
+\item Impairment types and their intensities.
+\item Treatment methods, costs, and effectiveness.
+\item Per-day settings such as duration and active impairment(s).
+\end{itemize}
+\end{block}
+
+\begin{block}{Simulation One}\newline
+\begin{itemize}
+\item \textbf{Task}: repeatedly transport a
+volume of liquid between a source and destination using a single hand-carried vessel.
+\item \textbf{Goal}: maximize the total volume of liquid that successfully reaches the destination.
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=17cm]{SimulationOne.png}
+  \caption{First simulation environment}
+\label{fig:simOne}
+\end{figure}
+
+%%Have to add these
+ %Figure #. Taken from the night demo shows the application of transparency in animation
+\end{block}
+
+
+
+\begin{block}{Simulation Two}\newline
+\begin{itemize}
+\item \textbf{Task}: sort a set of three-dimensional shapes into separate containers by passing them through a filter that only permits one particular shape.
+\item \textbf{Goal}: maximize the total number of shapes sorted into the correct container.
+\end{itemize}
+\begin{figure}
+  \begin{subfigure}[b]{0.37\textwidth}
+    \includegraphics[height=14cm]{shape_sorting_environment.png}
+    \caption{Layout of simulation environment.}
+  \end{subfigure}
+ %
+  \begin{subfigure}[b]{0.60\textwidth}
+    \includegraphics[height=14cm]{shape_shorting_filter.png}
+    \caption{Shape sorting filter.}
+    \end{subfigure}
+ \end{figure}
+\end{block}
+
+
+\begin{block}{Sound Interesting?}\newline
+\begin{itemize}
+\item Email us what you think of our project, and/or to participate in experimental trials.
+\item Please CC our coordinator, Dr. Christopher Anand: anandc@mcmaster.ca
+\item Experimental trials will likely be scheduled for February 2019.
+\end{itemize}
+\end{block}
+
+
+\begin{block}{Acknowledgements}\newline
+\begin{itemize}
+\item David Cameron: \textit{Manager, McMaster Decision Science Laboratory}
+\item Neil Buckley: \textit{Associate Professor, York University}
+\item Courtney Sheppard: \textit{IT Advisor, McMaster Decision Science Laboratory}
+\end{itemize}
+\end{block}
+
+% \begin{block}{References}
+% \setbeamertemplate{bibliography item}{\insertbiblabel}
+% \bibliographystyle{ieeetr}
+% {\scriptsize
+% \bibliography{bib}}
+% \end{block}
+
+\begin{comment}
+%these aren't in any particular style, it's just the basic idea
+\begin{block}{References}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\bibliographystyle{ieeetr}
+{\scriptsize
+\bibliography{bib}}
+\end{block}
+\vspace{-1.8mm}
+%will need some more graphics to thank the various people
+\end{comment}
+\end{textblock}
+
+
+\end{frame}
+\end{document}
