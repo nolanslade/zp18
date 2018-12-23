@@ -15,6 +15,8 @@ public sealed class ConfigKeyword {
     public static readonly string INDENT        = "\t";
     public static readonly string VALUE_START   = "\"";
     public static readonly string VALUE_END     = "\"";
+    public static readonly string PERCENT       = "\%";
+    public static readonly string F_SLASH       = "/";
 
     // Top-level keywords
     public static readonly string SIMULATION    = "Simulation";
@@ -33,5 +35,6 @@ public sealed class ConfigKeyword {
     public static readonly string TREATMENT     = "Treatment";      // For a given impairment
 
     // Key-value, tier 4
-    // ...
+    public static readonly string WAIT          = "Wait";           // For a given treatment - 
+    public static readonly string COST          = "Cost";           // For a given treatment - in dollars / reward units
 }
