@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimManager : MonoBehaviour {
+
+    private const string CONFIG_PATH = "";
     
     // State management
     public enum GameState

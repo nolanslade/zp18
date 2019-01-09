@@ -12,7 +12,6 @@
  * - Duration
  * - Active impairments and their strengths
  * - Reward function multiplier
- * - ......
  */
 public class DayConfiguration {
 

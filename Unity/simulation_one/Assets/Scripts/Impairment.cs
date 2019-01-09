@@ -15,7 +15,8 @@ public class Impairment {
 
     public enum ImpairmentType {
         VISUAL_FOG,
-        PHYSICAL_JITTER,
+        PHYSICAL_GRAVITY,       // Makes things easier to drop by accident
+        PHYSICAL_SHAKE,
         PHYSICAL_SPEED_LIMITER  // e.g. remove water from bucket if participant moves too quickly
     }
 
