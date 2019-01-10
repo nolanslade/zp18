@@ -6,8 +6,6 @@ public class SimManager : MonoBehaviour {
 
     private bool usingConfigFile = false;       // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const string CONFIG_PATH = "";
-
-    private 
     
     // State management
     public enum GameState
