@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class SimManager : MonoBehaviour {
 
+    private bool usingConfigFile = false;       // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const string CONFIG_PATH = "";
+
+    private 
     
     // State management
     public enum GameState
@@ -16,7 +19,7 @@ public class SimManager : MonoBehaviour {
 
     private GameState currentGameState;
     private int currentScore;
-    private int currentDay;
+    private int currentDay, totalDays;
     private float elapsedDayTime;
 
     // Parses the configuration file and holds all required simulation parameters
@@ -32,12 +35,28 @@ public class SimManager : MonoBehaviour {
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
+            Debug.log ("Startup error: invalid parameters.");
         }
 
         else {
-            currentScore = 0;
-            currentGameState = GameState.RUNNING;
-            flowManager.GetComponent<FlowManager>().startFlow();
+
+            totalDays = this.configParser.numDays();
+            
+            if (totalDays == -1) {
+                currentGameState = GameState.ERROR;
+                Debug.log ("Startup error: days invalid.");
+            } 
+
+            else {
+
+                currentDay = 0;  // Intro / tutorial / instruction day?
+
+                // TODO
+
+                currentScore = 0;
+                currentGameState = GameState.RUNNING;
+                flowManager.GetComponent<FlowManager>().startFlow();
+            }
         }
     }
 	
@@ -46,10 +65,13 @@ public class SimManager : MonoBehaviour {
 	void Update () {
 
         if (currentGameState == GameState.ERROR) {
+            // TODO - should put a red haze into the headset or 
+            // something with the error message in the middle
             int a = 1;
         } 
 
         else if (currentGameState == GameState.PAUSED) {
+            // TODO - should overlay "Paused" in the headset or something
             int a = 1;
         } 
 
@@ -57,6 +79,26 @@ public class SimManager : MonoBehaviour {
             int a = 1; 
         }
 	}
+
+
+    /*
+    * Creates the parser object to read in the configuration
+    * file for this simulation. 
+    * Returns true on success of all parameters being set, false on any error.
+    */
+    private bool establishSimulationParameters () {
+       
+        // Custom configuration
+        if (usingConfigFile) {
+            return false; // TODO
+        }
+
+        // Use default (test) simulation parameters
+        else {
+            this.configParser = new ConfigParser ();
+            return !(this.configParser.getConfigs == null || this.configParser.getConfigs().Length == 0);
+        }
+    }
 
 
     public GameState currentState () {
@@ -73,15 +115,5 @@ public class SimManager : MonoBehaviour {
     public void payReward (int customAmount) {
         this.currentScore += customAmount;
         Debug.Log("Reward payed ("+ customAmount + "). New Score: " + currentScore);
-    }
-
-
-    /*
-    * Creates the parser object to read in the configuration
-    * file for this simulation. 
-    * Returns true on success of all parameters being set, false on any error.
-    */
-    private bool establishSimulationParameters () {
-        return true;
     }
 }

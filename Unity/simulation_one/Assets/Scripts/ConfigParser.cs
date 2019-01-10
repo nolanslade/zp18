@@ -19,18 +19,66 @@ public class ConfigParser {
     private string configFilePath;
 
     // Simulation parameters
-    private DayConfiguration [] dayConfigs;
+    private DayConfiguration [] dayConfigs = null;
+
+    
+    /*
+    * If not using a config file - use these default values (for testing)
+    *
+    * Structure (3 days):
+    * - Day one: no impairment, 1 minute, 2* multiplier
+    * - Day two: speed penalty (pay 50 / wait 15s), 2 minutes
+    * - Day three: speed penalty, fog (fog @ 80%, pay 100 / wait 25s), 2 minutes
+    */
+    public ConfigParser () {
+
+        // Day One
+        Impairment [] dayOneImps = new Impairment [];
+        float dayOneDur = 60.0f;
+        float dayOneMult = 2.0f;
+        int dayOne = 1;
+
+        // Day Two
+        float dayTwoDur = 120.0f;
+        Impairment [] dayTwoImps = new Impairment [1];
+        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
+        int dayTwo = 2;
+
+        // Day Three
+        float dayThreeDur = 120.0f;
+        Impairment [] dayThreeImps = new Impairment [2];
+        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
+        dayThreeImps[1] = new Impairment (Impairment.ImpairmentType.VISUAL_FOG, 0.8f);
+        int dayThree = 3;
 
 
+        // Set each day configuration with the above
+        this.dayConfigs = new DayConfiguration [3];
+        this.dayConfigs [0] = new DayConfiguration (dayOne, dayOneDur, dayOneImps, dayOneMult);
+        this.dayConfigs [1] = new DayConfiguration (dayTwo, dayTwoDur, dayTwoImps);
+        this.dayConfigs [2] = new DayConfiguration (dayThree, dayThreeDur, dayThreeImps);
+    }
+
+
+    /*
+    * If using a configuration file, then load in day configurations
+    * by parsing in the file if the path argument is valid.
+    */
     public ConfigParser (string path) {
+        
         this.configFilePath = path;   
+
+        // TODO - parse the file (if it exists) and load in day configurations
     }
 
 
     /*
 	* Parse the file and create objects for each parsed item
+    *
+    * *** TODO ***
+    *
     */
-    public bool parseConfig () {
+    private bool parseConfig () {
         
         try {
         	return true;
@@ -53,5 +101,21 @@ public class ConfigParser {
         }
 
         return false;
+    }
+
+
+    /*
+    * Returns all configurations; either parsed from file or default
+    */
+    public DayConfiguration [] getConfigs () {
+        return this.dayConfigs;
+    }
+
+    public int numDays () {
+        if (this.dayConfigs != null) {
+            return this.dayConfigs.Length;
+        } else {
+            return -1;
+        }
     }
 }

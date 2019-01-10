@@ -17,7 +17,7 @@ public class Impairment {
         VISUAL_FOG,
         PHYSICAL_GRAVITY,       // Makes things easier to drop by accident
         PHYSICAL_SHAKE,
-        PHYSICAL_SPEED_LIMITER  // e.g. remove water from bucket if participant moves too quickly
+        PHYSICAL_SPEED_PENALTY  // e.g. remove water from bucket if participant moves too quickly
     }
 
     public Impairment (ImpairmentType t, float s) {
