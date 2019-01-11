@@ -33,7 +33,7 @@ public class ConfigParser {
     public ConfigParser () {
 
         // Day One
-        Impairment [] dayOneImps = new Impairment [];
+        Impairment [] dayOneImps = new Impairment [0];
         float dayOneDur = 60.0f;
         float dayOneMult = 2.0f;
         int dayOne = 1;

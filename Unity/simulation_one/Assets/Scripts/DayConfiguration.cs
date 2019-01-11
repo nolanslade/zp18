@@ -9,7 +9,7 @@
  * for each day in the config file. 
  * These parameters include
  * - ID / day number
- * - Duration
+ * - Duration (in seconds)
  * - Active impairments and their strengths
  * - Reward function multiplier
  */

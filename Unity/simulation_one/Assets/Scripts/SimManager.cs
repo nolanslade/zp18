@@ -33,7 +33,7 @@ public class SimManager : MonoBehaviour {
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
-            Debug.log ("Startup error: invalid parameters.");
+            Debug.Log ("Startup error: invalid parameters.");
         }
 
         else {
@@ -42,16 +42,13 @@ public class SimManager : MonoBehaviour {
             
             if (totalDays == -1) {
                 currentGameState = GameState.ERROR;
-                Debug.log ("Startup error: days invalid.");
+                Debug.Log ("Startup error: days invalid.");
             } 
 
             else {
-
                 currentDay = 0;  // Intro / tutorial / instruction day?
-
-                // TODO
-
                 currentScore = 0;
+                elapsedDayTime = 0.0f;
                 currentGameState = GameState.RUNNING;
                 flowManager.GetComponent<FlowManager>().startFlow();
             }
@@ -62,7 +59,7 @@ public class SimManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (currentGameState == GameState.ERROR) {
+        if (currentGameState == GameState.ERROR || this.configParser.getConfigs() == null) {
             // TODO - should put a red haze into the headset or 
             // something with the error message in the middle
             int a = 1;
@@ -74,7 +71,26 @@ public class SimManager : MonoBehaviour {
         } 
 
         else {
-            int a = 1; 
+
+            if (currentDay > 0) {
+
+                elapsedDayTime += Time.deltaTime;
+
+                // Time's up for the current day
+                if (elapsedDayTime >= this.configParser.getConfigs()[currentDay - 1].getDuration()) {
+                    int a = 1;
+                    // TODO
+                }
+
+                else {
+                    int a = 1;
+                    // TODO
+                }
+            } 
+
+            else {
+                int a = 1; // TODO - day zero stuff
+            }
         }
 	}
 
@@ -94,7 +110,7 @@ public class SimManager : MonoBehaviour {
         // Use default (test) simulation parameters
         else {
             this.configParser = new ConfigParser ();
-            return !(this.configParser.getConfigs == null || this.configParser.getConfigs().Length == 0);
+            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
     }
 
@@ -105,13 +121,17 @@ public class SimManager : MonoBehaviour {
 
 
     public void payReward () {
-        this.currentScore++;
-        Debug.Log ("Reward payed (1). New Score: " + currentScore);
+        if (currentGameState == GameState.RUNNING && currentDay != 0) {
+            this.currentScore++;
+            Debug.Log ("Reward payed (1). New Score: " + currentScore);
+        }
     }
 
 
     public void payReward (int customAmount) {
-        this.currentScore += customAmount;
-        Debug.Log("Reward payed ("+ customAmount + "). New Score: " + currentScore);
+        if (currentGameState == GameState.RUNNING && currentDay != 0) {
+            this.currentScore += customAmount;
+            Debug.Log("Reward payed ("+ customAmount + "). New Score: " + currentScore);
+        }
     }
 }

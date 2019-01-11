@@ -15,7 +15,7 @@ public sealed class ConfigKeyword {
     public static readonly string INDENT        = "\t";
     public static readonly string VALUE_START   = "\"";
     public static readonly string VALUE_END     = "\"";
-    public static readonly string PERCENT       = "\%";
+    public static readonly string PERCENT       = "%";
     public static readonly string F_SLASH       = "/";
 
     // Top-level keywords
