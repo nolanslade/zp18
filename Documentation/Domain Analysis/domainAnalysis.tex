@@ -4,7 +4,7 @@
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
 
-\title{\textbf{McDSL Simulations: Domain Analysis}\\CS4ZP6}
+\title{\textbf{McDSL Simulations: Configuration}\\CS4ZP6}
 \author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
 \date{\today}
 
@@ -13,51 +13,45 @@
 
 \section*{Abstract}
 
-Described in this document is an analysis of experimental economics research simulations within the context of the McMaster Decision Science Laboratory. Specifically, we highlight their static and dynamic elements in an effort to form a basis upon which to design future simulations that will accomplish the research goals of the lab.
+Described in this document is a brief analysis of experimental economics research simulations within the context of the McMaster Decision Science Laboratory. Specifically, we highlight the goal of this particular research project, and describe our contribution targets.
 
 Following is a proposal for an intuitive configuration language that will be consumed by virtual reality-ready Unity applications at runtime to support dynamic and easy-to-configure simulations.
 
-\section{Background}
-The goal of this project by the McMaster Decision Science Laboratory is to conduct research to gain insight into how participants make decisions when they are impaired. The experiment requires the subject to repeatedly complete a task and receive payment for a completed task. The experiment time line is set as "days" where each day is a set number of minutes. Certain days the subject becomes phisically impaired, and this impairment negatively affects their efficiency when completing a task. They are then given the option to pay a fee for immediate treatment, or to wait a predetermined amount of time to receive treatment free of charge.
+\section*{Project Background}
+The goal of this project by the McMaster Decision Science Laboratory is to conduct research to gain insight into how participants make decisions when physically impaired inside a virtual environment. The experiment requires the subject to repeatedly complete a task and receive payment for a completed task. The experiment timeline is separated into distinct segments called \textit{days}, where each day lasts a set number of minutes. On certain days, the subject incurs an impairment of some kind that hinders their ability to complete the required task. They are then given the option to either pay a fee (either a fixed amount or a percentage of their total income) for immediate treatment, or to wait a predetermined amount of time to receive treatment free of charge.
 
+\subsection*{First New Simulation: Water Transport}
 
-\section*{Simulation Analysis}
+The task outlined in this simulation requires the subject to transport a bucket of water from a faucet to a sink. These two objects are on opposing sides of the virtual environment. The payment that the subject receives is directly proportional to the amount of water that they successfully pour into the sink. That is, if water is spilled from the bucket, the participant will only receive a fraction of maximum payment.
 
-Each simulation should require the user to repetitively complete a mundane task, and receive payment for each completed task. The experiment is split into "days" which are a set duration in minutes. On certain days the user has a physical impairment which inhibits their ability to complete the task, and therefore their income is reduced. On certain days the user is presented with a treatment. On certain days the treatment costs a fee, either a factor of their income gained while healthy, or a fixed fee. The treatment fee can also be 0, and therefore free.
+\subsection*{Second New Simulation: Shape Sorting}
 
+The task outlined in this simulation is for the subject to sort through a bucket of three-dimensional shapes into separate containers by passing them through filters. The subject receives payment for each correctly placed shape.
 
-\subsection*{Water}
+\subsection*{Impairment Possibilities}
 
-The task outlined in this simulation is for the subject to transport a bucket of water from one sink to another on the other side of the room. The subject receives full payment when a full bucket has been transported. If water is spilled from the bucket, the participant will only receive a fraction of payment, based on the amount of water delivered.
+\subsubsection*{Physical: Speed Penalty}
+This impairment causes the participant to incur a penalty if they move too quickly through the virtual environment. This is a similar idea to the impairment in the original 'Crate Game', but more suitable for a virtual reality-based simulation. For the Water Transport simulation, we envision water droplets being removed from the container if the subject begins to move too quickly. For the Shape Sorting simulation, we propose the shape being simply dropped out of the participant's hand.
 
-\subsection*{Shapes}
-
-The task outlined in this simulation is for the subject to sort through a bucket of three-dimensional shapes into separate containers by passing them through their respective filters. The subject receives payment for each correctly placed shape.
-
-\subsection*{Impairments}
-
-\subsubsection*{Vision}
+\subsubsection*{Visual: Fog}
 The subject's vision can be impaired using a fog overlay in the simulation, so that the environment becomes blurry and colours become grayed. This is most applicable to the Shapes simulation, but can be applied in the Water simulation.
 
-\subsubsection*{Dexterity}
-The subject's dexterity can be inhibited by increasing the sensitivity of the virtual reality controls. This means that a small movement will result in a larger movement in the virtual reality world.
+\subsubsection*{Physical: Dexterity/Gravity}
+We can simulate participants' dexterity being inhibited by either increasing the sensitivity of the virtual reality controls or dynamically modifying the gravity vector within the scene. 
 
-\subsubsection*{Tremor}
+\subsubsection*{Physical: Tremor}
 The subject could receive a hand tremor that can be simulated by quick, repetitive and small movements of the controls in the virtual environment, and the use of vibrations in the controllers in the real environment.
 
-\subsubsection*{Delayed Action}
+\subsubsection*{Physical: Delayed Action}
 The subjects actions are slowed in the virtual environment, to simulate the slow movements of hypo kinetic disorders.
 
 \section*{Configuration Language Proposal}
 
-In order to provide a simulation that is truly dynamic, we propose a simple configuration file with domain-specific syntax. This file and syntax will encapsulate key elements of experimental economics research simulations such that they may be easily modified.
+In order to provide an application that is truly dynamic, we propose a simple configuration file with domain-specific syntax. This file and syntax will encapsulate key elements of experimental economics research simulations such that they may be easily modified.
 
 \subsection*{Basics}
 
-The file, stored as a simple \textit{.txt}, will be parsed by the Unity application by tab indentation. 
-
-% TODO -- WE SHOULD OFFER COMMENT FUNCTIONALITY
-% TODO -- IGNORE WHITE SPACE, COLON SEPARATED VALUES?
+The file, stored as a simple \textit{.txt}, will be parsed by the Unity application using tab indentation. For general usability, the hash mark will be used to specify a comment. 
 
 \subsection*{Notable Keywords}
 
@@ -72,13 +66,14 @@ This keyword is used to separate configurations on a per simulation-day basis. T
 \subsubsection*{Impairment}
 
 The \textit{Impairment} keyword is to be used within per-Day configurations, meaning that it should be tabbed once. Parameters such as impairment type and strength factor can then be specified. 
+
 \subsubsection*{Treatment}
 
 The \textit{Treatment} keyword is to be used within per-Day configurations, meaning that it should be tabbed once. If the treatment keyword is present for a day, that means the treatment is available. Parameters such as Wait can then be specified.
 
 \subsubsection*{Cost}
 
-The \textit{Cost} keyword is to be used within treatment configurations, meaning that it should be tabbed twice. The cost keyword has two parameters, Factor and Fixed, which are mutually exclusive. Factor describes the percentage of the subjects gained income while healthy that will be the treatment cost, whereas fixed is the set treatment cost.
+The \textit{Cost} keyword is to be used within treatment configurations, meaning that it should be tabbed twice. The cost keyword has two parameters, Factor and Fixed, which are mutually exclusive. If the Factor keyword is used, then the treatment cost will be some fraction of the participant's income, rather than a fixed value.
 
 \subsection*{Sample File Contents}
 The following is an example of a configuration file for a two day-long simulation. Note that key-value pairs are colon separated, with values always enclosed in double quotes. 
@@ -100,18 +95,21 @@ Day
         Factor:"70%"
         Treatment
             Wait:"10"           # Seconds
+            Cost:
+                Fixed:"30"
     Impairment
-        Type:"Physical/Gravity"
+        Type:"Physical/Speed_Impairment"
         Factor:"50%"
         Treatment
+            Wait:"15"
             Cost:
-                Fixed:"50"      #Dollars
+                Fixed:"50"      # Dollars
 \end{lstlisting}
 
 
-\section*{Metrics Collection}
-
-The existing simulation collects metrics every - seconds and stores it in a spreadsheet. We will use this same method but will instead store in a database.
+%\section*{Metrics Collection}
+%
+%The existing simulation collects metrics every - seconds and stores it in a spreadsheet. We %will use this same method but will instead store in a database.
 
 
 
