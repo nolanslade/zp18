@@ -69,11 +69,11 @@ The \textit{Impairment} keyword is to be used within per-Day configurations, mea
 
 \subsubsection*{Treatment}
 
-The \textit{Treatment} keyword is to be used within per-Day configurations, meaning that it should be tabbed once. If the treatment keyword is present for a day, that means the treatment is available. Parameters such as Wait can then be specified.
+The \textit{Treatment} keyword is to be used within per-Day configurations, meaning that it should be tabbed once. If the treatment keyword is present for a day, that means the treatment is available. Parameters such as \textit{Wait} can then be specified.
 
 \subsubsection*{Cost}
 
-The \textit{Cost} keyword is to be used within treatment configurations, meaning that it should be tabbed twice. The cost keyword has two parameters, Factor and Fixed, which are mutually exclusive. If the Factor keyword is used, then the treatment cost will be some fraction of the participant's income, rather than a fixed value.
+The \textit{Cost} keyword is to be used within treatment configurations, meaning that it should be tabbed twice. The cost keyword has two parameters, \textit{Factor} and \textit{Fixed}, which are mutually exclusive. If the Factor keyword is used, then the treatment cost will be some fraction of the participant's income, rather than a fixed value.
 
 \subsection*{Sample File Contents}
 The following is an example of a configuration file for a two day-long simulation. Note that key-value pairs are colon separated, with values always enclosed in double quotes. 
@@ -88,22 +88,22 @@ Day
     Impairment
         Type:"Visual/Fog"       # Type/Subtype
         Factor:"50%"            # Percentage of Maximum
+    Treatment
+        Wait:"15"               # Seconds
+        Cost:
+            Factor:"30%"
 Day
     Duration:"5:00"
     Impairment
         Type:"Physical/Shake"
         Factor:"70%"
-        Treatment
-            Wait:"10"           # Seconds
-            Cost:
-                Fixed:"30"
     Impairment
         Type:"Physical/Speed_Impairment"
         Factor:"50%"
-        Treatment
-            Wait:"15"
-            Cost:
-                Fixed:"50"      # Dollars
+    Treatment
+        Wait:"10"               
+        Cost:
+            Fixed:"30"
 \end{lstlisting}
 
 
