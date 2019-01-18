@@ -17,10 +17,10 @@ public class ConfigParser {
 
     // Parsing
     private string configFilePath;
+    private string dbConnection;
 
     // Simulation parameters
     private DayConfiguration [] dayConfigs = null;
-
     
     /*
     * If not using a config file - use these default values (for testing)
@@ -31,6 +31,10 @@ public class ConfigParser {
     * - Day three: speed penalty, fog (fog @ 80%, pay 100 / wait 25s), 2 minutes
     */
     public ConfigParser () {
+
+        // Metrics
+        // TODO ... db stuff here
+        dbConnection = null;
 
         // Day One
         Impairment [] dayOneImps = new Impairment [0];
@@ -66,7 +70,8 @@ public class ConfigParser {
     */
     public ConfigParser (string path) {
         
-        this.configFilePath = path;   
+        this.configFilePath = path;  
+        dbConnection = null;
 
         // TODO - parse the file (if it exists) and load in day configurations
     }
@@ -109,6 +114,10 @@ public class ConfigParser {
     */
     public DayConfiguration [] getConfigs () {
         return this.dayConfigs;
+    }
+
+    public string dbConn () {
+        return this.dbConnection;
     }
 
     public int numDays () {

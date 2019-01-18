@@ -27,6 +27,11 @@ public class SimManager : MonoBehaviour {
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
 
+    // Data (metrics) Persistence
+    private SimPersister simPersister;
+    private const float PERSIST_RATE = 1.0f;
+    private float persistTime = 0.0f;
+
     // Key scene objects
     public GameObject flowManager;          // Manages tap flow 
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
@@ -49,7 +54,9 @@ public class SimManager : MonoBehaviour {
 
         else {
 
+            simPersister = new SimPersister (this.configParser.dbConn());
             totalDays = this.configParser.numDays();
+            Debug.Log ("Starting with total days: " + totalDays);
             
             if (totalDays == -1) {
                 currentGameState = GameState.ERROR;
@@ -102,12 +109,13 @@ public class SimManager : MonoBehaviour {
 
     /* 
     * Custom payment - this can be used if a reward function multiplier
-    * is being applied for the current day
+    * is being applied for the current day. Since the default payout
+    * is one unit, the multiplier can be passed in as the custom amount.
     */
     public void payReward (float customAmount) {
         if (currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount;
-            Debug.Log("Reward payed ("+ customAmount + "). New Score: " + currentScore);
+            Debug.Log ("Reward payed ("+ customAmount + "). New Score: " + currentScore);
         }
     }
 
@@ -119,9 +127,18 @@ public class SimManager : MonoBehaviour {
     */
     void Update () {
 
-        // Global timestamp tracking
+        // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
+            
             elapsedTotalTime += Time.deltaTime;
+            persistTime      += Time.deltaTime;
+
+            // Persist every X second(s)
+            if (currentGameState == GameState.RUNNING && persistTime > PERSIST_RATE) {
+                // TODO ... persist () needs parameters
+                simPersister.persist ();
+                persistTime = 0.0f;
+            }
         }
 
 
@@ -154,11 +171,13 @@ public class SimManager : MonoBehaviour {
             if (elapsedDayTime > TRANSITION_TIME) {
 
                 currentDay += 1;
+                Debug.Log ("New day: " + currentDay);
 
                 if (currentDay <= this.configParser.numDays()) {
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
                 } else {
+                    Debug.Log ("Simulation complete.");
                     currentGameState = GameState.COMPLETE;
                 }
             }
@@ -178,6 +197,7 @@ public class SimManager : MonoBehaviour {
 
                 // Time's up for the current day
                 if (elapsedDayTime > this.configParser.getConfigs()[currentDay - 1].getDuration()) {
+                    Debug.Log ("Day " + currentDay + " complete with day time: " + elapsedDayTime);
                     currentGameState = GameState.TRANSITION;
                     elapsedDayTime = 0.0f;
                 }
@@ -202,6 +222,7 @@ public class SimManager : MonoBehaviour {
             */
             else {
                 if (currentScore > DAY_ZERO_REQ_SCORE) {
+                    Debug.Log ("Day 0 passed.");
                     currentGameState = GameState.TRANSITION;
                     currentScore = 0.0f;
                     elapsedDayTime = 0.0f;
