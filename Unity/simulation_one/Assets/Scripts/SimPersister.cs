@@ -13,20 +13,21 @@ using UnityEngine;
 public class SimPersister {
 
     // Logging / Metrics parameters
+   	private System.DateTime startTime;
     private string dbConnection = null;
 	private string logFileName  = null;
 
     private const string LOG_FILE_PREF  = "VR1_log_";
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string LOG_FILE_SUFF  = ".txt";
-    private const string DELIMITER 		= ",";
 
     /*
 	* Creates a new persister object - writes to DB or log files
     */
     public SimPersister (string conn) {
-    	
-    	this.logFileName = LOG_FILE_PREF + System.DateTime.Now.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
+
+		this.startTime = System.DateTime.Now;    	
+    	this.logFileName = LOG_FILE_PREF + startTime.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
 
     	if (conn != null) {
     		// TODO
@@ -61,10 +62,40 @@ public class SimPersister {
     /*
 	* General CSV entry into log file
     */
-    public void persist () {
+    public void persist (
+    	float 					globalTime,				// Total simulation runtime (any state)
+    	int 					currentDay,				
+    	SimManager.GameState 	currentState,
+    	float 					dayTime, 				// Total day time (running state only)
+    	float 					totalScore,
+    	float 					dayScore,
+    	int 					currentlyCarrying, 		// Water droplets inside of the container
+    	float 					headsetX,
+    	float 					headsetY,
+    	float 					headsetZ,
+    	float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
+    	float 					speedPenaltyFactorCurrent	// This will drop if treatment received
+    	// .... 
+    	) {
+
+    	const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}"; // TODO - put proper formatting
     	
     	try {
-    		int a = 1; // TODO
+    		string.Format (
+    			fmt,
+    			globalTime,
+    			currentDay,
+    			currentState.ToString(),
+    			dayTime,
+    			totalScore,
+    			dayScore,
+    			currentlyCarrying,
+    			headsetX,
+    			headsetY,
+    			headsetZ,
+    			speedPenaltyFactorInitial,
+    			speedPenaltyFactorCurrent
+    		);
     	} 
 
     	catch (System.Exception e) {

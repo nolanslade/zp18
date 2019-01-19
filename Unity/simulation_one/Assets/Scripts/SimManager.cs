@@ -69,7 +69,6 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
                 currentGameState    = GameState.RUNNING;
-                //flowManager.GetComponent<FlowManager>().startFlow();
             }
         }
     }
@@ -135,8 +134,37 @@ public class SimManager : MonoBehaviour {
 
             // Persist every X second(s)
             if (currentGameState == GameState.RUNNING && persistTime > PERSIST_RATE) {
-                // TODO ... persist () needs parameters
-                simPersister.persist ();
+
+                /*
+                float                   globalTime,             // Total simulation runtime (any state)
+                int                     currentDay,             
+                SimManager.GameState    currentState,
+                float                   dayTime,                // Total day time (running state only)
+                float                   totalScore,
+                float                   dayScore,
+                int                     currentlyCarrying,      // Water droplets inside of the container
+                float                   headsetX,
+                float                   headsetY,
+                float                   headsetZ,
+                float                   speedPenaltyFactorInitial,  // 0 if no impairment applied
+                float                   speedPenaltyFactorCurrent   // This will drop if treatment received
+                // .... 
+                */
+
+                simPersister.persist (
+                    elapsedTotalTime,
+                    currentDay,
+                    currentGameState,
+                    elapsedDayTime,
+                    currentScore,
+                    1.0f,   // TODO
+                    0,      // TODO
+                    physicalCamera.transform.position.x,
+                    physicalCamera.transform.position.y,
+                    physicalCamera.transform.position.z,
+                    0.0f,   // TODO
+                    0.0f    // TODO
+                );
                 persistTime = 0.0f;
             }
         }
