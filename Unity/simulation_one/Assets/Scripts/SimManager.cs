@@ -23,6 +23,7 @@ public class SimManager : MonoBehaviour {
     private float currentScore;
     private int currentDay, totalDays;
     private float elapsedDayTime, elapsedTotalTime;
+    private bool paymentEnabled = false;
 
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
@@ -95,11 +96,21 @@ public class SimManager : MonoBehaviour {
 
 
     /*
+    * Toggles whether or not payment should be allowed
+    * based on where the player is currently standing within
+    * the room.
+    */
+    public void togglePayment (bool val) {
+        this.paymentEnabled = val;
+    }
+
+
+    /*
     * Standard reward payment - 1 unit of payment per water droplet
     * colliding with the target drain
     */
     public void payReward () {
-        if (currentGameState == GameState.RUNNING) {
+        if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += 1.0f;
             Debug.Log ("Reward payed (1). New Score: " + currentScore);
         }
@@ -112,7 +123,7 @@ public class SimManager : MonoBehaviour {
     * is one unit, the multiplier can be passed in as the custom amount.
     */
     public void payReward (float customAmount) {
-        if (currentGameState == GameState.RUNNING) {
+        if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount;
             Debug.Log ("Reward payed ("+ customAmount + "). New Score: " + currentScore);
         }
