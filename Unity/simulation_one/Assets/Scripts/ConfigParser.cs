@@ -38,6 +38,7 @@ public class ConfigParser {
 
         // Day One
         Impairment [] dayOneImps = new Impairment [0];
+        Treatment dayOneTreatment = null;   // TODO
         float dayOneDur = 60.0f;
         float dayOneMult = 2.0f;
         int dayOne = 1;
@@ -45,12 +46,14 @@ public class ConfigParser {
         // Day Two
         float dayTwoDur = 120.0f;
         Impairment [] dayTwoImps = new Impairment [1];
+        Treatment dayTwoTreatment = new Treatment ();   // TODO
         dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
         int dayTwo = 2;
 
         // Day Three
         float dayThreeDur = 120.0f;
         Impairment [] dayThreeImps = new Impairment [2];
+        Treatment dayThreeTreatment = new Treatment ();   // TODO
         dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
         dayThreeImps[1] = new Impairment (Impairment.ImpairmentType.VISUAL_FOG, 0.8f);
         int dayThree = 3;
@@ -58,9 +61,9 @@ public class ConfigParser {
 
         // Set each day configuration with the above
         this.dayConfigs = new DayConfiguration [3];
-        this.dayConfigs [0] = new DayConfiguration (dayOne, dayOneDur, dayOneImps, dayOneMult);
-        this.dayConfigs [1] = new DayConfiguration (dayTwo, dayTwoDur, dayTwoImps);
-        this.dayConfigs [2] = new DayConfiguration (dayThree, dayThreeDur, dayThreeImps);
+        this.dayConfigs [0] = new DayConfiguration (dayOne, dayOneDur, dayOneImps, dayOneTreatment, dayOneMult);
+        this.dayConfigs [1] = new DayConfiguration (dayTwo, dayTwoDur, dayTwoImps, dayTwoTreatment);
+        this.dayConfigs [2] = new DayConfiguration (dayThree, dayThreeDur, dayThreeImps, dayThreeTreatment);
     }
 
 

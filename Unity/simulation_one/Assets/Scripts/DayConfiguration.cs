@@ -18,21 +18,24 @@ public class DayConfiguration {
     private int dayNumber;
     private float duration;
     private Impairment[] impairments;
+    private Treatment treatment;
     private float rewardFunctionMultiplier = 1.0f;
 
-    public DayConfiguration (int id, float dur, Impairment [] imps, float rewMult) 
+    public DayConfiguration (int id, float dur, Impairment [] imps, Treatment tr, float rewMult) 
     {
         this.dayNumber = id;
         this.duration = dur;
         this.impairments = imps;
+        this.treatment = tr;
         this.rewardFunctionMultiplier = rewMult;
     }
 
-    public DayConfiguration(int id, float dur, Impairment[] imps)
+    public DayConfiguration(int id, float dur, Impairment[] imps, Treatment tr)
     {
         this.dayNumber = id;
         this.duration = dur;
         this.impairments = imps;
+        this.treatment = tr;
     }
 
     public int getDayNumber () {
@@ -45,6 +48,10 @@ public class DayConfiguration {
 
     public Impairment[] getImpairments () {
         return this.impairments; 
+    }
+
+    public Treatment getTreatment () {
+        return this.treatment;
     }
 
     public float getRewardMultiplier () {
