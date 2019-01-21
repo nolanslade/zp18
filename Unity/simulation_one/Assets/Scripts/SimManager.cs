@@ -38,6 +38,8 @@ public class SimManager : MonoBehaviour {
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
     public GameObject physicalCamera;       // Child object of [CameraRig]
 
+	public GameObject timeRemainingText; //Text to display the time remaining
+
     public GameState currentState () {
         return currentGameState;
     }
@@ -177,6 +179,9 @@ public class SimManager : MonoBehaviour {
                     0.0f    // TODO
                 );
                 persistTime = 0.0f;
+
+				timeRemainingText = GameObject.Find ("TimeRemainingAmount");
+				timeRemainingText.GetComponent<UnityEngine.UI.Text> ().text = elapsedDayTime.ToString ();
             }
         }
 
