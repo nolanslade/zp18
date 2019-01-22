@@ -144,6 +144,7 @@ public class SimManager : MonoBehaviour {
         if (DEBUG) {
             if (Input.GetKeyDown("space"))
             {
+                Debug.Log ("Debug: Skip day");
                 currentGameState = GameState.TRANSITION;
                 elapsedDayTime = 0.0f;
             }
