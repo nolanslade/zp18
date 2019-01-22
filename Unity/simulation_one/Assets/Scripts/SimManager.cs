@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SimManager : MonoBehaviour {
 
+    public bool DEBUG;
+
     private bool usingConfigFile = false;           // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const string CONFIG_PATH = "";    
     private const float TRANSITION_TIME = 10.0f;    // Duration (seconds) of the transition state 
@@ -138,6 +140,14 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
+
+        if (DEBUG) {
+            if (Input.GetKeyDown("space"))
+            {
+                currentGameState = GameState.TRANSITION;
+                elapsedDayTime = 0.0f;
+            }
+        }
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
