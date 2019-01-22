@@ -69,7 +69,7 @@ public class SimManager : MonoBehaviour {
             } 
 
             else {
-                currentDay          = 0;                  // Training/tutorial day
+                currentDay          = 1;                  // Training/tutorial day
                 currentScore        = 0.0f;               // Holds across all days except 0
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
@@ -133,6 +133,10 @@ public class SimManager : MonoBehaviour {
         }
     }
 
+    public float getElapsedDayTime () {
+        return elapsedDayTime;
+    }
+
 
     /*
     * Main loop
@@ -191,8 +195,7 @@ public class SimManager : MonoBehaviour {
                 );
                 persistTime = 0.0f;
 
-				timeRemainingText = GameObject.Find ("TimeRemainingAmount");
-				timeRemainingText.GetComponent<UnityEngine.UI.Text> ().text = elapsedDayTime.ToString ();
+
             }
         }
 
