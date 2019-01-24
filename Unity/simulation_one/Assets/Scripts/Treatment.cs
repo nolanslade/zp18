@@ -13,8 +13,8 @@ public class Treatment {
 	// Cost Function Parameters
 	// Default function: cost = C * (omega - DT + (1/omega)*T^2)
 	// Dynamic function: cost = C * (c - bT + aT^2)
-	// Where T is the time of day, omega = length of current day, D = current day, T = time treatment obtained
-	private float C;	// Original cost; will depreciate according to the below a,b,c		
+	// Where T is the time of day, omega = length of current day, D = current day
+	private float C;			// Original cost; will depreciate according to the below a,b,c		
 	private float a;	
 	private float b;
 	private float c;
@@ -53,19 +53,13 @@ public class Treatment {
     	this.deathPenaltyProbability 	= deathProb;
     }
 
-    public Treatment () {
-
-    }
-
     /*
-	* Calculates current cost based on 
-	* the applicable cost function
+	* Calculates current cost based on the 
+	* applicable cost function and the current time
     */
-    public float currentCost () {
-
-    	// TODO
-
-    	return 1.0f;
+    public float currentCost (float currentSimTime) {
+    	// cost = C * (c - bT + aT^2)
+    	return C * (c - b * currentSimTime + a * currentSimTime * currentSimTime);
     }
 
 
