@@ -32,5 +32,11 @@ namespace Valve.VR
         public Valve.VR.SteamVR_Action_Skeleton SkeletonRightHand;
         
         public Valve.VR.SteamVR_Action_Single Squeeze;
+        
+        public Valve.VR.SteamVR_Action_Boolean touchpad;
+        
+        public Valve.VR.SteamVR_Action_Vector2 touchPos;
+        
+        public Valve.VR.SteamVR_Action_Boolean MenuButton;
     }
 }

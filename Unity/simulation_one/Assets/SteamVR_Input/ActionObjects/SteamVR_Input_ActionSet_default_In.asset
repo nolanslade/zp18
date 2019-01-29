@@ -22,6 +22,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 19ef40ffa5dd6af4ba1689e419438c3e, type: 2}
   - {fileID: 11400000, guid: 7f2f7edcd77f09c4481246af3e8eb4f5, type: 2}
   - {fileID: 11400000, guid: 3c93f704f7b982447aff7940f7b0dcd3, type: 2}
+  - {fileID: 11400000, guid: 986af1e45bcedf54eb086191fbf36a3e, type: 2}
+  - {fileID: 11400000, guid: 439064016c495b343bedf3444618fcb8, type: 2}
+  - {fileID: 11400000, guid: c66dcc5677791bb43bc8ffe92cb25337, type: 2}
   InteractUI: {fileID: 11400000, guid: 32eff6b3572156a4898eec3be6e0b9b0, type: 2}
   Teleport: {fileID: 11400000, guid: b03beae49ea731f4ea63cbeec985b7c2, type: 2}
   GrabPinch: {fileID: 11400000, guid: fcb4d9459c8d2c9419ac471fee238ef6, type: 2}
@@ -30,3 +33,6 @@ MonoBehaviour:
   SkeletonLeftHand: {fileID: 11400000, guid: 19ef40ffa5dd6af4ba1689e419438c3e, type: 2}
   SkeletonRightHand: {fileID: 11400000, guid: 7f2f7edcd77f09c4481246af3e8eb4f5, type: 2}
   Squeeze: {fileID: 11400000, guid: 3c93f704f7b982447aff7940f7b0dcd3, type: 2}
+  touchpad: {fileID: 11400000, guid: 986af1e45bcedf54eb086191fbf36a3e, type: 2}
+  touchPos: {fileID: 11400000, guid: 439064016c495b343bedf3444618fcb8, type: 2}
+  MenuButton: {fileID: 11400000, guid: c66dcc5677791bb43bc8ffe92cb25337, type: 2}
