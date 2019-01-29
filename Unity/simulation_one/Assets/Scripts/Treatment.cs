@@ -64,6 +64,18 @@ public class Treatment {
 
 
     /*
+    * Similar to the above, but calculates wait time 
+    * instead of a cost. Used when treatment received
+    * for free in return for waiting.
+    */
+    public float currentWaitTime (float currentSimTime) {
+        // TODO
+        return 0.0f;
+    }
+
+
+
+    /*
     * Standard getters
     */
     public float getEffectiveness () {
