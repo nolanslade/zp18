@@ -137,6 +137,14 @@ public class SimManager : MonoBehaviour {
         return elapsedDayTime;
     }
 
+    public int getCurrentDay () {
+        return currentDay;
+    }
+
+    public float getCurrentScore()
+    {
+        return currentScore;
+    }
 
     /*
     * Main loop
