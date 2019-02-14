@@ -160,7 +160,8 @@ public class SimManager : MonoBehaviour {
 
     public void decreasePayload (int amt)
     {
-        this.currentPayload -= amt;
+        // Prevent negativity
+        this.currentPayload = Math.Max(this.currentPayload - amt, 0);
         Debug.Log("Current drops: " + this.currentPayload);
     }
 
@@ -170,15 +171,6 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
-
-        if (DEBUG) {
-            if (Input.GetKeyDown("space"))
-            {
-                Debug.Log ("Debug: Skip day");
-                currentGameState = GameState.TRANSITION;
-                elapsedDayTime = 0.0f;
-            }
-        }
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
