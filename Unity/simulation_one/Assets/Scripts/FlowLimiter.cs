@@ -15,18 +15,26 @@ public class FlowLimiter : MonoBehaviour {
 
 	public GameObject flowManager;
 	public GameObject simManager;
+    public bool flowLimitEnabled;
+
+    void Start ()
+    {
+        if (!flowLimitEnabled)
+            flowManager.GetComponent<FlowManager>().startFlow();
+    }
 
     /*
     * If the headset enters the target area, turn the tap on
     */
 	private void OnTriggerEnter (Collider col) {
-		
-		// This should only trigger if the colliding object is the headset
-        if (col.gameObject.CompareTag("MainCamera")) {
-			if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING) {
-				flowManager.GetComponent<FlowManager>().startFlow();
-			}
-		}
+        if (flowLimitEnabled) {
+            // This should only trigger if the colliding object is the headset
+            if (col.gameObject.CompareTag("MainCamera")) {
+                if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING) {
+                    flowManager.GetComponent<FlowManager>().startFlow();
+                }
+            }
+        }
 	}
 
 
@@ -34,10 +42,11 @@ public class FlowLimiter : MonoBehaviour {
     * If the headset exits the target area, turn the tap off
     */
 	private void OnTriggerExit (Collider col) {
-       
-        // This should only trigger if the colliding object is the headset
-        if (col.gameObject.CompareTag("MainCamera")) {
-            flowManager.GetComponent<FlowManager>().stopFlow();
+        if (flowLimitEnabled) {
+            // This should only trigger if the colliding object is the headset
+            if (col.gameObject.CompareTag("MainCamera")) {
+                flowManager.GetComponent<FlowManager>().stopFlow();
+            }
         }
 	}
 }
