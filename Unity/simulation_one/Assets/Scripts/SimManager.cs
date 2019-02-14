@@ -161,7 +161,7 @@ public class SimManager : MonoBehaviour {
     public void decreasePayload (int amt)
     {
         // Prevent negativity
-        this.currentPayload = Math.Max(this.currentPayload - amt, 0);
+        this.currentPayload = System.Math.Max(this.currentPayload - amt, 0);
         Debug.Log("Current drops: " + this.currentPayload);
     }
 
