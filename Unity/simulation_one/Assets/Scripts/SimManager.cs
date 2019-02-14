@@ -26,6 +26,7 @@ public class SimManager : MonoBehaviour {
     private int currentDay, totalDays;
     private float elapsedDayTime, elapsedTotalTime;
     private bool paymentEnabled = false;
+    private float currentPayload;   // Current number of water droplets inside bucket
 
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
@@ -69,7 +70,7 @@ public class SimManager : MonoBehaviour {
             } 
 
             else {
-                currentDay          = 1;                  // Training/tutorial day
+                currentDay          = 0;                  // Training/tutorial day
                 currentScore        = 0.0f;               // Holds across all days except 0
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
@@ -144,6 +145,23 @@ public class SimManager : MonoBehaviour {
     public float getCurrentScore()
     {
         return currentScore;
+    }
+
+    // Sets the current number of water droplets that the participant is carrying
+    public void setCurrentWaterCarry (int numDrops) {
+        this.currentPayload = numDrops;
+        Debug.Log ("Current drops: " + this.currentPayload);
+    }
+
+    public void increasePayload (int amt) {
+        this.currentPayload += amt;
+        Debug.Log("Current drops: " + this.currentPayload);
+    }
+
+    public void decreasePayload (int amt)
+    {
+        this.currentPayload -= amt;
+        Debug.Log("Current drops: " + this.currentPayload);
     }
 
     /*
