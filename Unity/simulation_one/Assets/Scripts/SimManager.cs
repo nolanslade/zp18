@@ -42,6 +42,8 @@ public class SimManager : MonoBehaviour {
     public GameObject physicalCamera;       // Child object of [CameraRig]
 
 	public GameObject timeRemainingText; //Text to display the time remaining
+    public GameObject virtualHandLeft; //Text to display the time remaining
+
 
     public GameState currentState () {
         return currentGameState;
@@ -171,6 +173,7 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
+        print(virtualHandLeft.GetComponent<HandInput>().getTouchPad_Up());
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
