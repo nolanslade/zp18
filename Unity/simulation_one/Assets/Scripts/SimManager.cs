@@ -24,13 +24,13 @@ public class SimManager : MonoBehaviour {
     private GameState currentGameState;
     private float currentScore;
     private int currentDay, totalDays;
-    private float elapsedDayTime, elapsedTotalTime;
-    private bool paymentEnabled = false;                // Used with the destination limiter. Only pay the user if they're standing close enough
+    private float elapsedDayTime, elapsedTotalTime, currentDayDuration;
+    private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
     private float currentPayload;                       // Current number of water droplets inside bucket
 
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
-
+    
     // Data (metrics) Persistence
     private SimPersister simPersister;
     private const float PERSIST_RATE = 1.0f;
@@ -44,6 +44,10 @@ public class SimManager : MonoBehaviour {
 	public GameObject timeRemainingText; //Text to display the time remaining
     public GameObject virtualHandLeft; //Text to display the time remaining
 
+    public bool isComplete ()
+    {
+        return this.currentGameState == GameState.COMPLETE;
+    }
 
     public GameState currentState () {
         return currentGameState;
@@ -141,8 +145,17 @@ public class SimManager : MonoBehaviour {
         return elapsedDayTime;
     }
 
+    public float getRemainingDayTime ()
+    {
+        return currentGameState == GameState.TRANSITION ? currentDayDuration : (currentDayDuration - elapsedDayTime);
+    }
+
     public int getCurrentDay () {
         return currentDay;
+    }
+
+    public int getTotalDays () {
+        return totalDays;
     }
 
     public float getCurrentScore()
@@ -248,7 +261,7 @@ public class SimManager : MonoBehaviour {
         else if (currentGameState == GameState.TRANSITION) {
             
             elapsedDayTime += Time.deltaTime;
-            //Debug.Log("Countdown to day " + (currentDay+1) + " :" + (TRANSITION_TIME-elapsedDayTime));
+            currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once
 
             if (elapsedDayTime > TRANSITION_TIME) {
 
@@ -258,9 +271,6 @@ public class SimManager : MonoBehaviour {
                 if (currentDay <= this.configParser.numDays()) {
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
-                } else {
-                    Debug.Log ("Simulation complete.");
-                    currentGameState = GameState.COMPLETE;
                 }
             }
         }
@@ -278,10 +288,14 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime += Time.deltaTime;
 
                 // Time's up for the current day
-                if (elapsedDayTime > this.configParser.getConfigs()[currentDay - 1].getDuration()) {
-                    Debug.Log ("Day " + currentDay + " complete with day time: " + elapsedDayTime);
-                    currentGameState = GameState.TRANSITION;
-                    elapsedDayTime = 0.0f;
+                if (elapsedDayTime > currentDayDuration) {
+                    if (currentDay + 1 > totalDays) {
+                        currentGameState = GameState.COMPLETE;
+                    } else {
+                        Debug.Log("Day " + currentDay + " complete with day time: " + elapsedDayTime);
+                        currentGameState = GameState.TRANSITION;
+                        elapsedDayTime = 0.0f;
+                    }
                 }
 
                 else {
@@ -302,16 +316,11 @@ public class SimManager : MonoBehaviour {
             * sink. Then, enter a transition state before the
             * start of day one.
             */
-            else {
-
-                //Debug.Log(currentScore+"  |  " + DAY_ZERO_REQ_SCORE);
-
-                if (currentScore > DAY_ZERO_REQ_SCORE) {
-                    Debug.Log ("Day 0 passed.");
-                    currentGameState = GameState.TRANSITION;
-                    currentScore = 0.0f;
-                    elapsedDayTime = 0.0f;
-                }
+            else if (currentScore >= DAY_ZERO_REQ_SCORE) {
+                Debug.Log ("Day 0 passed.");
+                currentGameState = GameState.TRANSITION;
+                currentScore = 0.0f;
+                elapsedDayTime = 0.0f;
             }
         }
     }
