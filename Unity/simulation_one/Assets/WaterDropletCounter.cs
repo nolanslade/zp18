@@ -15,18 +15,23 @@ using UnityEngine;
 public class WaterDropletCounter : MonoBehaviour {
 
     public GameObject simManager;
+    private SimManager simScriptComp;
     private List <GameObject> drops = new List <GameObject> (); // The actual objects
+
+    void Start () {
+        this.simScriptComp = simManager.GetComponent<SimManager>();
+    }
 
     private void OnTriggerEnter (Collider col) {
         if (col.gameObject.tag == "Water") {
-            simManager.GetComponent<SimManager>().increasePayload(1);
+            simScriptComp.increasePayload(1);
             drops.Add(col.gameObject);
         }
     }
 
     private void OnTriggerExit (Collider col) {
         if (col.gameObject.tag == "Water") {
-            simManager.GetComponent<SimManager>().decreasePayload(1);
+            simScriptComp.decreasePayload(1);
             drops.Remove(col.gameObject);
         }
     }
@@ -42,7 +47,7 @@ public class WaterDropletCounter : MonoBehaviour {
             if (i >= amountToRemove)
                 break;
             drops.Remove(drop);
-            simManager.GetComponent<SimManager>().decreasePayload(1);
+            simScriptComp.decreasePayload(1);
             i++;
         }
     }

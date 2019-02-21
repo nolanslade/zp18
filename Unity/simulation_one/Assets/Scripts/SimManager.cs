@@ -25,8 +25,8 @@ public class SimManager : MonoBehaviour {
     private float currentScore;
     private int currentDay, totalDays;
     private float elapsedDayTime, elapsedTotalTime;
-    private bool paymentEnabled = false;
-    private float currentPayload;   // Current number of water droplets inside bucket
+    private bool paymentEnabled = false;                // Used with the destination limiter. Only pay the user if they're standing close enough
+    private float currentPayload;                       // Current number of water droplets inside bucket
 
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
@@ -77,6 +77,7 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
                 currentGameState    = GameState.RUNNING;
+                //Debug.Log("Starting... day: " + currentDay);
             }
         }
     }
@@ -119,7 +120,7 @@ public class SimManager : MonoBehaviour {
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += 1.0f;
-            Debug.Log ("Reward payed (1). New Score: " + currentScore);
+            //Debug.Log ("Reward payed (1). New Score: " + currentScore);
         }
     }
 
@@ -132,7 +133,7 @@ public class SimManager : MonoBehaviour {
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount;
-            Debug.Log ("Reward payed ("+ customAmount + "). New Score: " + currentScore);
+            //Debug.Log ("Reward payed ("+ customAmount + "). New Score: " + currentScore);
         }
     }
 
@@ -157,14 +158,14 @@ public class SimManager : MonoBehaviour {
 
     public void increasePayload (int amt) {
         this.currentPayload += amt;
-        Debug.Log("Current drops: " + this.currentPayload);
+        //Debug.Log("Current drops: " + this.currentPayload);
     }
 
     public void decreasePayload (int amt)
     {
         // Prevent negativity
         this.currentPayload = System.Math.Max(this.currentPayload - amt, 0);
-        Debug.Log("Current drops: " + this.currentPayload);
+        //Debug.Log("Current drops: " + this.currentPayload);
     }
 
     /*
@@ -173,7 +174,7 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
-        print(virtualHandLeft.GetComponent<HandInput>().getTouchPad_Up());
+        //print(virtualHandLeft.GetComponent<HandInput>().getTouchPad_Up());
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
@@ -182,6 +183,7 @@ public class SimManager : MonoBehaviour {
             persistTime      += Time.deltaTime;
 
             // Persist every X second(s)
+            /*
             if (currentGameState == GameState.RUNNING && persistTime > PERSIST_RATE) {
 
                 /*
@@ -198,7 +200,7 @@ public class SimManager : MonoBehaviour {
                 float                   speedPenaltyFactorInitial,  // 0 if no impairment applied
                 float                   speedPenaltyFactorCurrent   // This will drop if treatment received
                 // .... 
-                */
+                
 
                 simPersister.persist (
                     elapsedTotalTime,
@@ -217,7 +219,7 @@ public class SimManager : MonoBehaviour {
                 persistTime = 0.0f;
 
 
-            }
+            }*/
         }
 
 
@@ -246,6 +248,7 @@ public class SimManager : MonoBehaviour {
         else if (currentGameState == GameState.TRANSITION) {
             
             elapsedDayTime += Time.deltaTime;
+            //Debug.Log("Countdown to day " + (currentDay+1) + " :" + (TRANSITION_TIME-elapsedDayTime));
 
             if (elapsedDayTime > TRANSITION_TIME) {
 
@@ -300,6 +303,9 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
             else {
+
+                //Debug.Log(currentScore+"  |  " + DAY_ZERO_REQ_SCORE);
+
                 if (currentScore > DAY_ZERO_REQ_SCORE) {
                     Debug.Log ("Day 0 passed.");
                     currentGameState = GameState.TRANSITION;

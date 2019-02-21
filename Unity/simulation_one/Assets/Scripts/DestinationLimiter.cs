@@ -16,6 +16,11 @@ using UnityEngine;
 public class DestinationLimiter : MonoBehaviour {
 
     public GameObject simManager;
+    private SimManager simScriptComp;
+
+    void Start() {
+        this.simScriptComp = simManager.GetComponent<SimManager>();
+    }
 
     /*
     * If the headset enters the target area, enable scoring
@@ -24,9 +29,9 @@ public class DestinationLimiter : MonoBehaviour {
         
         // This should only trigger if the colliding object is the headset
         if (col.gameObject.CompareTag("MainCamera")) {
-            if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING)
+            if (simScriptComp.currentState() == SimManager.GameState.RUNNING)
             {
-                simManager.GetComponent<SimManager>().togglePayment(true);
+                simScriptComp.togglePayment(true);
             }
         }
     }
@@ -38,7 +43,7 @@ public class DestinationLimiter : MonoBehaviour {
     private void OnTriggerExit(Collider col) {
         // This should only trigger if the colliding object is the headset
         if (col.gameObject.CompareTag("MainCamera")) {
-            simManager.GetComponent<SimManager>().togglePayment(false);
+            simScriptComp.togglePayment(false);
         }
     }
 }

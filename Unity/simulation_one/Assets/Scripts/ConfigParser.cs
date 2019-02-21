@@ -39,7 +39,7 @@ public class ConfigParser {
         // Day One
         Impairment [] dayOneImps = new Impairment [0];
         Treatment dayOneTreatment = null;   // TODO
-        float dayOneDur = 60.0f;
+        float dayOneDur = 30.0f;
         float dayOneMult = 2.0f;
         int dayOne = 1;
 
@@ -50,7 +50,7 @@ public class ConfigParser {
             100.0f,
             0.15f,
             2.0f,
-            120.0f,
+            25.0f,
             1.0f,
             1.0f,
             0.0f,
@@ -67,7 +67,7 @@ public class ConfigParser {
             100.0f,
             0.15f,
             3.0f,
-            120.0f,
+            30.0f,
             1.0f,
             1.0f,
             0.0f,

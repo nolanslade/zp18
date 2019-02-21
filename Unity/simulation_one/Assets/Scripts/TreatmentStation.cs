@@ -15,12 +15,17 @@ using UnityEngine;
 public class TreatmentStation : MonoBehaviour {
 
 	public GameObject simManager;
+    private SimManager simManagerComponent;
 	private Treatment treatment;
 	private bool treatmentReceived = false;	
 	private float elapsed = 0.0f;			// Only do cost and wait calculations every second rather than every frame
 	private float displayCost = 0.0f;		// Displayed at all times
 	private float displayWait = 0.0f;		// Displayed at all times
 
+    void Start ()
+    {
+        this.simManagerComponent = simManager.GetComponent<SimManager>();
+    }
 
 	/*
 	* Allow for payment to be collected if the 
@@ -28,7 +33,7 @@ public class TreatmentStation : MonoBehaviour {
 	*/
 	private void OnTriggerStay (Collider col) {
 		if (treatment != null && col.gameObject.CompareTag("MainCamera")) {
-			if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING) {
+			if (simManagerComponent.currentState() == SimManager.GameState.RUNNING) {
 				// TODO - allow them to pay here by doing some action
 			}
 		}
@@ -59,10 +64,10 @@ public class TreatmentStation : MonoBehaviour {
 		// We'll do the calculation once per second for
 		// efficiency
 		if (this.treatment != null) {
-			if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING) {
+			if (simManagerComponent.currentState() == SimManager.GameState.RUNNING) {
 				elapsed += Time.deltaTime;
 				if (!treatmentReceived && elapsed > 1.0f) {
-					float t = simManager.GetComponent<SimManager>().getElapsedDayTime();
+					float t = simManagerComponent.getElapsedDayTime();
 					this.displayCost = this.treatment.currentCost(t);
 					this.displayWait = this.treatment.currentWaitTime(t);
 					elapsed = 0.0f;

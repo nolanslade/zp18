@@ -15,12 +15,17 @@ public class FlowLimiter : MonoBehaviour {
 
 	public GameObject flowManager;
 	public GameObject simManager;
+    private FlowManager flowManComponent;
+    private SimManager simManComponent;
     public bool flowLimitEnabled;
 
     void Start ()
     {
         if (!flowLimitEnabled)
             flowManager.GetComponent<FlowManager>().startFlow();
+
+        this.simManComponent = simManager.GetComponent<SimManager>();
+        this.flowManComponent = flowManager.GetComponent<FlowManager>();
     }
 
     /*
@@ -30,8 +35,8 @@ public class FlowLimiter : MonoBehaviour {
         if (flowLimitEnabled) {
             // This should only trigger if the colliding object is the headset
             if (col.gameObject.CompareTag("MainCamera")) {
-                if (simManager.GetComponent<SimManager>().currentState() == SimManager.GameState.RUNNING) {
-                    flowManager.GetComponent<FlowManager>().startFlow();
+                if (simManComponent.currentState() == SimManager.GameState.RUNNING) {
+                    flowManComponent.startFlow();
                 }
             }
         }
@@ -45,7 +50,7 @@ public class FlowLimiter : MonoBehaviour {
         if (flowLimitEnabled) {
             // This should only trigger if the colliding object is the headset
             if (col.gameObject.CompareTag("MainCamera")) {
-                flowManager.GetComponent<FlowManager>().stopFlow();
+                flowManComponent.stopFlow();
             }
         }
 	}
