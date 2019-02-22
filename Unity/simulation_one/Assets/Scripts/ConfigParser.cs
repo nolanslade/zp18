@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 /**
  * McDSL: VR Simulation One
@@ -93,8 +97,30 @@ public class ConfigParser {
     */
     public ConfigParser (string path) {
         
-        this.configFilePath = path;  
+        
+        this.configFilePath = path;
+       // Debug.Log(path);
         dbConnection = null;
+        StreamReader reader = new StreamReader(this.configFilePath);
+        string line = reader.ReadLine();
+        //Debug.Log("line " + line);
+        char[] delimiter = { '\n', ':', '\t', '#', ' ', '%', '"' };
+     
+
+      /*  while (line != null)
+        {
+            
+            string[] fields = line.Split(delimiter[0]);
+
+            for(int i = 0; i < fields.Length; i++)
+            {
+                Debug.Log(fields[i]);
+
+            }
+
+            line = reader.ReadLine();
+        }*/
+
 
         // TODO - parse the file (if it exists) and load in day configurations
     }

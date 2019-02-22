@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using Valve.VR;
 
 public class SimManager : MonoBehaviour {
 
     public bool DEBUG;
 
     private bool usingConfigFile = false;           // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
-    private const string CONFIG_PATH = "";    
+    private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";    
     private const float TRANSITION_TIME = 10.0f;    // Duration (seconds) of the transition state 
     private const float DAY_ZERO_REQ_SCORE = 15.0f; // Score needed to 'pass' day zero
     
@@ -40,8 +42,9 @@ public class SimManager : MonoBehaviour {
     public GameObject flowManager;          // Manages tap flow 
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
     public GameObject physicalCamera;       // Child object of [CameraRig]
+    public GameObject pauseOverlay;
 
-	public GameObject timeRemainingText; //Text to display the time remaining
+    public GameObject timeRemainingText; //Text to display the time remaining
     public GameObject virtualHandLeft; //Text to display the time remaining
 
     public bool isComplete ()
@@ -96,6 +99,7 @@ public class SimManager : MonoBehaviour {
        
         // Custom configuration
         if (usingConfigFile) {
+            this.configParser = new ConfigParser(CONFIG_PATH);           
             return false; // TODO
         }
 
@@ -187,6 +191,20 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
+        if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
+        {
+            if (currentGameState == GameState.PAUSED)
+            {
+                currentGameState = GameState.RUNNING;
+                pauseOverlay.SetActive(false);
+            }
+            else
+            {
+                currentGameState = GameState.PAUSED;
+                pauseOverlay.SetActive(true);
+            }
+        }
+
         //print(virtualHandLeft.GetComponent<HandInput>().getTouchPad_Up());
 
         // Global timestamp tracking and data persistence
@@ -255,6 +273,7 @@ public class SimManager : MonoBehaviour {
             // TODO - should overlay "Paused" in the headset or something
             // an idea to trigger a pause - both thumb buttons pushed within
             // half a second of each other?
+
             int a = 1;
         } 
 
