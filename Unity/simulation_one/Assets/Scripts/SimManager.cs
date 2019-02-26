@@ -101,8 +101,10 @@ public class SimManager : MonoBehaviour {
        
         // Custom configuration
         if (usingConfigFile) {
-            this.configParser = new ConfigParser(CONFIG_PATH);           
-            return false; // TODO
+            this.configParser = new ConfigParser(CONFIG_PATH);
+
+            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0); // TODO
+            //return false;
         }
 
         // Use default (test) simulation parameters
