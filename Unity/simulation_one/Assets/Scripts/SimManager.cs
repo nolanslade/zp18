@@ -43,6 +43,8 @@ public class SimManager : MonoBehaviour {
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
     public GameObject physicalCamera;       // Child object of [CameraRig]
     public GameObject pauseOverlay;
+    public GameObject transitionOverlay;
+
 
     public GameObject timeRemainingText; //Text to display the time remaining
     public GameObject virtualHandLeft; //Text to display the time remaining
@@ -152,6 +154,11 @@ public class SimManager : MonoBehaviour {
     public float getRemainingDayTime ()
     {
         return currentGameState == GameState.TRANSITION ? currentDayDuration : (currentDayDuration - elapsedDayTime);
+    }
+
+    public float getRemainingTransitionTime()
+    {
+        return TRANSITION_TIME - elapsedDayTime;
     }
 
     public int getCurrentDay () {
@@ -278,6 +285,7 @@ public class SimManager : MonoBehaviour {
         } 
 
         else if (currentGameState == GameState.TRANSITION) {
+            transitionOverlay.SetActive(true);
             
             elapsedDayTime += Time.deltaTime;
             currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once
@@ -290,6 +298,7 @@ public class SimManager : MonoBehaviour {
                 if (currentDay <= this.configParser.numDays()) {
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
+                    transitionOverlay.SetActive(false);
                 }
             }
         }
