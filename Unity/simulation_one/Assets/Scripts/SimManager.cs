@@ -167,11 +167,11 @@ public class SimManager : MonoBehaviour {
     }
 
     public float getCurrentTreatmentCost () {
-        return currentDayTreatment.hasBeenObtained() ? -1.0f : currentDayTreatment.currentCost();
+        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentCost();
     }
 
     public float getCurrentTreatmentWaitTime () {
-        return currentDayTreatment.hasBeenObtained() ? -1.0f : currentDayTreatment.currentWaitTime();
+        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime();
     }
 
     public float getElapsedDayTime () {
@@ -344,7 +344,7 @@ public class SimManager : MonoBehaviour {
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
                             switch (imp) {
-                                case Impairment.ImpairmentType.VISUAL_FOG:  
+                                case Impairment.ImpairmentType.PHYSICAL_SHAKE:  
                                     int a = 1; // TODO
                                     break;
                                 // TODO ... others
