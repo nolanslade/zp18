@@ -14,11 +14,23 @@ public class Treatment {
 	// Default function: cost = C * (omega - DT + (1/omega)*T^2)
 	// Dynamic function: cost = C * (c - bT + aT^2)
 	// Where T is the time of day, omega = length of current day, D = current day
-	private float C;			// Original cost; will depreciate according to the below a,b,c		
-	private float a;	
-	private float b;
-	private float c;
-	private float obtainTime;
+
+    // Wait function similar - except in seconds.
+
+	private float cost_C;			// Original cost; will depreciate according to the below a,b,c		
+	private float cost_a;	
+	private float cost_b;
+	private float cost_c;
+    private float wait_C;           // Same as above, expect for wait function      
+    private float wait_a;   
+    private float wait_b;
+    private float wait_c;
+	private float obtainTime = -1.0f;  
+
+    private bool effective;                     // Calculated once based on the effectiveness probability
+    private bool effectiveCalculated = false;   // Whether or not the above has been calculated
+    private bool death;                         // As above, except for the death penalty
+    private bool deathCalculated = false;
 
 	// Behaviour Parameters
     private float effectiveProbability;		// 0.0 to 1.0 - probability that the treatment will be effective 
@@ -30,22 +42,32 @@ public class Treatment {
     // TODO: should probably auto correct or throw exceptions after format / type checking parameters (e.g. someone entering 70 instead of 0.7, or whatever)
 
     public Treatment ( 
-    	float C, 
-    	float a, 
-    	float b, 
-    	float c,
-    	float effProb,
-    	float eff,
-    	float delProb,
-    	float del,
-    	float deathProb    	
+    	float c_C,             // Cost function
+    	float c_a, 
+    	float c_b, 
+    	float c_c,             
+        float w_C,             // Wait function
+        float w_a, 
+        float w_b, 
+        float w_c,
+    	float effProb,         // Probability that treatment will actually work
+    	float eff,             // The percentage (0.0 to 1.0) that the treatment will take away, if it is effective
+    	float delProb,         // Delay Penalty 
+    	float del,             // "
+    	float deathProb    	   // Death Probability
     	// ... Additional parameters here
     	) {
         
-    	this.C 							= C; 
-    	this.a 							= a; 
-    	this.b 							= b; 
-    	this.c 							= c;
+    	this.cost_C						= c_C; 
+    	this.cost_a 					= c_a; 
+    	this.cost_b 					= c_b; 
+    	this.cost_c 					= c_c;
+
+        this.wait_C                     = w_C; 
+        this.wait_a                     = w_a; 
+        this.wait_b                     = w_b; 
+        this.wait_c                     = w_c;
+
     	this.effectiveProbability 	 	= effProb;
     	this.effectiveness 			 	= eff;
     	this.delayPenaltyProbability 	= delProb;
@@ -59,7 +81,7 @@ public class Treatment {
     */
     public float currentCost (float currentSimTime) {
     	// cost = C * (c - bT + aT^2)
-    	return C * (c - b * currentSimTime + a * currentSimTime * currentSimTime);
+    	return cost_C * (cost_c - cost_b * currentSimTime + cost_a * currentSimTime * currentSimTime);
     }
 
 
@@ -69,10 +91,42 @@ public class Treatment {
     * for free in return for waiting.
     */
     public float currentWaitTime (float currentSimTime) {
-        // TODO
-        return 0.0f;
+        // wait time = C * (c - bT + aT^2)
+        return wait_C * (wait_c - wait_b * currentSimTime + wait_a * currentSimTime * currentSimTime);
     }
 
+
+    /*
+    * Returns a one-time calculated boolean value that signifies whether
+    * or not the treatment will be effective - based on the 
+    * effectiveness probability parameter
+    */
+    public bool isEffective () {
+        
+        if (!effectiveCalculated) {
+            System.Random r = new System.Random();
+            effective = r.Next(100) < ((int) (100 * effectiveProbability));
+            effectiveCalculated = true;
+        }
+
+        return effective;
+    }
+
+
+    /*
+    * As above, except for death penalty - calculates once
+    *
+    */
+    public bool causesDeath () {
+        
+        if (!deathCalculated) {
+            System.Random r = new System.Random();
+            death = r.Next(100) < ((int) (100 * deathPenaltyProbability));
+            deathCalculated = true;
+        }
+
+        return death;
+    }
 
 
     /*

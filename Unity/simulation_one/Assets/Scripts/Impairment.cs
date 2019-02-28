@@ -32,4 +32,12 @@ public class Impairment {
     public float getStrength () {
         return this.strength;
     }
+
+    public void setType (ImpairmentType t) {
+        this.type = t;
+    }
+
+    public void setStrength (float s) {
+        this.strength = s;
+    }
 }

@@ -42,6 +42,26 @@ public class ConfigParser {
         // TODO ... db stuff here
         dbConnection = null;
 
+        /*  
+        // Treatment argument ordering:
+        float c_C,             // Cost function
+        float c_a, 
+        float c_b, 
+        float c_c,             
+        
+        float w_C,             // Wait function
+        float w_a, 
+        float w_b, 
+        float w_c,
+        
+        float effProb,         // Probability that treatment will actually work
+        float eff,             // The percentage (0.0 to 1.0) that the treatment will take away, if it is effective
+        float delProb,         // Delay Penalty 
+        float del,             // "
+        float deathProb        // Death Probability
+        // ... Additional parameters here
+        */
+
         // Day One
         Impairment [] dayOneImps = new Impairment [0];
         Treatment dayOneTreatment = null;   // TODO
@@ -53,6 +73,10 @@ public class ConfigParser {
         float dayTwoDur = 32.0f;
         Impairment [] dayTwoImps = new Impairment [1];
         Treatment dayTwoTreatment = new Treatment (
+            100.0f,
+            0.15f,
+            2.0f,
+            120.0f,
             100.0f,
             0.15f,
             2.0f,
@@ -70,6 +94,10 @@ public class ConfigParser {
         float dayThreeDur = 33.0f;
         Impairment [] dayThreeImps = new Impairment [2];
         Treatment dayThreeTreatment = new Treatment (
+            100.0f,
+            0.15f,
+            3.0f,
+            120.0f,
             100.0f,
             0.15f,
             3.0f,
@@ -343,6 +371,10 @@ public class ConfigParser {
                           a,
                           b,
                           c,
+
+                            // TODO *********************
+                            0.0f,0.0f,0.0f,0.0f,
+
                           1.0f,
                           1.0f,
                           0.0f,

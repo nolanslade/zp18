@@ -8,8 +8,8 @@ public class SimManager : MonoBehaviour {
 
     public bool DEBUG;
 
-    private bool usingConfigFile = false;               // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";    
+    private bool usingConfigFile = false;               // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME = 10.0f;        // Duration (seconds) of the transition state 
     private const float DAY_ZERO_REQ_SCORE = 15.0f;     // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD = 10.0f;
@@ -32,7 +32,7 @@ public class SimManager : MonoBehaviour {
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
     private float currentPayload;                       // Current number of water droplets inside bucket
 
-    // There is probably a better way of doing this.
+    // For countdown sound effects
     private bool countdownStarted;
     private float countDownElapsed;             // Starts from 0, counts up with delta time
     private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
