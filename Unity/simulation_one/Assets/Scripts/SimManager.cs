@@ -14,6 +14,8 @@ public class SimManager : MonoBehaviour {
     private const float DAY_ZERO_REQ_SCORE = 15.0f;     // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD = 10.0f;
     private const float CRITICAL_COUNTDOWN = 5.1f;      // The last x seconds of countdown will have a different tone
+
+    public float maximumShakeOffset;                    // Physical shake impairment strength relative to this value
     
     // State management
     public enum GameState
@@ -32,7 +34,7 @@ public class SimManager : MonoBehaviour {
 
     private float currentScore;
     private int currentDay, totalDays;
-    private float elapsedDayTime, elapsedTotalTime, currentDayDuration;
+    private float elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
     private float currentPayload;                       // Current number of water droplets inside bucket
 
@@ -57,6 +59,10 @@ public class SimManager : MonoBehaviour {
     public GameObject pauseOverlay;
     public GameObject transitionOverlay;
 
+    // For hand shake impairment
+    public GameObject leftHandVirtual, rightHandVirtual;
+    private HandTracker leftHandTracker, rightHandTracker;
+
     // Cached components
     private AudioManager audioManagerComponent; // Plays sound effects
 
@@ -79,8 +85,14 @@ public class SimManager : MonoBehaviour {
 	void Start () {
 
         // Cache necessary components
+        Debug.Log("Caching...");
         this.audioManagerComponent = this.audioManager.GetComponent<AudioManager>();
+        this.leftHandTracker = leftHandVirtual.GetComponent<HandTracker>();
+        this.rightHandTracker = rightHandVirtual.GetComponent<HandTracker>();
+        Debug.Log("Resetting countdown.");
         resetCountdown();
+        Debug.Log("Starting param establishment.");
+
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
@@ -89,6 +101,7 @@ public class SimManager : MonoBehaviour {
 
         else {
 
+            Debug.Log("Starting up...");
             simPersister = new SimPersister (this.configParser.dbConn());
             totalDays = this.configParser.numDays();
             Debug.Log ("Starting with total days: " + totalDays);
@@ -126,7 +139,9 @@ public class SimManager : MonoBehaviour {
 
         // Use default (test) simulation parameters
         else {
-            this.configParser = new ConfigParser ();
+            Debug.Log("Using default parameters.");
+            this.configParser = new ConfigParser();
+            Debug.Log("Established simulation parameters. " + !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0));
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
     }
@@ -180,7 +195,7 @@ public class SimManager : MonoBehaviour {
 
     public float getRemainingDayTime ()
     {
-        return currentGameState == GameState.TRANSITION ? currentDayDuration : (currentDayDuration - elapsedDayTime);
+        return currentGameState == GameState.TRANSITION ? nextDayDuration : (currentDayDuration - elapsedDayTime);
     }
 
     public float getRemainingTransitionTime()
@@ -299,7 +314,8 @@ public class SimManager : MonoBehaviour {
         *
         */
         if (currentGameState == GameState.COMPLETE) {
-            audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
+            // TODO
+            int a = 1;
         }
 
 
@@ -340,12 +356,22 @@ public class SimManager : MonoBehaviour {
                     currentDayConfig = configParser.getConfigs()[currentDay - 1];
                     currentDayDuration = currentDayConfig.getDuration();
 
+                    if (currentDay != this.configParser.numDays()) {
+                        nextDayDuration = configParser.getConfigs()[currentDay].getDuration();
+                    } else {
+                        nextDayDuration = 0.0f;
+                    }
+
                     // Call out to necessary scripts to apply impairments for the current day
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
+
+                            float str = imp.getStrength();
                             switch (imp.getType()) {
-                                case Impairment.ImpairmentType.PHYSICAL_SHAKE:  
-                                    int a = 1; // TODO
+                                case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                                    str *= maximumShakeOffset;
+                                    rightHandTracker.applyImpairment(str);
+                                    leftHandTracker.applyImpairment(str);
                                     break;
                                 // TODO ... others
                                 default:
@@ -395,6 +421,8 @@ public class SimManager : MonoBehaviour {
                     countDownElapsed += Time.deltaTime;
                     
                     if (!countdownStarted) {
+                        countdownStarted = true;
+                        Debug.Log("Starting count down");
                         audioManagerComponent.playSound (
                             (remaining < CRITICAL_COUNTDOWN) ? 
                                 AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
@@ -404,7 +432,8 @@ public class SimManager : MonoBehaviour {
                     else if (countDownElapsed >= countDownRelativeThreshold) {
                         
                         countDownRelativeThreshold += 1.0f;
-                        
+                        Debug.Log("Increasing count down threshold");
+
                         audioManagerComponent.playSound (
                             (remaining < CRITICAL_COUNTDOWN) ? 
                                 AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
@@ -414,8 +443,22 @@ public class SimManager : MonoBehaviour {
 
                 // Time's up for the current day
                 if (elapsedDayTime > currentDayDuration) {
+
+                    // Unapply all impairments
+                    foreach (Impairment i in this.currentDayImpairments) {
+                        switch (i.getType()) {
+                            case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                                rightHandTracker.clearImpairment();
+                                leftHandTracker.clearImpairment();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
                     if (currentDay + 1 > totalDays) {
                         currentGameState = GameState.COMPLETE;
+                        audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
                         resetCountdown();
                     } else {
                         audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
