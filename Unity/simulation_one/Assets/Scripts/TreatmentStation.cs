@@ -28,19 +28,6 @@ public class TreatmentStation : MonoBehaviour {
     }
 
 	/*
-	* Allow for payment to be collected if the 
-	* player is standing inside the target area
-	*/
-	private void OnTriggerStay (Collider col) {
-		if (treatment != null && col.gameObject.CompareTag("MainCamera")) {
-			if (simManagerComponent.currentState() == SimManager.GameState.RUNNING) {
-				// TODO - allow them to pay here by doing some action
-			}
-		}
-	}
-
-
-	/*
 	* Sets the new treatment and reverts all 
 	* parameters to defaults. Sim manager should
 	* call this on every new day.

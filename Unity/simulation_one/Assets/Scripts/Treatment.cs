@@ -105,7 +105,7 @@ public class Treatment {
         
         if (!effectiveCalculated) {
             System.Random r = new System.Random();
-            effective = r.Next(100) < ((int) (100 * effectiveProbability));
+            effective = r.Next(100) < ((int) (100.0f * effectiveProbability));
             effectiveCalculated = true;
         }
 
@@ -121,7 +121,7 @@ public class Treatment {
         
         if (!deathCalculated) {
             System.Random r = new System.Random();
-            death = r.Next(100) < ((int) (100 * deathPenaltyProbability));
+            death = r.Next(100) < ((int) (100.0f * deathPenaltyProbability));
             deathCalculated = true;
         }
 

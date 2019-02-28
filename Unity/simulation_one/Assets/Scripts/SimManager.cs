@@ -26,6 +26,10 @@ public class SimManager : MonoBehaviour {
     }
 
     private GameState currentGameState;
+    private DayConfiguration currentDayConfig;
+    private Impairment [] currentDayImpairments;
+    private Treatment currentDayTreatment;
+
     private float currentScore;
     private int currentDay, totalDays;
     private float elapsedDayTime, elapsedTotalTime, currentDayDuration;
@@ -219,6 +223,8 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
+
+        // Pausing with thumb buttons
         if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
         {
             if (currentGameState == GameState.PAUSED)
@@ -232,8 +238,6 @@ public class SimManager : MonoBehaviour {
                 pauseOverlay.SetActive(true);
             }
         }
-
-        //print(virtualHandLeft.GetComponent<HandInput>().getTouchPad_Up());
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
@@ -271,7 +275,7 @@ public class SimManager : MonoBehaviour {
                     0,      // TODO
                     physicalCamera.transform.position.x,
                     physicalCamera.transform.position.y,
-                    physicalCamera.transform.position.z,
+                    physicalCamera.transform.position.z, // should also have the quaternion angles here to see where they're looking
                     0.0f,   // TODO
                     0.0f    // TODO
                 );
@@ -287,21 +291,21 @@ public class SimManager : MonoBehaviour {
         *
         */
         if (currentGameState == GameState.COMPLETE) {
-
-            // TODO - anything else needed here?
             audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
-
         }
 
 
         else if (currentGameState == GameState.ERROR || this.configParser.getConfigs() == null) {
+
             // TODO - should put a red haze into the headset or 
             // something with the error message in the middle
+
             int a = 1;
         } 
 
 
         else if (currentGameState == GameState.PAUSED) {
+
             // TODO - should overlay "Paused" in the headset or something
             // an idea to trigger a pause - both thumb buttons pushed within
             // half a second of each other?
@@ -314,14 +318,35 @@ public class SimManager : MonoBehaviour {
             
             transitionOverlay.SetActive(true);  // TODO - no need to do this every frame, same as below
             elapsedDayTime += Time.deltaTime;
-            currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once
+            //currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once - fixed below
 
             if (elapsedDayTime > TRANSITION_TIME) {
 
                 currentDay += 1;
                 Debug.Log ("New day: " + currentDay);
 
+                // Set up the next day here
                 if (currentDay <= this.configParser.numDays()) {
+
+                    // Establish key parameters from the day configuration object
+                    currentDayConfig = configParser.getConfigs()[currentDay - 1];
+                    currentDayDuration = currentDayConfig.getDuration();
+
+                    // Call out to necessary scripts to apply impairments for the current day
+                    if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
+                        foreach (Impairment imp in currentDayImpairments) {
+                            // TODO
+                            int a = 1;
+                        }
+                    }
+
+                    // Set up the treatment station if there should be treatments available
+                    if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
+                        // TODO 
+                        int a = 1;
+                    }
+
+                    // Reset simulation parameters and play effects
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
                     transitionOverlay.SetActive(false);
