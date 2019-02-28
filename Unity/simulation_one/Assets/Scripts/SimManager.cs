@@ -8,10 +8,12 @@ public class SimManager : MonoBehaviour {
 
     public bool DEBUG;
 
-    private bool usingConfigFile = false;           // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private bool usingConfigFile = false;               // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";    
-    private const float TRANSITION_TIME = 10.0f;    // Duration (seconds) of the transition state 
-    private const float DAY_ZERO_REQ_SCORE = 15.0f; // Score needed to 'pass' day zero
+    private const float TRANSITION_TIME = 10.0f;        // Duration (seconds) of the transition state 
+    private const float DAY_ZERO_REQ_SCORE = 15.0f;     // Score needed to 'pass' day zero
+    private const float COUNTDOWN_THRESHOLD = 10.0f;
+    private const float CRITICAL_COUNTDOWN = 5.1f;      // The last x seconds of countdown will have a different tone
     
     // State management
     public enum GameState
@@ -29,6 +31,11 @@ public class SimManager : MonoBehaviour {
     private float elapsedDayTime, elapsedTotalTime, currentDayDuration;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
     private float currentPayload;                       // Current number of water droplets inside bucket
+
+    // There is probably a better way of doing this.
+    private bool countdownStarted;
+    private float countDownElapsed;             // Starts from 0, counts up with delta time
+    private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
 
     // Parses the configuration file and holds all required simulation parameters
     private ConfigParser configParser;    
@@ -69,6 +76,8 @@ public class SimManager : MonoBehaviour {
 
         // Cache necessary components
         this.audioManagerComponent = this.audioManager.GetComponent<AudioManager>();
+        this.countdown = (int) COUNTDOWN_THRESHOLD;
+        resetCountdown();
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
@@ -197,6 +206,12 @@ public class SimManager : MonoBehaviour {
         // Prevent negativity
         this.currentPayload = System.Math.Max(this.currentPayload - amt, 0);
         //Debug.Log("Current drops: " + this.currentPayload);
+    }
+
+    private void resetCountdown () {
+        countdownStarted = false;
+        countDownElapsed = 0.0f;
+        countDownRelativeThreshold = 1.0f;
     }
 
     /*
@@ -329,15 +344,46 @@ public class SimManager : MonoBehaviour {
 
                 elapsedDayTime += Time.deltaTime;
 
+                /*
+                countdownStarted;             // Whether or not the first beep has played
+                countDownElapsed;             // Starts from 0, counts up with delta time
+                countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
+                */
+
+                float remaining = currentDayDuration - elapsedDayTime; 
+                if (remaining < COUNTDOWN_THRESHOLD) {
+
+                    countDownElapsed += Time.deltaTime;
+                    
+                    if (!countdownStarted) {
+                        audioManagerComponent.playSound (
+                            (remaining < CRITICAL_COUNTDOWN) ? 
+                                AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
+                        );
+                    }
+
+                    else if (countDownElapsed >= countDownRelativeThreshold) {
+                        
+                        countDownRelativeThreshold += 1.0f;
+                        
+                        audioManagerComponent.playSound (
+                            (remaining < CRITICAL_COUNTDOWN) ? 
+                                AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
+                        );
+                    }
+                }
+
                 // Time's up for the current day
                 if (elapsedDayTime > currentDayDuration) {
                     if (currentDay + 1 > totalDays) {
                         currentGameState = GameState.COMPLETE;
+                        resetCountdown();
                     } else {
                         audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                         Debug.Log("Day " + currentDay + " complete with day time: " + elapsedDayTime);
                         currentGameState = GameState.TRANSITION;
                         elapsedDayTime = 0.0f;
+                        resetCountdown();
                     }
                 }
             } 
@@ -355,6 +401,7 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
+                audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
                 currentScore = 0.0f;
