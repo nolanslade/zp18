@@ -151,4 +151,12 @@ public class Treatment {
     public float getDeathPenaltyProbability () {
     	return this.deathPenaltyProbability;
     }
+
+    public void obtain (float t) {
+        this.obtainTime = t;
+    }
+
+    public bool hasBeenObtained () {
+        return this.obtainTime == -1.0f;
+    }
 }

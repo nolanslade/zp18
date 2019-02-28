@@ -87,7 +87,8 @@ public class ConfigParser {
             0.0f,
             0.0f
         );   // TODO
-        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
+        //dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
+        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.VISUAL_FOG, 0.5f);
         int dayTwo = 2;
 
         // Day Three

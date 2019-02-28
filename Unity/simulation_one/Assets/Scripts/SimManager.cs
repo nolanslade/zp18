@@ -166,6 +166,14 @@ public class SimManager : MonoBehaviour {
         }
     }
 
+    public float getCurrentTreatmentCost () {
+        return currentDayTreatment.hasBeenObtained() ? -1.0f : currentDayTreatment.currentCost();
+    }
+
+    public float getCurrentTreatmentWaitTime () {
+        return currentDayTreatment.hasBeenObtained() ? -1.0f : currentDayTreatment.currentWaitTime();
+    }
+
     public float getElapsedDayTime () {
         return elapsedDayTime;
     }
@@ -335,8 +343,15 @@ public class SimManager : MonoBehaviour {
                     // Call out to necessary scripts to apply impairments for the current day
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
-                            // TODO
-                            int a = 1;
+                            switch (imp) {
+                                case Impairment.ImpairmentType.VISUAL_FOG:  
+                                    int a = 1; // TODO
+                                    break;
+                                // TODO ... others
+                                default:
+                                    Debug.Log("Invalid impairment type");
+                                    break;
+                            }
                         }
                     }
 
