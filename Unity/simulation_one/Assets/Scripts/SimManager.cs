@@ -39,12 +39,15 @@ public class SimManager : MonoBehaviour {
     private float persistTime = 0.0f;
 
     // Key scene objects
+    public GameObject audioManager;
     public GameObject flowManager;          // Manages tap flow 
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
     public GameObject physicalCamera;       // Child object of [CameraRig]
     public GameObject pauseOverlay;
     public GameObject transitionOverlay;
 
+    // Cached components
+    private AudioManager audioManagerComponent; // Plays sound effects
 
     public GameObject timeRemainingText; //Text to display the time remaining
     public GameObject virtualHandLeft; //Text to display the time remaining
@@ -63,6 +66,9 @@ public class SimManager : MonoBehaviour {
     * Runs once on startup
     */
 	void Start () {
+
+        // Cache necessary components
+        this.audioManagerComponent = this.audioManager.GetComponent<AudioManager>();
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
@@ -86,7 +92,6 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
                 currentGameState    = GameState.RUNNING;
-                //Debug.Log("Starting... day: " + currentDay);
             }
         }
     }
@@ -268,15 +273,19 @@ public class SimManager : MonoBehaviour {
         *
         */
         if (currentGameState == GameState.COMPLETE) {
-            // TODO - overlay, etc needed to signify that we're all done.
-            int a = 1;
+
+            // TODO - anything else needed here?
+            audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
+
         }
+
 
         else if (currentGameState == GameState.ERROR || this.configParser.getConfigs() == null) {
             // TODO - should put a red haze into the headset or 
             // something with the error message in the middle
             int a = 1;
         } 
+
 
         else if (currentGameState == GameState.PAUSED) {
             // TODO - should overlay "Paused" in the headset or something
@@ -286,9 +295,10 @@ public class SimManager : MonoBehaviour {
             int a = 1;
         } 
 
+
         else if (currentGameState == GameState.TRANSITION) {
-            transitionOverlay.SetActive(true);
             
+            transitionOverlay.SetActive(true);  // TODO - no need to do this every frame, same as below
             elapsedDayTime += Time.deltaTime;
             currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once
 
@@ -301,9 +311,11 @@ public class SimManager : MonoBehaviour {
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
                     transitionOverlay.SetActive(false);
+                    audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);
                 }
             }
         }
+
 
         else {
 
@@ -322,15 +334,11 @@ public class SimManager : MonoBehaviour {
                     if (currentDay + 1 > totalDays) {
                         currentGameState = GameState.COMPLETE;
                     } else {
+                        audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                         Debug.Log("Day " + currentDay + " complete with day time: " + elapsedDayTime);
                         currentGameState = GameState.TRANSITION;
                         elapsedDayTime = 0.0f;
                     }
-                }
-
-                else {
-                    int a = 1;
-                    // TODO
                 }
             } 
 
