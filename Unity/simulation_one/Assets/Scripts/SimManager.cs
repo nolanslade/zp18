@@ -167,11 +167,11 @@ public class SimManager : MonoBehaviour {
     }
 
     public float getCurrentTreatmentCost () {
-        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentCost();
+        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentCost(elapsedDayTime);
     }
 
     public float getCurrentTreatmentWaitTime () {
-        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime();
+        return (currentDayTreatment != null && currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime(elapsedDayTime);
     }
 
     public float getElapsedDayTime () {
