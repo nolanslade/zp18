@@ -76,7 +76,6 @@ public class SimManager : MonoBehaviour {
 
         // Cache necessary components
         this.audioManagerComponent = this.audioManager.GetComponent<AudioManager>();
-        this.countdown = (int) COUNTDOWN_THRESHOLD;
         resetCountdown();
 
         if (!establishSimulationParameters()) {
