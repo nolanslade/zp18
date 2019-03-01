@@ -66,9 +66,6 @@ public class SimManager : MonoBehaviour {
     // Cached components
     private AudioManager audioManagerComponent; // Plays sound effects
 
-    public GameObject timeRemainingText; //Text to display the time remaining
-    public GameObject virtualHandLeft; //Text to display the time remaining
-
     public bool isComplete ()
     {
         return this.currentGameState == GameState.COMPLETE;
