@@ -80,7 +80,7 @@ public class SimManager : MonoBehaviour {
 
     public DayConfiguration getCurrentDayConfiguration () {
         return this.currentDayConfig;
-    }
+    } 
 
 	/* 
     * Initialization method
