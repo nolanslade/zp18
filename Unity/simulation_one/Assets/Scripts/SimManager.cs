@@ -62,7 +62,7 @@ public class SimManager : MonoBehaviour {
     // For hand shake impairment
     public GameObject leftHandVirtual, rightHandVirtual;
     private HandTracker leftHandTracker, rightHandTracker;
-    public GameObjec viveControllerLeft, viveControllerRight;
+    //public GameObjec viveControllerLeft, viveControllerRight;
 
     // Cached components
     private AudioManager audioManagerComponent; // Plays sound effects
@@ -371,8 +371,8 @@ public class SimManager : MonoBehaviour {
                                     str *= maximumShakeOffset;
                                     rightHandTracker.applyImpairment(str);
                                     leftHandTracker.applyImpairment(str);
-                                    SteamVR_Controller.Input ((int)viveControllerLeft.index).TriggerHapticPulse(500);
-                                    SteamVR_Controller.Input ((int)viveControllerRight.index).TriggerHapticPulse(500);
+                                    //SteamVR_Controller.Input ((int)viveControllerLeft.index).TriggerHapticPulse(500);
+                                    //SteamVR_Controller.Input ((int)viveControllerRight.index).TriggerHapticPulse(500);
                                     break;
                                 // TODO ... others
                                 default:
