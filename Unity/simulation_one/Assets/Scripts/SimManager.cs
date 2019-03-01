@@ -244,26 +244,27 @@ public class SimManager : MonoBehaviour {
     */
     void Update () {
 
-        // Pausing with thumb buttons
-        if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
-        {
-            if (currentGameState == GameState.PAUSED)
-            {
-                currentGameState = GameState.RUNNING;
-                pauseOverlay.SetActive(false);
-            }
-            else
-            {
-                currentGameState = GameState.PAUSED;
-                pauseOverlay.SetActive(true);
-            }
-        }
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
             
             elapsedTotalTime += Time.deltaTime;
             persistTime      += Time.deltaTime;
+
+            // Pausing with thumb buttons
+            if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
+            {
+                if (currentGameState == GameState.PAUSED)
+                {
+                    currentGameState = GameState.RUNNING;
+                    pauseOverlay.SetActive(false);
+                }
+                else
+                {
+                    currentGameState = GameState.PAUSED;
+                    pauseOverlay.SetActive(true);
+                }
+            }
 
             // Persist every X second(s)
             /*
