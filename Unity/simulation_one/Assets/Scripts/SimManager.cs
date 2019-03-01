@@ -76,6 +76,10 @@ public class SimManager : MonoBehaviour {
         return currentGameState;
     }
 
+    public DayConfiguration getCurrentDayConfiguration () {
+        return this.currentDayConfig;
+    }
+
 	/* 
     * Initialization method
     * Runs once on startup
