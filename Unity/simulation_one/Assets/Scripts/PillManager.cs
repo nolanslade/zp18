@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PillManager : MonoBehaviour {
 
-    public GameObject treatmentUI;
-    public GameObject treatmentPill;
-    public GameObject waitPill;
     public GameObject simManager;
+    public GameObject treatmentUI;
+    public GameObject payPill;
+    public GameObject waitPill;
 
     private SimManager simManagerComponent;
+    private bool treatmentTaken;
+    
     //private UnityEngine.UI.Text currentCostComp;
 
     // Only update every set duration, instead of every frame.
