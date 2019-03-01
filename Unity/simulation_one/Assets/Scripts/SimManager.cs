@@ -59,10 +59,12 @@ public class SimManager : MonoBehaviour {
     public GameObject pauseOverlay;
     public GameObject transitionOverlay;
 
+    private FlowManager flowManagerComponent;
+
     // For hand shake impairment
     public GameObject leftHandVirtual, rightHandVirtual;
     private HandTracker leftHandTracker, rightHandTracker;
-    //public GameObjec viveControllerLeft, viveControllerRight;
+    // public GameObject viveControllerLeft, viveControllerRight;
 
     // Cached components
     private AudioManager audioManagerComponent; // Plays sound effects
@@ -84,9 +86,10 @@ public class SimManager : MonoBehaviour {
 
         // Cache necessary components
         Debug.Log("Caching...");
-        this.audioManagerComponent = this.audioManager.GetComponent<AudioManager>();
-        this.leftHandTracker = leftHandVirtual.GetComponent<HandTracker>();
-        this.rightHandTracker = rightHandVirtual.GetComponent<HandTracker>();
+        this.audioManagerComponent  = audioManager.GetComponent<AudioManager>();
+        this.leftHandTracker        = leftHandVirtual.GetComponent<HandTracker>();
+        this.rightHandTracker       = rightHandVirtual.GetComponent<HandTracker>();
+        this.flowManagerComponent   = flowManager.GetComponent<FlowManager>();
         Debug.Log("Resetting countdown.");
         resetCountdown();
         Debug.Log("Starting param establishment.");
@@ -259,11 +262,13 @@ public class SimManager : MonoBehaviour {
                 {
                     currentGameState = GameState.RUNNING;
                     pauseOverlay.SetActive(false);
+                    flowManagerComponent.stopFlow();
                 }
                 else
                 {
                     currentGameState = GameState.PAUSED;
                     pauseOverlay.SetActive(true);
+                    flowManagerComponent.startFlow();
                 }
             }
 
@@ -393,6 +398,7 @@ public class SimManager : MonoBehaviour {
                     elapsedDayTime = 0.0f;
                     transitionOverlay.SetActive(false);
                     audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);
+                    flowManagerComponent.startFlow();
                 }
             }
         }
@@ -445,6 +451,8 @@ public class SimManager : MonoBehaviour {
                 // Time's up for the current day
                 if (elapsedDayTime > currentDayDuration) {
 
+                    flowManagerComponent.cleanScene();
+
                     // Unapply all impairments
                     foreach (Impairment i in this.currentDayImpairments) {
                         switch (i.getType()) {
@@ -489,6 +497,7 @@ public class SimManager : MonoBehaviour {
                 currentGameState = GameState.TRANSITION;
                 currentScore = 0.0f;
                 elapsedDayTime = 0.0f;
+                flowManagerComponent.cleanScene();
             }
         }
     }
