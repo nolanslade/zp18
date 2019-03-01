@@ -58,7 +58,9 @@ public class SimManager : MonoBehaviour {
     public GameObject physicalCamera;       // Child object of [CameraRig]
     public GameObject pauseOverlay;
     public GameObject transitionOverlay;
+    public GameObject pillManager;
 
+    private PillManager pillManagerComponent;
     private FlowManager flowManagerComponent;
 
     // For hand shake impairment
@@ -94,6 +96,7 @@ public class SimManager : MonoBehaviour {
         this.leftHandTracker        = leftHandVirtual.GetComponent<HandTracker>();
         this.rightHandTracker       = rightHandVirtual.GetComponent<HandTracker>();
         this.flowManagerComponent   = flowManager.GetComponent<FlowManager>();
+        this.pillManagerComponent   = pillManager.GetComponent<PillManager>();
         Debug.Log("Resetting countdown.");
         resetCountdown();
         Debug.Log("Starting param establishment.");
@@ -122,6 +125,7 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime      = 0.0f;               
                 elapsedTotalTime    = 0.0f;               // Don't ever reset this
                 currentGameState    = GameState.RUNNING;
+                pillManagerComponent.disablePanels();
             }
         }
     }
@@ -266,13 +270,13 @@ public class SimManager : MonoBehaviour {
                 {
                     currentGameState = GameState.RUNNING;
                     pauseOverlay.SetActive(false);
-                    flowManagerComponent.stopFlow();
+                    flowManagerComponent.startFlow();
                 }
                 else
                 {
                     currentGameState = GameState.PAUSED;
                     pauseOverlay.SetActive(true);
-                    flowManagerComponent.startFlow();
+                    flowManagerComponent.stopFlow();
                 }
             }
 
@@ -392,9 +396,14 @@ public class SimManager : MonoBehaviour {
                     }
 
                     // Set up the treatment station if there should be treatments available
+
+                    Debug.Log("current day id "+currentDayConfig.getDayNumber().ToString());
+
                     if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
                         // TODO 
+                        Debug.Log("setting active");
                         int a = 1;
+                        pillManagerComponent.activatePanels();
                     }
 
                     // Reset simulation parameters and play effects
@@ -456,6 +465,7 @@ public class SimManager : MonoBehaviour {
                 if (elapsedDayTime > currentDayDuration) {
 
                     flowManagerComponent.cleanScene();
+                    pillManagerComponent.disablePanels();
 
                     // Unapply all impairments
                     foreach (Impairment i in this.currentDayImpairments) {
@@ -502,6 +512,7 @@ public class SimManager : MonoBehaviour {
                 currentScore = 0.0f;
                 elapsedDayTime = 0.0f;
                 flowManagerComponent.cleanScene();
+                pillManagerComponent.disablePanels();
             }
         }
     }
