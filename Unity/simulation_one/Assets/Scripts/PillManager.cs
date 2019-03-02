@@ -82,8 +82,8 @@ public class PillManager : MonoBehaviour {
                 treatmentCost = simManagerComponent.getCurrentTreatmentCost();
                 treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
                 //Update UIs
-                payTextComp.text = "$" + treatmentCost.ToString() + " for immediate treatment.";
-                waitTextComp.text = treatmentWait.ToString() + " wait time for free treatment.";
+                payTextComp.text = "$ " + treatmentCost.ToString("0.00");
+                waitTextComp.text = treatmentWait.ToString() + " s.";
 
             }
         }
