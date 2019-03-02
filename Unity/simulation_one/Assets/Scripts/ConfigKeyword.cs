@@ -26,6 +26,9 @@ public sealed class ConfigKeyword {
     public static readonly string NAME          = "Name";           // Configuration name/id
     public static readonly string OUTPUT        = "Output";         // Output type specification
     public static readonly string DESCRIPTION   = "Description";    // For simulation
+    public static readonly string SOUND         = "Sound";          // For simulation sound
+    public static readonly string SCENE         = "Scene";          // For simulation scene
+
     public static readonly string DURATION      = "Duration";       // For a given day
     public static readonly string IMPAIRMENT    = "Impairment";     // For a given day
     public static readonly string TREATMENT     = "Treatment";      // For a given day
@@ -37,5 +40,14 @@ public sealed class ConfigKeyword {
 
     // Key-value, tier 4
     public static readonly string WAIT          = "Wait";           // For a given treatment - 
+    public static readonly string CERTAINTY     = "Certainty";      // For a given treatment -
     public static readonly string COST          = "Cost";           // For a given treatment - in dollars / reward units
+
+    //Key-value, tier 5
+    public static readonly string C             = "C";              //
+    public static readonly string a             = "a";              //
+    public static readonly string b             = "b";
+    public static readonly string c             = "c";
 }
+
+

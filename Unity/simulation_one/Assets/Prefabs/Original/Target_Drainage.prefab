@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4565179940995372}
   - component: {fileID: 33325872129394790}
   - component: {fileID: 65865952886756910}
+  - component: {fileID: 114023908110584746}
   m_Layer: 0
   m_Name: Target_Drainage
   m_TagString: Target_Drainage
@@ -55,8 +56,21 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1792017209425898}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114023908110584746
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1792017209425898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb7b6cee3a9243468a31d7d904cbc35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTargetDrain: 1
+  simManager: {fileID: 0}

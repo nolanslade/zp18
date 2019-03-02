@@ -82,16 +82,21 @@ The following is an example of a configuration file for a two day-long simulatio
 Simulation
     Name:"Sample_Config"
     Output:".txt,database"
-    Description:"This is a sample configuration file."	
+    Description:"Sample file."	
+    Sound:"disabled"        # If not specified, enabled by default
+    Scene:"forest"          # If not specified, forest by default
 Day
-    Duration:"5:00"             # Minutes:Seconds
+    Duration:"5:00"         # Minutes:Seconds
     Impairment
-        Type:"Visual/Fog"       # Type/Subtype
-        Factor:"50%"            # Percentage of Maximum
+        Type:"Visual/Fog"   # Type/Subtype
+        Factor:"50%"        # Percentage of Maximum
     Treatment
-        Wait:"15"               # Seconds
+        Wait:"15"           # Seconds
         Cost:
-            Factor:"30%"
+            C:"100"         # Starting cost
+            a:"default"     # By default 1/Omega
+            b:"default"     # By default day number
+            c:"default"     # Omega (by default length of day)
 Day
     Duration:"5:00"
     Impairment
@@ -101,9 +106,13 @@ Day
         Type:"Physical/Speed_Impairment"
         Factor:"50%"
     Treatment
-        Wait:"10"               
+        Wait:"10"   
+        Certainty:"80%"     # If not specified, 100% by default
         Cost:
-            Fixed:"30"
+            C:"80"
+            a:"0.05"
+            b:"3"
+            c:"120"
 \end{lstlisting}
 
 
