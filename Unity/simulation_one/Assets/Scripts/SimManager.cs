@@ -45,6 +45,8 @@ public class SimManager : MonoBehaviour {
     public GameObject pauseOverlay;
     public GameObject transitionOverlay;
     public GameObject pillManager;
+    public GameObject curtainLeft;          // To reduce nausea caused by looking out the window
+    public GameObject curtainRight;         
 
     // For hand shake impairment
     public GameObject leftHandVirtual, rightHandVirtual;
@@ -98,6 +100,16 @@ public class SimManager : MonoBehaviour {
             } 
 
             else {
+
+                // Set up environment parameters
+                if (this.configParser.lowNauseaModeEnabled()) {
+                    this.curtainRight.SetActive(true);
+                    this.curtainLeft.SetActive(true);
+                } else {
+                    this.curtainRight.SetActive(false);
+                    this.curtainLeft.SetActive(false);
+                }
+
                 currentDay          = 0;                    // Training/tutorial day
                 currentScore        = 0.0f;                 // Holds across all days except 0
                 elapsedDayTime      = 0.0f;               

@@ -27,6 +27,7 @@ public class ConfigParser {
 
     // Simulation parameters
     private DayConfiguration [] dayConfigs = null;
+    private bool lowNauseaMode;
     
     /*
     * If not using a config file - use these default values (for testing)
@@ -41,6 +42,9 @@ public class ConfigParser {
         // Metrics
         // TODO ... db stuff here
         dbConnection = null;
+
+        // By default, remove curtains
+        lowNauseaMode = false;
 
         /*  
         // Treatment argument ordering:
@@ -416,6 +420,13 @@ public class ConfigParser {
         return false;
     }
 
+
+    /*
+    * Take measures to reduce nausea, e.g. put curtains up on windows
+    */
+    public bool lowNauseaModeEnabled () {
+        return this.lowNauseaMode;
+    }
 
     /*
     * Returns all configurations; either parsed from file or default
