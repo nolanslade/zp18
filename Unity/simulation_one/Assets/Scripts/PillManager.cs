@@ -17,12 +17,9 @@ public class PillManager : MonoBehaviour {
     public GameObject payPill;
     public GameObject payPedestal;
 
-
     private SimManager simManagerComponent;
     private UnityEngine.UI.Text payTextComp;
     private UnityEngine.UI.Text waitTextComp;
-
-    //private UnityEngine.UI.Text currentCostComp;
 
     // Only update every set duration, instead of every frame.
     public float customRefreshRate;
@@ -30,13 +27,11 @@ public class PillManager : MonoBehaviour {
 
     private float treatmentCost;
     private float treatmentWait;
-
     private bool treatmentDay;
 
 
     void Start()
     {
-        Debug.Log("starting pill manager ");
         this.simManagerComponent = simManager.GetComponent<SimManager>();
         this.payTextComp = payText.GetComponent<UnityEngine.UI.Text>();
         this.waitTextComp = waitText.GetComponent<UnityEngine.UI.Text>();
@@ -46,7 +41,6 @@ public class PillManager : MonoBehaviour {
     public void activatePanels()
     {
         treatmentDay = true;
-        Debug.Log("Enabling pill man ");
         payPanel.SetActive(true);
         waitPanel.SetActive(true);
         payPill.SetActive(true);
@@ -59,7 +53,6 @@ public class PillManager : MonoBehaviour {
     public void disablePanels()
     {
         treatmentDay = true;
-        Debug.Log("disabling pill man ");
         payPanel.SetActive(false);
         waitPanel.SetActive(false);
         payPill.SetActive(false);
@@ -81,10 +74,8 @@ public class PillManager : MonoBehaviour {
             {
                 treatmentCost = simManagerComponent.getCurrentTreatmentCost();
                 treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
-                //Update UIs
                 payTextComp.text = "$ " + treatmentCost.ToString("0.00");
                 waitTextComp.text = treatmentWait.ToString() + " s.";
-
             }
         }
     }

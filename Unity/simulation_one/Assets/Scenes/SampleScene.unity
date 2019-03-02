@@ -734,6 +734,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -3086,7 +3091,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 137007017}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -5686,6 +5691,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23926808027532566, guid: 48ec186542777474bb236dff1694340c,
+        type: 2}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 95585369411236280, guid: 48ec186542777474bb236dff1694340c, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 48ec186542777474bb236dff1694340c, type: 2}
@@ -6422,6 +6432,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -8480,7 +8495,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 331809415}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -14457,6 +14472,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23914064360387820, guid: 4a3e3d619290a354eb1f0b00faa6dc2b,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a3e3d619290a354eb1f0b00faa6dc2b, type: 2}
   m_IsPrefabAsset: 0
@@ -15197,7 +15217,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 661203587}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -18020,6 +18040,22 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 78b6f28ce2ffb9b47a8f1e7bdec4184b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300002, guid: 78b6f28ce2ffb9b47a8f1e7bdec4184b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300004, guid: 78b6f28ce2ffb9b47a8f1e7bdec4184b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300006, guid: 78b6f28ce2ffb9b47a8f1e7bdec4184b, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78b6f28ce2ffb9b47a8f1e7bdec4184b, type: 3}
   m_IsPrefabAsset: 0
@@ -18461,6 +18497,11 @@ Prefab:
     - target: {fileID: 1586645489942978, guid: 5d016151cb0498e4795453b360895eda, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23997909058746254, guid: 5d016151cb0498e4795453b360895eda,
+        type: 2}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64597796799661810, guid: 5d016151cb0498e4795453b360895eda, type: 2}
@@ -20506,6 +20547,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -23990,6 +24036,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -24193,6 +24244,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4624005263380358, guid: 48ec186542777474bb236dff1694340c, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 23926808027532566, guid: 48ec186542777474bb236dff1694340c,
+        type: 2}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -25130,7 +25186,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1099395205}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -26131,7 +26187,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1131368891}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -27682,6 +27738,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -34318,6 +34379,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 23997909058746254, guid: 5d016151cb0498e4795453b360895eda,
+        type: 2}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64597796799661810, guid: 5d016151cb0498e4795453b360895eda, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 5d016151cb0498e4795453b360895eda, type: 2}
@@ -34577,7 +34643,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1503417066}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -38913,6 +38979,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -39478,6 +39549,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -40903,6 +40979,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -41485,6 +41566,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -44991,6 +45077,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -45138,6 +45229,11 @@ Prefab:
     - target: {fileID: 1070634600600016, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -47331,6 +47427,11 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 23804884039488568, guid: ca2d20238ddb6b84396d108c5968cb3f,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 64710596607754820, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: ca2d20238ddb6b84396d108c5968cb3f, type: 2}
@@ -47901,7 +48002,7 @@ MeshRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2058838365}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1

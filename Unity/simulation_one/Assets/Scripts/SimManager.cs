@@ -6,16 +6,16 @@ using Valve.VR;
 
 public class SimManager : MonoBehaviour {
 
-    public bool DEBUG;
+    private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
 
-    private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";    
-    private bool usingConfigFile = false;               // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
-    private const float TRANSITION_TIME = 10.0f;        // Duration (seconds) of the transition state 
-    private const float DAY_ZERO_REQ_SCORE = 15.0f;     // Score needed to 'pass' day zero
-    private const float COUNTDOWN_THRESHOLD = 10.0f;
-    private const float CRITICAL_COUNTDOWN = 5.1f;      // The last x seconds of countdown will have a different tone
+    private const bool usingConfigFile      = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private const float TRANSITION_TIME     = 10.0f;     // Duration (seconds) of the transition state 
+    private const float DAY_ZERO_REQ_SCORE  = 15.0f;     // Score needed to 'pass' day zero
+    private const float COUNTDOWN_THRESHOLD = 10.0f;     // Start countdown sound effects with this many seconds left
+    private const float CRITICAL_COUNTDOWN  = 5.1f;      // The last x seconds of countdown will have a different tone
+    private const float PERSIST_RATE        = 1.0f;      // Persist to csv or database every this many seconds
 
-    public float maximumShakeOffset;                    // Physical shake impairment strength relative to this value
+    public float maximumShakeOffset;                     // Physical shake impairment strength relative to this value
     
     // State management
     public enum GameState
@@ -27,29 +27,15 @@ public class SimManager : MonoBehaviour {
         ERROR
     }
 
-    private GameState currentGameState;
-    private DayConfiguration currentDayConfig;
-    private Impairment [] currentDayImpairments;
-    private Treatment currentDayTreatment;
-
-    private float currentScore;
+    private float currentPayload, currentScore, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
     private int currentDay, totalDays;
-    private float elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
+    private float persistTime = 0.0f;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
-    private float currentPayload;                       // Current number of water droplets inside bucket
 
     // For countdown sound effects
-    private bool countdownStarted;
+    private bool  countdownStarted;
     private float countDownElapsed;             // Starts from 0, counts up with delta time
-    private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
-
-    // Parses the configuration file and holds all required simulation parameters
-    private ConfigParser configParser;    
-    
-    // Data (metrics) Persistence
-    private SimPersister simPersister;
-    private const float PERSIST_RATE = 1.0f;
-    private float persistTime = 0.0f;
+    private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1    
 
     // Key scene objects
     public GameObject audioManager;
@@ -60,29 +46,24 @@ public class SimManager : MonoBehaviour {
     public GameObject transitionOverlay;
     public GameObject pillManager;
 
-    private PillManager pillManagerComponent;
-    private FlowManager flowManagerComponent;
-
     // For hand shake impairment
     public GameObject leftHandVirtual, rightHandVirtual;
     private HandTracker leftHandTracker, rightHandTracker;
     // public GameObject viveControllerLeft, viveControllerRight;
 
     // Cached components
-    private AudioManager audioManagerComponent; // Plays sound effects
+    private SimPersister simPersister;              // Outputs key data on specified intervals to csv and/or database
+    private AudioManager audioManagerComponent;     // Plays all sound effects
+    private ConfigParser configParser;              // Parses the configuration file and holds all required simulation parameters
+    private PillManager pillManagerComponent;       // Manages treatment + related information displays
+    private FlowManager flowManagerComponent;       // Starts/stops tap flow, and cleans scene (erases all water) when necessary
 
-    public bool isComplete ()
-    {
-        return this.currentGameState == GameState.COMPLETE;
-    }
+    // Dynamic day-by-day elements
+    private GameState currentGameState;
+    private DayConfiguration currentDayConfig;
+    private Impairment [] currentDayImpairments;
+    private Treatment currentDayTreatment;
 
-    public GameState currentState () {
-        return currentGameState;
-    }
-
-    public DayConfiguration getCurrentDayConfiguration () {
-        return this.currentDayConfig;
-    } 
 
 	/* 
     * Initialization method
@@ -91,16 +72,14 @@ public class SimManager : MonoBehaviour {
 	void Start () {
 
         // Cache necessary components
-        Debug.Log("Caching...");
         this.audioManagerComponent  = audioManager.GetComponent<AudioManager>();
         this.leftHandTracker        = leftHandVirtual.GetComponent<HandTracker>();
         this.rightHandTracker       = rightHandVirtual.GetComponent<HandTracker>();
         this.flowManagerComponent   = flowManager.GetComponent<FlowManager>();
         this.pillManagerComponent   = pillManager.GetComponent<PillManager>();
-        Debug.Log("Resetting countdown.");
-        resetCountdown();
-        Debug.Log("Starting param establishment.");
 
+        // Prepare for the first day
+        resetCountdown();
 
         if (!establishSimulationParameters()) {
             currentGameState = GameState.ERROR;
@@ -109,7 +88,6 @@ public class SimManager : MonoBehaviour {
 
         else {
 
-            Debug.Log("Starting up...");
             simPersister = new SimPersister (this.configParser.dbConn());
             totalDays = this.configParser.numDays();
             Debug.Log ("Starting with total days: " + totalDays);
@@ -120,12 +98,12 @@ public class SimManager : MonoBehaviour {
             } 
 
             else {
-                currentDay          = 0;                  // Training/tutorial day
-                currentScore        = 0.0f;               // Holds across all days except 0
+                currentDay          = 0;                    // Training/tutorial day
+                currentScore        = 0.0f;                 // Holds across all days except 0
                 elapsedDayTime      = 0.0f;               
-                elapsedTotalTime    = 0.0f;               // Don't ever reset this
+                elapsedTotalTime    = 0.0f;                 // Don't ever reset this
                 currentGameState    = GameState.RUNNING;
-                pillManagerComponent.disablePanels();
+                pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
             }
         }
     }
@@ -138,19 +116,15 @@ public class SimManager : MonoBehaviour {
     */
     private bool establishSimulationParameters () {
        
-        // Custom configuration
         if (usingConfigFile) {
+            Debug.Log ("Using custom parameters: " + CONFIG_PATH);
             this.configParser = new ConfigParser(CONFIG_PATH);
-
-            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0); // TODO
-            //return false;
+            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0); 
         }
 
-        // Use default (test) simulation parameters
         else {
-            Debug.Log("Using default parameters.");
+            Debug.Log ("Using default parameters.");
             this.configParser = new ConfigParser();
-            Debug.Log("Established simulation parameters. " + !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0));
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
     }
@@ -158,8 +132,7 @@ public class SimManager : MonoBehaviour {
 
     /*
     * Toggles whether or not payment should be allowed
-    * based on where the player is currently standing within
-    * the room.
+    * for whatever reason.
     */
     public void togglePayment (bool val) {
         this.paymentEnabled = val;
@@ -173,7 +146,6 @@ public class SimManager : MonoBehaviour {
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += 1.0f;
-            //Debug.Log ("Reward payed (1). New Score: " + currentScore);
         }
     }
 
@@ -186,10 +158,13 @@ public class SimManager : MonoBehaviour {
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount;
-            //Debug.Log ("Reward payed ("+ customAmount + "). New Score: " + currentScore);
         }
     }
 
+
+    /*
+    * General use getters
+    */
     public float getCurrentTreatmentCost () {
         return (currentDayTreatment == null || currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentCost(elapsedDayTime);
     }
@@ -202,13 +177,11 @@ public class SimManager : MonoBehaviour {
         return elapsedDayTime;
     }
 
-    public float getRemainingDayTime ()
-    {
+    public float getRemainingDayTime () {
         return currentGameState == GameState.TRANSITION ? nextDayDuration : (currentDayDuration - elapsedDayTime);
     }
 
-    public float getRemainingTransitionTime()
-    {
+    public float getRemainingTransitionTime () {
         return TRANSITION_TIME - elapsedDayTime;
     }
 
@@ -220,34 +193,63 @@ public class SimManager : MonoBehaviour {
         return totalDays;
     }
 
-    public float getCurrentScore()
-    {
+    public float getCurrentScore () {
         return currentScore;
     }
 
-    // Sets the current number of water droplets that the participant is carrying
+    public bool isComplete () {
+        return this.currentGameState == GameState.COMPLETE;
+    }
+
+    public GameState currentState () {
+        return currentGameState;
+    }
+
+    public DayConfiguration getCurrentDayConfiguration () {
+        return this.currentDayConfig;
+    } 
+
+    
+    /* 
+    * Hard reset to some value for current amount of water in the bucket.
+    */
     public void setCurrentWaterCarry (int numDrops) {
         this.currentPayload = numDrops;
-        Debug.Log ("Current drops: " + this.currentPayload);
     }
 
+
+    /*
+    * When a new drop enters the bucket, we need to keep track of it so
+    * that we always know how much they are carrying.
+    */
     public void increasePayload (int amt) {
         this.currentPayload += amt;
-        //Debug.Log("Current drops: " + this.currentPayload);
     }
 
+
+    /*
+    * For the speed penalty impairment (and perhaps others) - 
+    * depreciates the value of the container content by some amount.
+    */
     public void decreasePayload (int amt)
     {
         // Prevent negativity
         this.currentPayload = System.Math.Max(this.currentPayload - amt, 0);
-        //Debug.Log("Current drops: " + this.currentPayload);
     }
 
+
+    /*
+    * Resetting countdown parameters is necessary
+    * for the start of every new day, as well as on
+    * simulation startup. Countdown happens in the last
+    * few seconds of a given day.
+    */
     private void resetCountdown () {
         countdownStarted = false;
         countDownElapsed = 0.0f;
         countDownRelativeThreshold = 1.0f;
     }
+
 
     /*
     * Main loop
@@ -255,7 +257,6 @@ public class SimManager : MonoBehaviour {
     * Update() is called on every frame
     */
     void Update () {
-
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
@@ -326,7 +327,9 @@ public class SimManager : MonoBehaviour {
         *
         */
         if (currentGameState == GameState.COMPLETE) {
-            // TODO
+
+            // TODO - anything else needed here?
+
             int a = 1;
         }
 
@@ -342,9 +345,7 @@ public class SimManager : MonoBehaviour {
 
         else if (currentGameState == GameState.PAUSED) {
 
-            // TODO - should overlay "Paused" in the headset or something
-            // an idea to trigger a pause - both thumb buttons pushed within
-            // half a second of each other?
+            // TODO - anything else needed here?
 
             int a = 1;
         } 
@@ -352,9 +353,7 @@ public class SimManager : MonoBehaviour {
 
         else if (currentGameState == GameState.TRANSITION) {
             
-            transitionOverlay.SetActive(true);  // TODO - no need to do this every frame, same as below
             elapsedDayTime += Time.deltaTime;
-            //currentDayDuration = this.configParser.getConfigs()[currentDay].getDuration(); // this sucks - only do it once - fixed below
 
             if (elapsedDayTime > TRANSITION_TIME) {
 
@@ -374,7 +373,7 @@ public class SimManager : MonoBehaviour {
                         nextDayDuration = 0.0f;
                     }
 
-                    // Call out to necessary scripts to apply impairments for the current day
+                    // Call out to necessary scripts to apply impairments for the current day (if any)
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
 
@@ -396,13 +395,7 @@ public class SimManager : MonoBehaviour {
                     }
 
                     // Set up the treatment station if there should be treatments available
-
-                    Debug.Log("current day id "+currentDayConfig.getDayNumber().ToString());
-
                     if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
-                        // TODO 
-                        Debug.Log("setting active");
-                        int a = 1;
                         pillManagerComponent.activatePanels();
                     }
 
@@ -467,7 +460,7 @@ public class SimManager : MonoBehaviour {
                     flowManagerComponent.cleanScene();
                     pillManagerComponent.disablePanels();
 
-                    // Unapply all impairments
+                    // Unapply all supported impairment types
                     foreach (Impairment i in this.currentDayImpairments) {
                         switch (i.getType()) {
                             case Impairment.ImpairmentType.PHYSICAL_SHAKE:
@@ -479,14 +472,19 @@ public class SimManager : MonoBehaviour {
                         }
                     }
 
+                    // Either enter the transition phase before beginning the new day, or
+                    // we're all done - play sound effects and set states accordingly.
                     if (currentDay + 1 > totalDays) {
                         currentGameState = GameState.COMPLETE;
                         audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
                         resetCountdown();
-                    } else {
+                    } 
+
+                    else {
                         audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                         Debug.Log("Day " + currentDay + " complete with day time: " + elapsedDayTime);
                         currentGameState = GameState.TRANSITION;
+                        transitionOverlay.SetActive(true);
                         elapsedDayTime = 0.0f;
                         resetCountdown();
                     }
@@ -509,6 +507,7 @@ public class SimManager : MonoBehaviour {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
+                transitionOverlay.SetActive(true);
                 currentScore = 0.0f;
                 elapsedDayTime = 0.0f;
                 flowManagerComponent.cleanScene();
