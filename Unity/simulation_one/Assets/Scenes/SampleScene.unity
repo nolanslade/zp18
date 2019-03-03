@@ -6388,6 +6388,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
     - {fileID: 9500000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
@@ -6729,6 +6737,14 @@ Prefab:
     - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
@@ -14881,6 +14897,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
     - {fileID: 9500000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
@@ -18178,6 +18202,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
     - {fileID: 9500000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
@@ -19992,6 +20024,14 @@ Prefab:
     - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
@@ -29745,6 +29785,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
     - {fileID: 9500000, guid: 2cc6efd0975a2084caa41d70df3d3dc4, type: 2}
@@ -31089,6 +31137,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
     - {fileID: 9500000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
@@ -31960,6 +32016,14 @@ Prefab:
     - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
@@ -34619,6 +34683,14 @@ Prefab:
     - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
@@ -41442,6 +41514,14 @@ Prefab:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
     - {fileID: 9500000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
@@ -44764,7 +44844,7 @@ GameObject:
   - component: {fileID: 1921596100}
   m_Layer: 0
   m_Name: Terrain_Exterior
-  m_TagString: Untagged
+  m_TagString: ExteriorTerrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -49564,6 +49644,14 @@ Prefab:
     - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}
+      propertyPath: m_TagString
+      value: Trees
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6400002, guid: ee6765da7db992e42a63c23f4e2c42e0, type: 2}

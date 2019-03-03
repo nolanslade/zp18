@@ -102,11 +102,17 @@ public class SimManager : MonoBehaviour {
 
             else {
 
-                // Set up environment parameters
+                // Set up environment parameters - disable exterior components
+                // in order to improve performance if the curtains are drawn. No
+                // point in having trees or grass if they can't see out the window.
                 if (this.configParser.lowNauseaModeEnabled()) {
                     this.curtainRight.SetActive(true);
                     this.curtainLeft.SetActive(true);
-                } else {
+                    foreach (GameObject tree in GameObject.FindGameObjectsWithTag ("Trees")) { Destroy (tree); }
+                    foreach (GameObject extTerr in GameObject.FindGameObjectsWithTag ("ExteriorTerrain")) { Destroy (extTerr); }
+                } 
+
+                else {
                     this.curtainRight.SetActive(false);
                     this.curtainLeft.SetActive(false);
                 }

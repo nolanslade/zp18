@@ -10,6 +10,8 @@ TagManager:
   - Drainage
   - Water
   - Target_Drainage
+  - Trees
+  - ExteriorTerrain
   layers:
   - Default
   - TransparentFX
