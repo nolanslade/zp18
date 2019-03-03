@@ -136,6 +136,7 @@ public class ConfigParser {
     */
     public ConfigParser (string path) {
 
+        lowNauseaMode = false;
 
         this.configFilePath = path;
         dbConnection = null;

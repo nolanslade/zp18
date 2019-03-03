@@ -30,6 +30,13 @@ public class PillManager : MonoBehaviour {
     private bool treatmentDay;
 
 
+    public enum TreatmentObtainType 
+    {
+        PAY,
+        WAIT
+    }
+
+
     void Start()
     {
         this.simManagerComponent = simManager.GetComponent<SimManager>();
@@ -37,6 +44,46 @@ public class PillManager : MonoBehaviour {
         this.waitTextComp = waitText.GetComponent<UnityEngine.UI.Text>();
         treatmentDay = false;
     }
+
+
+    /*
+    * Attempt to make a transaction - validate that the participant
+    * can afford it, and then call out as necessary to apply changes
+    * to the environment to reflect the transaction.
+    */
+    public bool attemptObtain (TreatmentObtainType t) {
+
+        float effectiveWaitTime = -1.0f;     // Seconds
+        float effectiveCost     = -1.0f;     // Lab dollars
+        bool transactionValid   = false;
+
+        SimManager.GameState currentSimState = simManagerComponent.currentState();
+
+        if (t == TreatmentObtainType.PAY) {
+            effectiveCost    = simManagerComponent.getCurrentTreatmentCost();
+            transactionValid = (
+                currentSimState == SimManager.GameState.RUNNING 
+                    && simManagerComponent.getCurrentScore() > effectiveCost
+            );
+        } 
+
+        else if (t == TreatmentObtainType.WAIT) {
+            effectiveWaitTime = simManagerComponent.getCurrentTreatmentWaitTime();
+            transactionValid  = currentSimState == SimManager.GameState.RUNNING;
+        }
+
+
+        // Only apply changes to the environment if the transaction was approved
+        if (transactionValid) {
+            disablePanels();
+            simManagerComponent.determinePostTreatmentActions(t, effectiveCost, effectiveWaitTime);
+        } else {
+            Debug.Log("Invalid treatment obtain attempt.");
+        }
+
+        return transactionValid;
+    }
+
 
     public void activatePanels()
     {
@@ -52,7 +99,7 @@ public class PillManager : MonoBehaviour {
 
     public void disablePanels()
     {
-        treatmentDay = true;
+        treatmentDay = false;
         payPanel.SetActive(false);
         waitPanel.SetActive(false);
         payPill.SetActive(false);

@@ -18,8 +18,8 @@ public class HandTracker : MonoBehaviour {
         if (impaired) {
             this.transform.position = new Vector3(
                 physicalHandObj.transform.localPosition.x * 18.77f + X_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f),
-                physicalHandObj.transform.localPosition.y * 18.77f + Y_TRANSLATE + (((float)random.Next(activeImpairmentAmt)) / 1000.0f),
-                physicalHandObj.transform.localPosition.z * 18.77f + Z_TRANSLATE + (((float)random.Next(activeImpairmentAmt)) / 1000.0f)
+                physicalHandObj.transform.localPosition.y * 18.77f + Y_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f),
+                physicalHandObj.transform.localPosition.z * 18.77f + Z_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f)
             );
         } else {
             this.transform.position = new Vector3(
@@ -44,5 +44,16 @@ public class HandTracker : MonoBehaviour {
     public void clearImpairment () {
         this.activeImpairmentAmt = 0;
         this.impaired = false;
+    }
+
+
+    /*
+    * Takes current strength and multiplies it by factor to either
+    * decrease or increase the strenght of the impairment
+    */
+    public void modifyStrength (float factor) {
+        Debug.Log ("Modifying shake strength " + activeImpairmentAmt.ToString() + " by factor " + factor.ToString());
+        this.activeImpairmentAmt = ((int) (activeImpairmentAmt * factor));
+        Debug.Log ("New strength: " + activeImpairmentAmt.ToString());
     }
 }
