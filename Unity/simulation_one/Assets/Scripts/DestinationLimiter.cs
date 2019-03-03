@@ -16,10 +16,16 @@ using UnityEngine;
 public class DestinationLimiter : MonoBehaviour {
 
     public GameObject simManager;
+    public bool enabled;
     private SimManager simScriptComp;
 
     void Start() {
+        
         this.simScriptComp = simManager.GetComponent<SimManager>();
+
+        if (!enabled) {
+            simScriptComp.togglePayment(true);
+        }
     }
 
     /*
@@ -28,7 +34,8 @@ public class DestinationLimiter : MonoBehaviour {
     private void OnTriggerEnter(Collider col) {
         
         // This should only trigger if the colliding object is the headset
-        if (col.gameObject.CompareTag("MainCamera")) {
+        if (col.gameObject.CompareTag("physicalCamera")) {
+            Debug.Log("Enabling payment - participant in destination area.");
             if (simScriptComp.currentState() == SimManager.GameState.RUNNING)
             {
                 simScriptComp.togglePayment(true);
@@ -41,8 +48,10 @@ public class DestinationLimiter : MonoBehaviour {
     * If the headset exits the target area, disable scoring
     */
     private void OnTriggerExit(Collider col) {
+
         // This should only trigger if the colliding object is the headset
-        if (col.gameObject.CompareTag("MainCamera")) {
+        Debug.Log("Disabling payment - participant left destination area.");
+        if (col.gameObject.CompareTag("physicalCamera")) {
             simScriptComp.togglePayment(false);
         }
     }

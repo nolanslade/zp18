@@ -157,6 +157,6 @@ public class Treatment {
     }
 
     public bool hasBeenObtained () {
-        return this.obtainTime == -1.0f;
+        return this.obtainTime != -1.0f;
     }
 }

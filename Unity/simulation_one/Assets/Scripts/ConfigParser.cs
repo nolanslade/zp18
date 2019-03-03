@@ -43,8 +43,8 @@ public class ConfigParser {
         // TODO ... db stuff here
         dbConnection = null;
 
-        // By default, remove curtains
-        lowNauseaMode = false;
+        // By default, render curtains / destroy outside scene
+        lowNauseaMode = true;
 
         /*  
         // Treatment argument ordering:
@@ -136,6 +136,7 @@ public class ConfigParser {
     */
     public ConfigParser (string path) {
 
+        lowNauseaMode = false;
 
         this.configFilePath = path;
         dbConnection = null;

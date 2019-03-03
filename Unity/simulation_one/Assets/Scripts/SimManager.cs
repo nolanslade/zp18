@@ -6,7 +6,8 @@ using Valve.VR;
 
 public class SimManager : MonoBehaviour {
 
-    private const string CONFIG_PATH = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
+    private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
+    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
 
     private const bool usingConfigFile      = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME     = 10.0f;     // Duration (seconds) of the transition state 
@@ -27,10 +28,10 @@ public class SimManager : MonoBehaviour {
         ERROR
     }
 
-    private float currentPayload, currentScore, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
+    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
     private int currentDay, totalDays;
     private float persistTime = 0.0f;
-    private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
+    private bool paymentEnabled = false;                // Used with the destination limiter. Only pay the user if they're standing close enough
 
     // For countdown sound effects
     private bool  countdownStarted;
@@ -101,20 +102,27 @@ public class SimManager : MonoBehaviour {
 
             else {
 
-                // Set up environment parameters
+                // Set up environment parameters - disable exterior components
+                // in order to improve performance if the curtains are drawn. No
+                // point in having trees or grass if they can't see out the window.
                 if (this.configParser.lowNauseaModeEnabled()) {
                     this.curtainRight.SetActive(true);
                     this.curtainLeft.SetActive(true);
-                } else {
+                    foreach (GameObject tree in GameObject.FindGameObjectsWithTag ("Trees")) { Destroy (tree); }
+                    foreach (GameObject extTerr in GameObject.FindGameObjectsWithTag ("ExteriorTerrain")) { Destroy (extTerr); }
+                } 
+
+                else {
                     this.curtainRight.SetActive(false);
                     this.curtainLeft.SetActive(false);
                 }
 
-                currentDay          = 0;                    // Training/tutorial day
-                currentScore        = 0.0f;                 // Holds across all days except 0
-                elapsedDayTime      = 0.0f;               
-                elapsedTotalTime    = 0.0f;                 // Don't ever reset this
-                currentGameState    = GameState.RUNNING;
+                currentDay                  = 0;                    // Training/tutorial day
+                currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
+                currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
+                elapsedDayTime              = 0.0f;               
+                elapsedTotalTime            = 0.0f;                 // Don't ever reset this
+                currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
             }
         }
@@ -157,7 +165,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += 1.0f;
+            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f;
         }
     }
 
@@ -169,7 +177,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += customAmount;
+            this.currentScore += customAmount; this.currentCumulativePayment += customAmount;
         }
     }
 
@@ -183,6 +191,10 @@ public class SimManager : MonoBehaviour {
 
     public float getCurrentTreatmentWaitTime () {
         return (currentDayTreatment == null || currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime(elapsedDayTime);
+    }
+
+    public float getTotalPaymentReceived () {       // Cumulative amount earned - not affected by deductions through penalizing or payment for treatment
+        return currentCumulativePayment;
     }
 
     public float getElapsedDayTime () {
@@ -205,7 +217,7 @@ public class SimManager : MonoBehaviour {
         return totalDays;
     }
 
-    public float getCurrentScore () {
+    public float getCurrentScore () {        // Not cumulative! This amount will decrease because of penalizing or payment for treatments
         return currentScore;
     }
 
@@ -260,6 +272,85 @@ public class SimManager : MonoBehaviour {
         countdownStarted = false;
         countDownElapsed = 0.0f;
         countDownRelativeThreshold = 1.0f;
+    }
+
+
+    /*
+    * If the participant meets the criteria to receive treatment, then
+    * make the necessary changes to the simulation environment to 
+    * reflect the treatment being taken. This depends on the type of 
+    * treatment, i.e. pay or wait, as well as how effective the treatment
+    * is, etc.
+    */
+    public void determinePostTreatmentActions (PillManager.TreatmentObtainType obtainType, float effectiveCost, float effectiveWaitTime) {
+
+        currentDayTreatment.obtain(elapsedDayTime);
+        bool isEffective = currentDayTreatment.isEffective();
+        float effectiveness = currentDayTreatment.getEffectiveness();
+        
+        if (obtainType == PillManager.TreatmentObtainType.PAY) {
+
+            currentScore -= effectiveCost;
+
+            if (isEffective) {
+                audioManagerComponent.playSound(AudioManager.SoundType.TAKE_MEDICINE);
+                modifyImpairmentFactors(effectiveness);
+            } 
+
+            else {
+                // TODO - maybe should have another sound effect to let them know it didnt work
+                // or something else
+                Debug.Log (
+                    "Treatment uneffective."
+                );
+            }
+        }
+
+        else if (obtainType == PillManager.TreatmentObtainType.WAIT) {
+            int a = 1; // TODO
+        }
+    }
+
+
+    /*
+    * Modifies strength of impairments on the current day (i.e.
+    * after paying / waiting for treatment has been completed)
+    */
+    private void modifyImpairmentFactors (float factor) {
+
+        if (factor == 1.0f) { 
+            unapplyImpairments(); 
+        }
+
+        else {
+            foreach (Impairment i in this.currentDayImpairments) {
+                switch (i.getType()) {
+                    case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                        rightHandTracker.modifyStrength(factor);
+                        leftHandTracker.modifyStrength(factor);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+
+    /*
+    * Entirely removes all active impairments for the current day
+    */
+    private void unapplyImpairments () {
+        foreach (Impairment i in this.currentDayImpairments) {
+            switch (i.getType()) {
+                case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                    rightHandTracker.clearImpairment();
+                    leftHandTracker.clearImpairment();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 
@@ -471,18 +562,7 @@ public class SimManager : MonoBehaviour {
 
                     flowManagerComponent.cleanScene();
                     pillManagerComponent.disablePanels();
-
-                    // Unapply all supported impairment types
-                    foreach (Impairment i in this.currentDayImpairments) {
-                        switch (i.getType()) {
-                            case Impairment.ImpairmentType.PHYSICAL_SHAKE:
-                                rightHandTracker.clearImpairment();
-                                leftHandTracker.clearImpairment();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    unapplyImpairments();
 
                     // Either enter the transition phase before beginning the new day, or
                     // we're all done - play sound effects and set states accordingly.
@@ -521,6 +601,7 @@ public class SimManager : MonoBehaviour {
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
                 currentScore = 0.0f;
+                currentCumulativePayment = 0.0f;
                 elapsedDayTime = 0.0f;
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
