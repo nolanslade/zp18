@@ -284,6 +284,8 @@ public class SimManager : MonoBehaviour {
         
         if (obtainType == PillManager.TreatmentObtainType.PAY) {
 
+            currentScore -= effectiveCost;
+
             if (isEffective) {
                 audioManagerComponent.playSound(AudioManager.SoundType.TAKE_MEDICINE);
                 modifyImpairmentFactors(effectiveness);
