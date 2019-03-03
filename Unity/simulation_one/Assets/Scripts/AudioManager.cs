@@ -69,4 +69,9 @@ public class AudioManager : MonoBehaviour {
 			}
 		}
 	}
+
+
+	public void stopSound () {	
+		source.Stop();
+	}
 }
