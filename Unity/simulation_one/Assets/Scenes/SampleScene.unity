@@ -12854,7 +12854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   simManager: {fileID: 1106530631}
-  enabled: 0
+  enabled: 1
 --- !u!1001 &558897431
 Prefab:
   m_ObjectHideFlags: 0
