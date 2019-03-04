@@ -17,6 +17,8 @@ public class SimPersister {
     private string dbConnection = null;
 	private string logFileName  = null;
 
+    private string participantName = "";
+
     private const string LOG_FILE_PREF  = "VR1_log_";
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string LOG_FILE_SUFF  = ".txt";
@@ -26,6 +28,7 @@ public class SimPersister {
     */
     public SimPersister (string conn) {
 
+        this.participantName = ParticipantData.name;
 		this.startTime = System.DateTime.Now;    	
     	this.logFileName = LOG_FILE_PREF + startTime.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
 

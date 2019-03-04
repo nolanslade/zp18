@@ -43,8 +43,8 @@ public class ConfigParser {
         // TODO ... db stuff here
         dbConnection = null;
 
-        // By default, render curtains / destroy outside scene
-        lowNauseaMode = true;
+        // Data comes from static class, set by the main menu
+        lowNauseaMode = ParticipantData.nauseaSensitive;
 
         /*  
         // Treatment argument ordering:
@@ -136,7 +136,7 @@ public class ConfigParser {
     */
     public ConfigParser (string path) {
 
-        lowNauseaMode = false;
+        lowNauseaMode = ParticipantData.nauseaSensitive;
 
         this.configFilePath = path;
         dbConnection = null;
