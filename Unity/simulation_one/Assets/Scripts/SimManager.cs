@@ -6,6 +6,10 @@ using Valve.VR;
 
 public class SimManager : MonoBehaviour {
 
+
+    public bool persistenceEnabled;
+
+
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
     private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
 
@@ -29,6 +33,7 @@ public class SimManager : MonoBehaviour {
     }
 
     private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
+    private float timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, amountPayedForTreatmentTotal;
     private int currentDay, totalDays;
     private float persistTime = 0.0f;
     private bool paymentEnabled = false;                // Used with the destination limiter. Only pay the user if they're standing close enough
@@ -385,43 +390,58 @@ public class SimManager : MonoBehaviour {
             }
 
             // Persist every X second(s)
-            /*
-            if (currentGameState == GameState.RUNNING && persistTime > PERSIST_RATE) {
+            if (persistenceEnabled && persistTime > PERSIST_RATE && currentGameState != GameState.COMPLETE) {
 
                 /*
-                float                   globalTime,             // Total simulation runtime (any state)
+
+                Persistence parameter list (ordered):
+
+                float                   elapsedTotalTime,
                 int                     currentDay,             
                 SimManager.GameState    currentState,
-                float                   dayTime,                // Total day time (running state only)
-                float                   totalScore,
-                float                   dayScore,
-                int                     currentlyCarrying,      // Water droplets inside of the container
                 float                   headsetX,
                 float                   headsetY,
                 float                   headsetZ,
-                float                   speedPenaltyFactorInitial,  // 0 if no impairment applied
-                float                   speedPenaltyFactorCurrent   // This will drop if treatment received
-                // .... 
-                
+                float                   dayTime,                         // Total day time (running state only)
+                float                   totalScore,                      // Includes deductions for payment
+                float                   dayScore,                        // Includes deductions for payment
+                int                     currentlyCarrying,               // Water droplets inside of the container
+                float                   tremorImpairmentFactorInitial,
+                float                   tremorImpairmentFactorCurrent,
+                bool                    dayHasTreatment,
+                float                   timeWaitedForTreatmentDay,
+                float                   amountPayedForTreatmentDay,
+                float                   timeWaitedForTreatmentTotal,
+                float                   amountPayedForTreatmentTotal
+                */
 
                 simPersister.persist (
+
                     elapsedTotalTime,
                     currentDay,
                     currentGameState,
-                    elapsedDayTime,
-                    currentScore,
-                    1.0f,   // TODO
-                    0,      // TODO
                     physicalCamera.transform.position.x,
                     physicalCamera.transform.position.y,
-                    physicalCamera.transform.position.z, // should also have the quaternion angles here to see where they're looking
-                    0.0f,   // TODO
-                    0.0f    // TODO
+                    physicalCamera.transform.position.z,
+                    elapsedDayTime,
+                    currentScore,       // TODO
+                    currentScore,       // TODO
+                    // ********
+                    // carrying stuff 
+                    // shake imp...
+                    // shake imp...
+                    // treatment on this day?
+                    // ********
+                    timeWaitedForTreatmentDay,
+                    amountPayedForTreatmentDay,
+                    timeWaitedForTreatmentTotal,
+                    amountPayedForTreatmentTotal
+
                 );
+
                 persistTime = 0.0f;
 
-
-            }*/
+            }
         }
 
 

@@ -12,6 +12,8 @@ using UnityEngine;
  */
 public class SimPersister {
 
+    private bool debugMode = true;
+
     // Logging / Metrics parameters
    	private System.DateTime startTime;
     private string dbConnection = null;
@@ -19,7 +21,7 @@ public class SimPersister {
 
     private string participantName = "";
 
-    private const string LOG_FILE_PREF  = "VR1_log_";
+    private const string LOG_FILE_PREF  = "WATERSIM_log_";
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string LOG_FILE_SUFF  = ".txt";
 
@@ -66,39 +68,56 @@ public class SimPersister {
 	* General CSV entry into log file
     */
     public void persist (
-    	float 					globalTime,				// Total simulation runtime (any state)
+
+    	float 					globalTime,				         // Total simulation runtime (any state)
     	int 					currentDay,				
     	SimManager.GameState 	currentState,
-    	float 					dayTime, 				// Total day time (running state only)
-    	float 					totalScore,
-    	float 					dayScore,
-    	int 					currentlyCarrying, 		// Water droplets inside of the container
-    	float 					headsetX,
-    	float 					headsetY,
-    	float 					headsetZ,
-    	float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
-    	float 					speedPenaltyFactorCurrent	// This will drop if treatment received
+        float                   headsetX,
+        float                   headsetY,
+        float                   headsetZ,
+    	float 					dayTime, 				         // Total day time (running state only)
+    	float 					totalScore,                      // Includes deductions for payment
+    	float 					dayScore,                        // Includes deductions for payment
+    	/*
+        int                     currentlyCarrying,               // Water droplets inside of the container
+        float                   tremorImpairmentFactorInitial,
+        float                   tremorImpairmentFactorCurrent,
+        bool                    dayHasTreatment,
+        */
+        float                   timeWaitedForTreatmentDay,
+        float                   amountPayedForTreatmentDay,
+        float                   timeWaitedForTreatmentTotal,
+        float                   amountPayedForTreatmentTotal
+
+    	//float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
+    	//float 					speedPenaltyFactorCurrent	// This will drop if treatment received
     	// .... 
     	) {
 
-    	const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}"; // TODO - put proper formatting
+        string s = "";
+    	//const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}"; // TODO 
+        const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}";
     	
     	try {
-    		string.Format (
+    		s = string.Format (
     			fmt,
-    			globalTime,
-    			currentDay,
-    			currentState.ToString(),
-    			dayTime,
-    			totalScore,
-    			dayScore,
-    			currentlyCarrying,
-    			headsetX,
-    			headsetY,
-    			headsetZ,
-    			speedPenaltyFactorInitial,
-    			speedPenaltyFactorCurrent
+    			globalTime.ToString(),
+                currentDay.ToString(),
+                currentState.ToString(),
+                headsetX.ToString(),
+                headsetY.ToString(),
+                headsetZ.ToString(),
+                dayTime.ToString(),
+                totalScore.ToString(),
+                dayScore.ToString(),
+                timeWaitedForTreatmentDay.ToString(),
+                amountPayedForTreatmentDay.ToString(),
+                timeWaitedForTreatmentTotal.ToString(),
+                amountPayedForTreatmentTotal.ToString()
     		);
+
+            if (debugMode)
+                Debug.Log(s);
     	} 
 
     	catch (System.Exception e) {
