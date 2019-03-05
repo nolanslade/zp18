@@ -34,7 +34,7 @@ public class DestinationLimiter : MonoBehaviour {
     private void OnTriggerEnter(Collider col) {
         
         // This should only trigger if the colliding object is the headset
-        if (enabled && col.gameObject.CompareTag("physicalCamera")) {
+        if (enabled  && col.gameObject.CompareTag("physicalCamera")) {
             Debug.Log("Enabling payment - participant in destination area.");
             if (simScriptComp.currentState() == SimManager.GameState.RUNNING)
             {
