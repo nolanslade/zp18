@@ -11,6 +11,7 @@ water according to its parameters.
 
 public class FlowManager : MonoBehaviour {
 
+    private bool canFlow;                   // Sometimes we shouldn't allow the tap to turn on
     private bool flowing;                   // Tap state
     private float elapsed;                  // Since last drop emission
 
@@ -19,8 +20,15 @@ public class FlowManager : MonoBehaviour {
     public Vector3 maxDelta;                // Maximum thresholds away from the tap nozzle to spawn
     public float spawnFrequency;            // Wait this amount of time before spawning a new droplet
 
-	// Update is called once per frame
-	void Update () {
+    public GameObject audioManager;                 // Water sound effects
+    private AudioManager audioManagerComponent;
+
+    void Start () {
+        this.audioManagerComponent = audioManager.GetComponent<AudioManager>();
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (flowing && elapsed > spawnFrequency) {
             Instantiate (waterDroplet, dropletSpawnPoint, Quaternion.identity);
             elapsed = 0.0f;
@@ -34,16 +42,28 @@ public class FlowManager : MonoBehaviour {
     }
 
     public void startFlow () {
-        flowing = true;
-        elapsed = 0.0f;
+        if (canFlow) {
+            flowing = true;
+            elapsed = 0.0f;
+            audioManagerComponent.playSound(AudioManager.SoundType.WATER_FLOW);
+        }
     }
 
     public void stopFlow () {
         flowing = false;
         elapsed = 0.0f;
+        audioManagerComponent.stopSound();
     }
 
     public bool isFlowing () {
         return flowing;
+    }
+
+    public bool isFlowable () {
+        return this.canFlow;
+    }
+
+    public void setFlowable (bool val) {
+        this.canFlow = val;
     }
 }

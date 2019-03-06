@@ -36,7 +36,7 @@ public class SimManager : MonoBehaviour {
     private float timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, amountPayedForTreatmentTotal;
     private int currentDay, totalDays;
     private float persistTime = 0.0f;
-    private bool paymentEnabled = false;                // Used with the destination limiter. Only pay the user if they're standing close enough
+    private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
 
     // For countdown sound effects
     private bool  countdownStarted;
@@ -75,7 +75,7 @@ public class SimManager : MonoBehaviour {
 
 	/* 
     * Initialization method
-    * Runs once on startup
+    * Runs once at scene load
     */
 	void Start () {
 
@@ -129,6 +129,7 @@ public class SimManager : MonoBehaviour {
                 elapsedTotalTime            = 0.0f;                 // Don't ever reset this
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
+                Debug.Log("Starting up " + currentGameState);
             }
         }
     }
@@ -366,6 +367,7 @@ public class SimManager : MonoBehaviour {
     */
     void Update () {
 
+
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
             
@@ -373,21 +375,21 @@ public class SimManager : MonoBehaviour {
             persistTime      += Time.deltaTime;
 
             // Pausing with thumb buttons
-            if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
-            {
-                if (currentGameState == GameState.PAUSED)
-                {
-                    currentGameState = GameState.RUNNING;
-                    pauseOverlay.SetActive(false);
-                    flowManagerComponent.startFlow();
-                }
-                else
-                {
-                    currentGameState = GameState.PAUSED;
-                    pauseOverlay.SetActive(true);
-                    flowManagerComponent.stopFlow();
-                }
-            }
+            //if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
+           // {
+            //    if (currentGameState == GameState.PAUSED)
+            //    {
+            //        currentGameState = GameState.RUNNING;
+            //        pauseOverlay.SetActive(false);
+            //        flowManagerComponent.startFlow();
+            //    }
+            //    else
+            //    {
+            //        currentGameState = GameState.PAUSED;
+            //        pauseOverlay.SetActive(true);
+            //        flowManagerComponent.stopFlow();
+            //    }
+            //}
 
             // Persist every X second(s)
             if (persistenceEnabled && persistTime > PERSIST_RATE && currentGameState != GameState.COMPLETE) {
@@ -452,7 +454,6 @@ public class SimManager : MonoBehaviour {
         if (currentGameState == GameState.COMPLETE) {
 
             // TODO - anything else needed here?
-
             int a = 1;
         }
 
@@ -461,7 +462,6 @@ public class SimManager : MonoBehaviour {
 
             // TODO - should put a red haze into the headset or 
             // something with the error message in the middle
-
             int a = 1;
         } 
 
@@ -469,7 +469,6 @@ public class SimManager : MonoBehaviour {
         else if (currentGameState == GameState.PAUSED) {
 
             // TODO - anything else needed here?
-
             int a = 1;
         } 
 
@@ -528,6 +527,7 @@ public class SimManager : MonoBehaviour {
                     transitionOverlay.SetActive(false);
                     audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);
                     flowManagerComponent.startFlow();
+                    Debug.Log("Starting day " + currentGameState);
                 }
             }
         }
@@ -580,9 +580,13 @@ public class SimManager : MonoBehaviour {
                 // Time's up for the current day
                 if (elapsedDayTime > currentDayDuration) {
 
+                    Debug.Log("Time's up");
                     flowManagerComponent.cleanScene();
+                    Debug.Log("Done cleaning");
                     pillManagerComponent.disablePanels();
+                    Debug.Log("Disabled panels.");
                     unapplyImpairments();
+                    Debug.Log("Day complete " + currentGameState);
 
                     // Either enter the transition phase before beginning the new day, or
                     // we're all done - play sound effects and set states accordingly.
@@ -616,7 +620,7 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
-                audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
+                audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE); 
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
@@ -625,6 +629,7 @@ public class SimManager : MonoBehaviour {
                 elapsedDayTime = 0.0f;
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
+                Debug.Log("Day 0 over " + currentGameState);
             }
         }
     }

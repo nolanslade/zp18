@@ -12,6 +12,7 @@ TagManager:
   - Target_Drainage
   - Trees
   - ExteriorTerrain
+  - Interactable
   layers:
   - Default
   - TransparentFX
@@ -22,6 +23,7 @@ TagManager:
   - 
   - 
   - PostProcessing
+  - Interactable
   - 
   - 
   - 
@@ -42,9 +44,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - LimiterTrigger
+  - Camera
   m_SortingLayers:
   - name: Default
     uniqueID: 0

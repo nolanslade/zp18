@@ -25,19 +25,20 @@ public class DestinationLimiter : MonoBehaviour {
 
         if (!enabled) {
             simScriptComp.togglePayment(true);
+        } else {
+            simScriptComp.togglePayment(false);
         }
     }
 
     /*
     * If the headset enters the target area, enable scoring
     */
-    private void OnTriggerEnter(Collider col) {
+    void OnTriggerEnter(Collider col) {
         
         // This should only trigger if the colliding object is the headset
-        if (enabled  && col.gameObject.CompareTag("physicalCamera")) {
-            Debug.Log("Enabling payment - participant in destination area.");
-            if (simScriptComp.currentState() == SimManager.GameState.RUNNING)
-            {
+        if (enabled  && col.gameObject.CompareTag("MainCamera")) {
+            if (simScriptComp.currentState() == SimManager.GameState.RUNNING) {
+                Debug.Log("Enabling payment - participant entered destination area.");
                 simScriptComp.togglePayment(true);
             }
         }
@@ -47,14 +48,12 @@ public class DestinationLimiter : MonoBehaviour {
     /*
     * If the headset exits the target area, disable scoring
     */
-    private void OnTriggerExit(Collider col) {
+    void OnTriggerExit(Collider col) {
 
         // This should only trigger if the colliding object is the headset
-        if (enabled) {
+        if (enabled && col.gameObject.CompareTag("MainCamera")) {
             Debug.Log("Disabling payment - participant left destination area.");
-            if (col.gameObject.CompareTag("physicalCamera")) {
-                simScriptComp.togglePayment(false);
-            }
+            simScriptComp.togglePayment(false);
         }
     }
 }

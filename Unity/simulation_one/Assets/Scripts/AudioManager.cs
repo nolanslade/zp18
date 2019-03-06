@@ -47,6 +47,8 @@ public class AudioManager : MonoBehaviour {
 	*/
 	public void playSound (SoundType s) {
 
+        Debug.Log("Attempting to play: " + s.ToString());
+
 		if (!muted) {
 			switch (s) {
 				case SoundType.WATER_FLOW: 		source.clip = waterFlowClip; 		source.Play();
