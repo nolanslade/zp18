@@ -123,6 +123,7 @@ public class PillManager : MonoBehaviour {
                 treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
                 payTextComp.text = "$ " + treatmentCost.ToString("0.00");
                 waitTextComp.text = treatmentWait.ToString() + " s.";
+                elapsed = 0.0f;
             }
         }
     }
