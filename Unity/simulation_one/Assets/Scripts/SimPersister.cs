@@ -32,6 +32,7 @@ public class SimPersister {
     */
     public SimPersister (string conn) {
 
+        Debug.Log("Setting persistence file name.");
         this.participantName = ParticipantData.name;
 		this.startTime = System.DateTime.Now;    	
     	this.logFileName = LOG_FILE_PREF + startTime.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
@@ -44,14 +45,20 @@ public class SimPersister {
     		int a = 1;
     	}
 
-    	// TODO check for file here + make sure valid directory
+        // TODO check for file here + make sure valid directory
+        Debug.Log("Initializing file writer.");
         fileWriter = System.IO.File.CreateText(Application.dataPath + logFileName);
 
+        /*
         //Print the text from the file
-        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + logFileName); 
+        Debug.Log("Initializing file writer2.");
+        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + logFileName);
+        Debug.Log("Initializing file writer3.");
         Debug.Log(fileReader.ReadToEnd());
+        Debug.Log("Initializing file writer4.");
         fileReader.Close();
-    	writeIntroduction ();
+        Debug.Log("Initializing file writer5.");
+        writeIntroduction ();*/
     }
 
 

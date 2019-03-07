@@ -28,6 +28,7 @@ public class ConfigParser {
     // Simulation parameters
     private DayConfiguration [] dayConfigs = null;
     private bool lowNauseaMode;
+    private bool instructionsEnabled;
     
     /*
     * If not using a config file - use these default values (for testing)
@@ -45,6 +46,7 @@ public class ConfigParser {
 
         // Data comes from static class, set by the main menu
         lowNauseaMode = ParticipantData.nauseaSensitive;
+        instructionsEnabled = true;
 
         /*  
         // Treatment argument ordering:
@@ -78,29 +80,14 @@ public class ConfigParser {
         Debug.Log("Setting Day Two");
         float dayTwoDur = 120.0f;
         Impairment [] dayTwoImps = new Impairment [1];
-        Treatment dayTwoTreatment = new Treatment (
-            100.0f,
-            0.15f,
-            2.0f,
-            120.0f,
-            100.0f,
-            0.15f,
-            2.0f,
-            120.0f,
-            1.0f,
-            1.0f,
-            0.0f,
-            0.0f,
-            0.0f
-        );   // TODO
-        //dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
-        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.3f);
+        Treatment dayTwoTreatment = null;
+        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
         int dayTwo = 2;
 
         // Day Three
         Debug.Log("Setting Day Three");
         float dayThreeDur = 120.0f;
-        Impairment [] dayThreeImps = new Impairment [2];
+        Impairment [] dayThreeImps = new Impairment [1];
         Treatment dayThreeTreatment = new Treatment (
             100.0f,
             0.15f,
@@ -116,8 +103,7 @@ public class ConfigParser {
             0.0f,
             0.0f
         );
-        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.7f);
-        dayThreeImps[1] = new Impairment (Impairment.ImpairmentType.VISUAL_FOG, 0.8f);
+        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
         int dayThree = 3;
 
 
@@ -127,6 +113,7 @@ public class ConfigParser {
         this.dayConfigs [0] = new DayConfiguration (dayOne, dayOneDur, dayOneImps, dayOneTreatment, dayOneMult);
         this.dayConfigs [1] = new DayConfiguration (dayTwo, dayTwoDur, dayTwoImps, dayTwoTreatment);
         this.dayConfigs [2] = new DayConfiguration (dayThree, dayThreeDur, dayThreeImps, dayThreeTreatment);
+        Debug.Log("Config set up complete.");
     }
 
 
@@ -137,6 +124,13 @@ public class ConfigParser {
     public ConfigParser (string path) {
 
         lowNauseaMode = ParticipantData.nauseaSensitive;
+
+        // TODO
+
+        // NEED CONFIG OPTION FOR THIS
+        instructionsEnabled = true;
+
+        // ---------
 
         this.configFilePath = path;
         dbConnection = null;

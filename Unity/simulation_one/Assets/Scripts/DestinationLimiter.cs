@@ -34,6 +34,8 @@ public class DestinationLimiter : MonoBehaviour {
     * If the headset enters the target area, enable scoring
     */
     void OnTriggerEnter(Collider col) {
+
+        Debug.Log("Dest limiter trigger");
         
         // This should only trigger if the colliding object is the headset
         if (enabled  && col.gameObject.CompareTag("MainCamera")) {

@@ -13,14 +13,15 @@ public class SimManager : MonoBehaviour {
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
     private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
 
-    private const bool usingConfigFile      = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
-    private const float TRANSITION_TIME     = 10.0f;     // Duration (seconds) of the transition state 
-    private const float DAY_ZERO_REQ_SCORE  = 15.0f;     // Score needed to 'pass' day zero
-    private const float COUNTDOWN_THRESHOLD = 10.0f;     // Start countdown sound effects with this many seconds left
-    private const float CRITICAL_COUNTDOWN  = 5.1f;      // The last x seconds of countdown will have a different tone
-    private const float PERSIST_RATE        = 1.0f;      // Persist to csv or database every this many seconds
+    private const bool usingConfigFile                  = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state 
+    private const float DAY_ZERO_REQ_SCORE              = 150.0f;     // Score needed to 'pass' day zero
+    private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
+    private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
+    private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
+    private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
 
-    public float maximumShakeOffset;                     // Physical shake impairment strength relative to this value
+    public float maximumShakeOffset; // Physical shake impairment strength relative to this value
     
     // State management
     public enum GameState
@@ -30,6 +31,17 @@ public class SimManager : MonoBehaviour {
         TRANSITION,     // Countdown state between days 
         COMPLETE,       // All days successfully completed - simulation is over
         ERROR
+    }
+
+    enum TutorialStep
+    {
+        BUCKET, 
+        HOLD_CONTAINER,
+        FILL,
+        GO_TO_SINK,
+        POUR_BUCKET,
+        CONTINUE,
+        DONE_TUTORIAL
     }
 
     private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
@@ -52,7 +64,14 @@ public class SimManager : MonoBehaviour {
     public GameObject transitionOverlay;
     public GameObject pillManager;
     public GameObject curtainLeft;          // To reduce nausea caused by looking out the window
-    public GameObject curtainRight;         
+    public GameObject curtainRight;
+    public GameObject instructionManager;
+
+    // Instruction Markers and tutorial booleans
+    public GameObject bucketMarker;
+    public GameObject bucketPickUpTrigger;
+    public GameObject farSinkMarker;
+    public GameObject farSinkTrigger;
 
     // For hand shake impairment
     public GameObject leftHandVirtual, rightHandVirtual;
@@ -65,9 +84,11 @@ public class SimManager : MonoBehaviour {
     private ConfigParser configParser;              // Parses the configuration file and holds all required simulation parameters
     private PillManager pillManagerComponent;       // Manages treatment + related information displays
     private FlowManager flowManagerComponent;       // Starts/stops tap flow, and cleans scene (erases all water) when necessary
+    private InstructionManager instructionManagerComponent;
 
     // Dynamic day-by-day elements
     private GameState currentGameState;
+    private TutorialStep currentTutorialStep;
     private DayConfiguration currentDayConfig;
     private Impairment [] currentDayImpairments;
     private Treatment currentDayTreatment;
@@ -80,11 +101,12 @@ public class SimManager : MonoBehaviour {
 	void Start () {
 
         // Cache necessary components
-        this.audioManagerComponent  = audioManager.GetComponent<AudioManager>();
-        this.leftHandTracker        = leftHandVirtual.GetComponent<HandTracker>();
-        this.rightHandTracker       = rightHandVirtual.GetComponent<HandTracker>();
-        this.flowManagerComponent   = flowManager.GetComponent<FlowManager>();
-        this.pillManagerComponent   = pillManager.GetComponent<PillManager>();
+        this.audioManagerComponent          = audioManager.GetComponent<AudioManager>();
+        this.leftHandTracker                = leftHandVirtual.GetComponent<HandTracker>();
+        this.rightHandTracker               = rightHandVirtual.GetComponent<HandTracker>();
+        this.flowManagerComponent           = flowManager.GetComponent<FlowManager>();
+        this.pillManagerComponent           = pillManager.GetComponent<PillManager>();
+        this.instructionManagerComponent    = instructionManager.GetComponent<InstructionManager>();
 
         // Prepare for the first day
         resetCountdown();
@@ -96,7 +118,9 @@ public class SimManager : MonoBehaviour {
 
         else {
 
+            Debug.Log("Initializing persister.");
             simPersister = new SimPersister (this.configParser.dbConn());
+            Debug.Log("Setting days.");
             totalDays = this.configParser.numDays();
             Debug.Log ("Starting with total days: " + totalDays);
             
@@ -130,6 +154,9 @@ public class SimManager : MonoBehaviour {
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
                 Debug.Log("Starting up " + currentGameState);
+                currentTutorialStep = TutorialStep.BUCKET;
+                bucketMarker.SetActive(true);
+                instructionManagerComponent.setTemporaryMessage("Objective: locate and walk to the bucket", 8.0f);
             }
         }
     }
@@ -141,6 +168,8 @@ public class SimManager : MonoBehaviour {
     * Returns true on success of all parameters being set, false on any error.
     */
     private bool establishSimulationParameters () {
+
+        Debug.Log("Establishing params.");
        
         if (usingConfigFile) {
             Debug.Log ("Using custom parameters: " + CONFIG_PATH);
@@ -172,6 +201,9 @@ public class SimManager : MonoBehaviour {
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f;
+            if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
+                advanceTutorialStep();
+            }
         }
     }
 
@@ -184,6 +216,9 @@ public class SimManager : MonoBehaviour {
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount; this.currentCumulativePayment += customAmount;
+            if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
+                advanceTutorialStep();
+            }
         }
     }
 
@@ -239,7 +274,46 @@ public class SimManager : MonoBehaviour {
         return this.currentDayConfig;
     } 
 
-    
+
+    /*
+    * Instruction management
+    */
+    public void advanceTutorialStep () {
+        switch (currentTutorialStep) {
+            case TutorialStep.BUCKET:
+                currentTutorialStep = TutorialStep.HOLD_CONTAINER;
+                instructionManagerComponent.setTemporaryMessage("To pick up, place one hand on the bucket\nand squeeze index finger", 6.0f);
+                bucketPickUpTrigger.SetActive(true);
+                break;
+            case TutorialStep.HOLD_CONTAINER:
+                currentTutorialStep = TutorialStep.FILL;
+                instructionManagerComponent.setTemporaryMessage("Fill up the bucket by placing it\nunder the running water", 4.0f);
+                break;
+            case TutorialStep.FILL:
+                currentTutorialStep = TutorialStep.GO_TO_SINK;
+                instructionManagerComponent.setTemporaryMessage("Carefully turn around and carry\nthe bucket to the opposing sink", 6.0f);
+                farSinkMarker.SetActive(true);
+                farSinkTrigger.SetActive(true);
+                break;
+            case TutorialStep.GO_TO_SINK:
+                currentTutorialStep = TutorialStep.POUR_BUCKET;
+                instructionManagerComponent.setTemporaryMessage("Pour the contents of the bucket\ninto the sink to earn money", 5.0f);
+                break;
+            case TutorialStep.POUR_BUCKET:
+                currentTutorialStep = TutorialStep.CONTINUE;
+                instructionManagerComponent.setTemporaryMessage("To start the experiment, repeat this\nprocess until you've earned $150.", 6.0f);
+                break;
+            case TutorialStep.CONTINUE:
+                Debug.Log("All tutorial steps complete.");
+                currentTutorialStep = TutorialStep.DONE_TUTORIAL;
+                break;
+            default:
+                Debug.Log("Invalid tutorial step.");
+                break;
+        }
+    }
+
+
     /* 
     * Hard reset to some value for current amount of water in the bucket.
     */
@@ -254,6 +328,9 @@ public class SimManager : MonoBehaviour {
     */
     public void increasePayload (int amt) {
         this.currentPayload += amt;
+        if (currentTutorialStep == TutorialStep.FILL && currentPayload > FILL_BUCKET_TRIGGER_THRESHOLD) {
+            advanceTutorialStep();
+        }
     }
 
 
@@ -489,12 +566,15 @@ public class SimManager : MonoBehaviour {
                     // Establish key parameters from the day configuration object
                     currentDayConfig = configParser.getConfigs()[currentDay - 1];
                     currentDayDuration = currentDayConfig.getDuration();
+                    Debug.Log("Next day config loaded.");
 
                     if (currentDay != this.configParser.numDays()) {
                         nextDayDuration = configParser.getConfigs()[currentDay].getDuration();
                     } else {
                         nextDayDuration = 0.0f;
                     }
+
+                    Debug.Log("Next day duration loaded.");
 
                     // Call out to necessary scripts to apply impairments for the current day (if any)
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
@@ -515,16 +595,18 @@ public class SimManager : MonoBehaviour {
                                     break;
                             }
                         }
-                    }
+                    } Debug.Log("Next day impairments loaded.");
+
 
                     // Set up the treatment station if there should be treatments available
                     if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
                         pillManagerComponent.activatePanels();
-                    }
+                    } Debug.Log("Next day treatments loaded.");
 
                     // Reset simulation parameters and play effects
                     currentGameState = GameState.RUNNING;
                     elapsedDayTime = 0.0f;
+                    Debug.Log("Preparing to start day.");
                     transitionOverlay.SetActive(false);
                     audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);
                     flowManagerComponent.startFlow();
@@ -592,6 +674,7 @@ public class SimManager : MonoBehaviour {
                     // Either enter the transition phase before beginning the new day, or
                     // we're all done - play sound effects and set states accordingly.
                     if (currentDay + 1 > totalDays) {
+                        Debug.Log("Simulation complete.");
                         currentGameState = GameState.COMPLETE;
                         audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
                         resetCountdown();
