@@ -111,7 +111,7 @@ namespace Valve.VR.InteractionSystem
             }
         }
 
-        private List<AttachedObject> attachedObjects = new List<AttachedObject>();
+        public List<AttachedObject> attachedObjects = new List<AttachedObject>();
 
         public ReadOnlyCollection<AttachedObject> AttachedObjects
         {
@@ -368,6 +368,7 @@ namespace Valve.VR.InteractionSystem
             attachedObject.attachedObject = objectToAttach;
             attachedObject.interactable = objectToAttach.GetComponent<Interactable>();
             attachedObject.handAttachmentPointTransform = this.transform;
+            Debug.Log(this.transform);
 
             if (attachedObject.interactable != null)
             {
@@ -434,6 +435,7 @@ namespace Valve.VR.InteractionSystem
             {
                 if (attachmentOffset != null)
                 {
+                    Debug.Log("snap with offset");
                     //offset the object from the hand by the positional and rotational difference between the offset transform and the attached object
                     Quaternion rotDiff = Quaternion.Inverse(attachmentOffset.transform.rotation) * objectToAttach.transform.rotation;
                     objectToAttach.transform.rotation = attachedObject.handAttachmentPointTransform.rotation * rotDiff;
@@ -443,6 +445,7 @@ namespace Valve.VR.InteractionSystem
                 }
                 else
                 {
+                    Debug.Log("snap without offset");
                     //snap the object to the center of the attach point
                     objectToAttach.transform.rotation = attachedObject.handAttachmentPointTransform.rotation;
                     objectToAttach.transform.position = attachedObject.handAttachmentPointTransform.position;
@@ -459,6 +462,7 @@ namespace Valve.VR.InteractionSystem
             {
                 if (attachmentOffset != null)
                 {
+                    Debug.Log("with offset");
                     //get the initial positional and rotational offsets between the hand and the offset transform
                     Quaternion rotDiff = Quaternion.Inverse(attachmentOffset.transform.rotation) * objectToAttach.transform.rotation;
                     Quaternion targetRotation = attachedObject.handAttachmentPointTransform.rotation * rotDiff;
@@ -471,6 +475,7 @@ namespace Valve.VR.InteractionSystem
                 }
                 else
                 {
+                    Debug.Log("without offset");
                     attachedObject.initialPositionalOffset = attachedObject.handAttachmentPointTransform.InverseTransformPoint(objectToAttach.transform.position);
                     attachedObject.initialRotationalOffset = Quaternion.Inverse(attachedObject.handAttachmentPointTransform.rotation) * objectToAttach.transform.rotation;
                 }
@@ -501,7 +506,7 @@ namespace Valve.VR.InteractionSystem
             attachedObjects.Add(attachedObject);
 
             UpdateHovering();
-
+            Debug.Log("Object Attached");
             if (spewDebugText)
                 HandDebugLog("AttachObject " + objectToAttach);
             objectToAttach.SendMessage("OnAttachedToHand", this, SendMessageOptions.DontRequireReceiver);

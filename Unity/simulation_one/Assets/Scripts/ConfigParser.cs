@@ -70,13 +70,13 @@ public class ConfigParser {
         Debug.Log("Setting Day One");
         Impairment [] dayOneImps = new Impairment [0];
         Treatment dayOneTreatment = null;   // TODO
-        float dayOneDur = 31.0f;
+        float dayOneDur = 120.0f;
         float dayOneMult = 2.0f;
         int dayOne = 1;
 
         // Day Two
         Debug.Log("Setting Day Two");
-        float dayTwoDur = 32.0f;
+        float dayTwoDur = 120.0f;
         Impairment [] dayTwoImps = new Impairment [1];
         Treatment dayTwoTreatment = new Treatment (
             100.0f,
@@ -94,12 +94,12 @@ public class ConfigParser {
             0.0f
         );   // TODO
         //dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY, 0.5f);
-        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 1.0f);
+        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.3f);
         int dayTwo = 2;
 
         // Day Three
         Debug.Log("Setting Day Three");
-        float dayThreeDur = 33.0f;
+        float dayThreeDur = 120.0f;
         Impairment [] dayThreeImps = new Impairment [2];
         Treatment dayThreeTreatment = new Treatment (
             100.0f,
@@ -116,7 +116,7 @@ public class ConfigParser {
             0.0f,
             0.0f
         );
-        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.5f);
+        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.7f);
         dayThreeImps[1] = new Impairment (Impairment.ImpairmentType.VISUAL_FOG, 0.8f);
         int dayThree = 3;
 
