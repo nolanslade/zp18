@@ -455,6 +455,7 @@ public class SimManager : MonoBehaviour {
 
             // TODO - anything else needed here?
             int a = 1;
+            simPersister.closeStreamWriter();
         }
 
 

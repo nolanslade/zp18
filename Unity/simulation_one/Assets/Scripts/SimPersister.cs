@@ -25,6 +25,8 @@ public class SimPersister {
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string LOG_FILE_SUFF  = ".txt";
 
+    private System.IO.StreamWriter fileWriter;
+
     /*
 	* Creates a new persister object - writes to DB or log files
     */
@@ -43,7 +45,12 @@ public class SimPersister {
     	}
 
     	// TODO check for file here + make sure valid directory
-    	// .....
+        fileWriter = System.IO.File.CreateText(Application.dataPath + logFileName);
+
+        //Print the text from the file
+        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + logFileName); 
+        Debug.Log(fileReader.ReadToEnd());
+        fileReader.Close();
     	writeIntroduction ();
     }
 
@@ -55,7 +62,28 @@ public class SimPersister {
     private void writeIntroduction () {
     	
     	try {
-    		int a = 1; // TODO
+            string s = "";
+             
+             const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}";
+             
+             s = string.Format (
+    			fmt,
+    			"Global Time",
+                "Current Day",
+                "Current State",
+                "Headset X",
+                "Headset Y",
+                "Headset Z",
+                "Day Time",
+                "Total Score",
+                "Day Score",
+                "Time Waited For Treatment Day",
+                "Amount Payed For Treatment Day",
+                "Time Waited For Treatment Total",
+                "Amount Payed For Treatment Total"
+    		);
+
+            fileWriter.WriteLine(s);
     	} 
 
     	catch (System.Exception e) {
@@ -116,6 +144,8 @@ public class SimPersister {
                 amountPayedForTreatmentTotal.ToString()
     		);
 
+            fileWriter.WriteLine(s);
+
             if (debugMode)
                 Debug.Log(s);
     	} 
@@ -137,6 +167,16 @@ public class SimPersister {
 
     	catch (System.Exception e) {
     		Debug.Log ("DB Persistance exception: " + e.Message + "\n" + e.StackTrace);
+    	}
+    }
+
+    public void closeStreamWriter () {
+        try {
+    		fileWriter.Close();
+    	} 
+
+    	catch (System.Exception e) {
+    		Debug.Log ("StreamWriter exception: " + e.Message + "\n" + e.StackTrace);
     	}
     }
 }
