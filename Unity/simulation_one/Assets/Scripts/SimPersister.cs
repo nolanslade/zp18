@@ -35,7 +35,7 @@ public class SimPersister {
         Debug.Log("Setting persistence file name.");
         this.participantName = ParticipantData.name;
 		this.startTime = System.DateTime.Now;    	
-    	this.logFileName = LOG_FILE_PREF + startTime.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
+    	this.logFileName = LOG_FILE_PREF + participantName + startTime.ToString(LOG_FILE_PATT) + LOG_FILE_SUFF;
 
     	if (conn != null) {
     		// TODO
@@ -44,13 +44,17 @@ public class SimPersister {
     		// TODO - log something here?
     		int a = 1;
     	}
-
+        Debug.Log(Application.persistentDataPath);
         // TODO check for file here + make sure valid directory
         Debug.Log("Initializing file writer.");
-        fileWriter = System.IO.File.CreateText(Application.dataPath + logFileName);
+        if(!System.IO.Directory.Exists(Application.persistentDataPath + "//OutputData")) {
+            System.IO.Directory.CreateDirectory(Application.persistentDataPath + "//OutputData");
+        }
+
+        System.IO.File.CreateText(Application.persistentDataPath + "//OutputData//" + logFileName).Dispose();
+        fileWriter = new System.IO.StreamWriter(Application.persistentDataPath + "//OutputData//" + logFileName, true);
 
         /*
-        //Print the text from the file
         Debug.Log("Initializing file writer2.");
         System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + logFileName);
         Debug.Log("Initializing file writer3.");
@@ -58,7 +62,9 @@ public class SimPersister {
         Debug.Log("Initializing file writer4.");
         fileReader.Close();
         Debug.Log("Initializing file writer5.");
-        writeIntroduction ();*/
+        */
+        Debug.Log("Call writing introduction");
+        writeIntroduction ();
     }
 
 
@@ -89,9 +95,10 @@ public class SimPersister {
                 "Time Waited For Treatment Total",
                 "Amount Payed For Treatment Total"
     		);
-
+            Debug.Log("Writing Headers");
             fileWriter.WriteLine(s);
-    	} 
+
+        } 
 
     	catch (System.Exception e) {
     		Debug.Log ("Intro persistance exception: " + e.Message + "\n" + e.StackTrace);
@@ -134,22 +141,22 @@ public class SimPersister {
         const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}";
     	
     	try {
-    		s = string.Format (
-    			fmt,
-    			globalTime.ToString(),
-                currentDay.ToString(),
-                currentState.ToString(),
-                headsetX.ToString(),
-                headsetY.ToString(),
-                headsetZ.ToString(),
-                dayTime.ToString(),
-                totalScore.ToString(),
-                dayScore.ToString(),
-                timeWaitedForTreatmentDay.ToString(),
-                amountPayedForTreatmentDay.ToString(),
-                timeWaitedForTreatmentTotal.ToString(),
-                amountPayedForTreatmentTotal.ToString()
-    		);
+            s = string.Format(
+            fmt,
+            globalTime.ToString(),
+            currentDay.ToString(),
+            currentState.ToString(),
+            headsetX.ToString(),
+            headsetY.ToString(),
+            headsetZ.ToString(),
+            dayTime.ToString(),
+            totalScore.ToString(),
+            dayScore.ToString(),
+            timeWaitedForTreatmentDay.ToString(),
+            amountPayedForTreatmentDay.ToString(),
+            timeWaitedForTreatmentTotal.ToString(),
+            amountPayedForTreatmentTotal.ToString()
+        );
 
             fileWriter.WriteLine(s);
 
@@ -186,4 +193,6 @@ public class SimPersister {
     		Debug.Log ("StreamWriter exception: " + e.Message + "\n" + e.StackTrace);
     	}
     }
+
+
 }
