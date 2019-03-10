@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using Valve.VR;
 
@@ -10,20 +11,19 @@ public class SimManager : MonoBehaviour {
     public bool persistenceEnabled;
 
     public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
-    public float fogImpairmentMaxOpacity;   // At 100% strength the fog will be this opaque
-    public GameObject fogImpairmentPanel;
+    public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
     private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
 
     private const bool usingConfigFile                  = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state 
-    private const float DAY_ZERO_REQ_SCORE              = 150.0f;     // Score needed to 'pass' day zero
+    private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
-    private const float PHYSICS_BASE_AMT                = -30.0f;
+    private const float PHYSICS_BASE_AMT                = -30.0f;    // Default gravity strength
 
     // State management
     public enum GameState
@@ -68,6 +68,7 @@ public class SimManager : MonoBehaviour {
     public GameObject curtainLeft;          // To reduce nausea caused by looking out the window
     public GameObject curtainRight;
     public GameObject instructionManager;
+    public GameObject fogImpairmentPanel;
 
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
@@ -402,7 +403,10 @@ public class SimManager : MonoBehaviour {
     */
     private void modifyImpairmentFactors (float factor) {
 
-        if (factor == 1.0f) { 
+        // If factor = 1.0f, then it means remove 100% of the current
+        // impairment strengths.
+
+        if (factor >= 1.0f) { 
             unapplyImpairments(); 
         }
 
@@ -414,12 +418,15 @@ public class SimManager : MonoBehaviour {
                         leftHandTracker.modifyStrength(factor);
                         break;
                     case Impairment.ImpairmentType.VISUAL_FOG:
-                        // TODO
+                        Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
+                        // TODO -> set opacity properly using previous strength
+                        fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMaxAlpha * 0.0f);                        
                         break;
                     case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
-                        //Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT - SOMETHING, 0.0f);
+                        //Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT - SOMETHING, 0.0f); ???
                         break;
                     default:
+                        Debug.Log("Unable to modify unsupported impairment factor: " + i.getType().ToString());
                         break;
                 }
             }
@@ -442,9 +449,9 @@ public class SimManager : MonoBehaviour {
                     break;
                 case Impairment.ImpairmentType.VISUAL_FOG:
                     fogImpairmentPanel.SetActive(false);
-                    // TODO - set opacity according to strength
                     break;
                 default:
+                    Debug.Log("Unable to unapply unsupported impairment: " + i.getType().ToString());
                     break;
             }
         }
@@ -593,7 +600,6 @@ public class SimManager : MonoBehaviour {
                     // Call out to necessary scripts to apply impairments for the current day (if any)
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
-
                             float str = imp.getStrength();
                             switch (imp.getType()) {
                                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
@@ -602,10 +608,11 @@ public class SimManager : MonoBehaviour {
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true); 
-                                    // TODO - set opacity according to strength
+                                    Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
+                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, str * fogImpairmentMaxAlpha);
                                     break;
                                 case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
-                                    Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT - str * gravityImpairmentMaxDrop, 0);
+                                    Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
                                     break;
                                 default:
                                     Debug.Log("Invalid impairment type");
