@@ -11,6 +11,7 @@ public class SimManager : MonoBehaviour {
 
     public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
     public float fogImpairmentMaxOpacity;   // At 100% strength the fog will be this opaque
+    public GameObject fogImpairmentPanel;
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
     private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
@@ -339,8 +340,7 @@ public class SimManager : MonoBehaviour {
     * For the speed penalty impairment (and perhaps others) - 
     * depreciates the value of the container content by some amount.
     */
-    public void decreasePayload (int amt)
-    {
+    public void decreasePayload (int amt) {
         // Prevent negativity
         this.currentPayload = System.Math.Max(this.currentPayload - amt, 0);
     }
@@ -441,7 +441,8 @@ public class SimManager : MonoBehaviour {
                     Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT, 0.0f);
                     break;
                 case Impairment.ImpairmentType.VISUAL_FOG:
-                    // TODO
+                    fogImpairmentPanel.SetActive(false);
+                    // TODO - set opacity according to strength
                     break;
                 default:
                     break;
@@ -596,14 +597,12 @@ public class SimManager : MonoBehaviour {
                             float str = imp.getStrength();
                             switch (imp.getType()) {
                                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
-                                    //str *= maximumShakeOffset;
                                     rightHandTracker.applyImpairment(str);
                                     leftHandTracker.applyImpairment(str);
-                                    //SteamVR_Controller.Input ((int)viveControllerLeft.index).TriggerHapticPulse(500);
-                                    //SteamVR_Controller.Input ((int)viveControllerRight.index).TriggerHapticPulse(500);
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
-                                    // TODO - enable panel and set opacity
+                                    fogImpairmentPanel.SetActive(true); 
+                                    // TODO - set opacity according to strength
                                     break;
                                 case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                                     Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT - str * gravityImpairmentMaxDrop, 0);
