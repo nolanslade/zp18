@@ -46,8 +46,10 @@ public class SimManager : MonoBehaviour {
         DONE_TUTORIAL
     }
 
-    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, nextDayDuration;
-    private float timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, amountPayedForTreatmentTotal;
+    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
+                    nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, 
+                    amountPayedForTreatmentTotal, avgSpeedLastSecond;
+    private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
     private int currentDay, totalDays;
     private float persistTime = 0.0f;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
@@ -458,6 +460,18 @@ public class SimManager : MonoBehaviour {
     }
 
 
+    /* Standard distance formula for 3D points */
+    private double distanceBetween (Vector3 a, Vector3 b) {
+        return (
+            System.Math.Sqrt ( 
+                System.Math.Pow(b.x - a.x, 2.0) +
+                System.Math.Pow(b.y - a.y, 2.0) +
+                System.Math.Pow(b.z - a.z, 2.0) 
+            )
+        );
+    }
+
+
     /*
     * Main loop
     *
@@ -515,6 +529,12 @@ public class SimManager : MonoBehaviour {
                 float                   amountPayedForTreatmentTotal
                 */
 
+                // Get user speed over last second (in meters)
+                posB = physicalCamera.transform.position;
+                Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
+                Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
+                Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
+
                 simPersister.persist (
 
                     elapsedTotalTime,
@@ -540,6 +560,8 @@ public class SimManager : MonoBehaviour {
                 );
 
                 persistTime = 0.0f;
+                posA = physicalCamera.transform.position;
+                Debug.Log("PosA reset: " + posA.x + ", " + posA.y + ", " + posA.z);
 
             }
         }
