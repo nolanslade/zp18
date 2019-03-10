@@ -14,9 +14,9 @@ public class SimManager : MonoBehaviour {
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
-    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
+    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";
 
-    private const bool usingConfigFile                  = false;     // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private const bool usingConfigFile                  = false;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state 
     private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
@@ -531,9 +531,9 @@ public class SimManager : MonoBehaviour {
 
                 // Get user speed over last second (in meters)
                 posB = physicalCamera.transform.position;
-                Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
-                Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
-                Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
+                //Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
+                //Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
+                //Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
 
                 simPersister.persist (
 
@@ -561,7 +561,7 @@ public class SimManager : MonoBehaviour {
 
                 persistTime = 0.0f;
                 posA = physicalCamera.transform.position;
-                Debug.Log("PosA reset: " + posA.x + ", " + posA.y + ", " + posA.z);
+                //Debug.Log("PosA reset: " + posA.x + ", " + posA.y + ", " + posA.z);
 
             }
         }

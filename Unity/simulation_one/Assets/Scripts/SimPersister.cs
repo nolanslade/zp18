@@ -153,8 +153,8 @@ public class SimPersister {
             fileWriter.WriteLine(s);
             closeStreamWriter();
 
-            if (debugMode)
-                Debug.Log(s);
+           /* if (debugMode)
+                Debug.Log(s);*/
     	} 
 
     	catch (System.Exception e) {

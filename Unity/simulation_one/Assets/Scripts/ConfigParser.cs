@@ -191,8 +191,8 @@ public class ConfigParser {
         }
 
 
-      /*  Debug.Log("DAYS " + dayCount);
-          foreach(string i in sim){
+        /*Debug.Log("DAYS " + dayCount);
+          foreach(string i in dayList){
             Debug.Log(i);
           }*/
 
@@ -211,9 +211,9 @@ public class ConfigParser {
 
         try
         {
-
+            Debug.Log("PARSING FILE");
             this.dayConfigs = new DayConfiguration[this.dayCount];
-            int day = 0, trackDays = -1, impair = 0, countCost = 0;
+            int day = 0, trackDays = -1, impair = -1, countCost = 0;
             bool isImp = false;
             bool isTreat = false;
             bool isCost = false;
@@ -221,35 +221,93 @@ public class ConfigParser {
             char[] delimiter = { '\n', ':', '\t', '#', ' ', '%'};
             List<Impairment> helperArray = new List<Impairment>();
 
-            foreach (string i in this.dayList)
+     //    foreach (string i in this.dayList)
+        for(int i = 0; i < this.dayList.Count; i++)
             {
-                if (i.Contains(ConfigKeyword.DAY))
+                if (trackDays >= 0 && this.dayList[i].Contains(ConfigKeyword.DAY))
+                {
+                    Impairment impairObj;
+                    Impairment[] dayImpairs;
+                    Treatment dayTreats; //
+
+                    if (impair == -1)
+                    {
+                        // impairObj = new Impairment();
+                        // helperArray.Add(impairObj);
+                        dayImpairs = new Impairment[trackDays];
+                      //  Debug.Log("NO IMPAIRS");
+                    }
+                    else
+                    {
+                        impairObj = new Impairment((Impairment.ImpairmentType)impair, factor);
+
+                        helperArray.Add(impairObj);
+
+                        dayImpairs = helperArray.ToArray();
+                    }
+
+                    if (C != 0.00f)
+                    {
+                        dayTreats = new Treatment(
+                          C,
+                          a,
+                          b,
+                          c,
+
+                            // TODO *********************
+                            0.0f, 0.0f, 0.0f, 0.0f,
+
+                          1.0f,
+                          1.0f,
+                          0.0f,
+                          0.0f,
+                          0.0f);
+                    }
+                    else
+                    {
+                        dayTreats = null;
+                       // Debug.Log("NO TREATS");
+                    }
+
+
+
+                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats);
+                    isImp = false;
+                    isTreat = false;
+                    isCost = false;
+                    countCost = 0;
+                    impair = -1;
+                    dur = 0.00f; wait = 0.00f; certainty = 0.00f; factor = 0.00f; C = 0.00f; a = 0.00f; b = 0.00f; c = 0.00f;
+                }
+                if (this.dayList[i].Contains(ConfigKeyword.DAY))
                 {
                     //  Debug.Log("Day");
-                    string[] split = i.Split(delimiter[4]);
+                    string[] split = this.dayList[i].Split(delimiter[4]);
                     day = int.Parse(split[split.Length - 1]);
                   
                     trackDays++;
                 }
-                else if (i.Contains(ConfigKeyword.DURATION))
+                else if (this.dayList[i].Contains(ConfigKeyword.DURATION))
                 {
-                    string[] split = i.Split(delimiter[1]);
-                    dur = float.Parse(split[1]);
+                    string time = this.dayList[i].Split(new char[] { ':' }, 2)[1];
+                    string[] split = time.Split(delimiter[1]);
+                    dur = float.Parse(split[0])*60 + float.Parse(split[1]);
+                    Debug.Log("DUR " + time);
                    
                 }
-                else if (i.Contains(ConfigKeyword.IMPAIRMENT))
+                else if (this.dayList[i].Contains(ConfigKeyword.IMPAIRMENT))
                 {
                     isImp = true;
                     isTreat = false;
                     isCost = false;
                 }
-                else if (i.Contains(ConfigKeyword.TREATMENT))
+                else if (this.dayList[i].Contains(ConfigKeyword.TREATMENT))
                 {
                     isTreat = true;
                     isImp = false;
                     isCost = false;
                 }
-                else if (i.Contains(ConfigKeyword.COST))
+                else if (this.dayList[i].Contains(ConfigKeyword.COST))
                 {
                     isCost = true;
                     isTreat = false;
@@ -257,49 +315,49 @@ public class ConfigParser {
                 }
                 if (isImp)
                 {
-                    if (i.Contains("Fog"))
+                    if (this.dayList[i].Contains("Fog"))
                     {
                         impair = 0;
-                        
+
                     }
-                    else if (i.Contains("Gravity"))
+                    else if (this.dayList[i].Contains("Gravity"))
                     {
                         impair = 1;
-                        
+
                     }
-                    else if (i.Contains("Shake"))
+                    else if (this.dayList[i].Contains("Shake"))
                     {
                         impair = 2;
-                      
+                        Debug.Log("SHAKE");
                     }
-                    else if (i.Contains("Speed"))
+                    else if (this.dayList[i].Contains("Speed"))
                     {
                         impair = 3;
-                        
+
                     }
-                    else if (i.Contains(ConfigKeyword.FACTOR))
+                    else if (this.dayList[i].Contains(ConfigKeyword.FACTOR))
                     {
-                        string[] split = i.Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
                         factor = float.Parse(splitPercent[0]) / 100;
-                       
+
                     }
 
                 }
                 else if (isTreat)
                 {
-                    if (i.Contains(ConfigKeyword.WAIT))
+                    if (this.dayList[i].Contains(ConfigKeyword.WAIT))
                     {
-                        string[] split = i.Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(delimiter[1]);
                         wait = float.Parse(split[1]);
-                    
+
                     }
-                    else if (i.Contains(ConfigKeyword.CERTAINTY))
+                    else if (this.dayList[i].Contains(ConfigKeyword.CERTAINTY))
                     {
-                        string[] split = i.Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
                         certainty = float.Parse(splitPercent[0]) / 100;
-                        
+
                     }
 
 
@@ -307,89 +365,61 @@ public class ConfigParser {
                 else if (isCost)
                 {
 
-                    if (i.Contains(ConfigKeyword.C) && i != ConfigKeyword.COST)
+                    if (this.dayList[i].Contains(ConfigKeyword.C) && this.dayList[i] != ConfigKeyword.COST)
                     {
-                        string[] split = i.Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(delimiter[1]);
                         C = float.Parse(split[1]);
-                        countCost++;
                     }
-                    else if (i.Contains(ConfigKeyword.a))
+                    else if (this.dayList[i].Contains(ConfigKeyword.a))
                     {
-                        if (i.Contains("default"))
+                        if (this.dayList[i].Contains("default"))
                         {
                             a = 1.00f;
 
                         }
                         else
                         {
-                            string[] split = i.Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(delimiter[1]);
                             a = float.Parse(split[1]);
 
                         }
-                        countCost++;
 
                     }
-                    else if (i.Contains(ConfigKeyword.b))
+                    else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if (i.Contains("default"))
+                        if (this.dayList[i].Contains("default"))
                         {
                             b = 1.00f;
 
                         }
                         else
                         {
-                            string[] split = i.Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(delimiter[1]);
                             b = float.Parse(split[1]);
 
                         }
-                        countCost++;
                     }
-                    else if (i.Contains(ConfigKeyword.c) && i != ConfigKeyword.COST)
+                    else if (this.dayList[i].Contains(ConfigKeyword.c) && this.dayList[i] != ConfigKeyword.COST)
                     {
-                        if (i.Contains("default"))
+                        if (this.dayList[i].Contains("default"))
                         {
                             c = 1.00f;
 
                         }
                         else
                         {
-                            string[] split = i.Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(delimiter[1]);
                             c = float.Parse(split[1]);
 
                         }
-                        countCost++;
+
                     }
 
-
+                    countCost++;
+                    Debug.Log("COUNT " + countCost);
                 }
-                if (countCost == 4)
-                {
-                    Impairment impairObj = new Impairment((Impairment.ImpairmentType)impair, factor);
 
-                    helperArray.Add(impairObj);
-
-                    Impairment[] dayImpairs = helperArray.ToArray();
-
-                    Treatment dayTreats = new Treatment(
-                          C,
-                          a,
-                          b,
-                          c,
-
-                            // TODO *********************
-                            0.0f,0.0f,0.0f,0.0f,
-
-                          1.0f,
-                          1.0f,
-                          0.0f,
-                          0.0f,
-                          0.0f);
-                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats);
-                    isImp = false;
-                    isTreat = false;
-                    isCost = false;
-                    countCost = 0;
-                }
+                
 
 
             }
