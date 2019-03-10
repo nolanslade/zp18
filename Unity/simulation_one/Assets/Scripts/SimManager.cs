@@ -20,8 +20,6 @@ public class SimManager : MonoBehaviour {
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
-
-    public float maximumShakeOffset; // Physical shake impairment strength relative to this value
     
     // State management
     public enum GameState
@@ -583,7 +581,7 @@ public class SimManager : MonoBehaviour {
                             float str = imp.getStrength();
                             switch (imp.getType()) {
                                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
-                                    str *= maximumShakeOffset;
+                                    //str *= maximumShakeOffset;
                                     rightHandTracker.applyImpairment(str);
                                     leftHandTracker.applyImpairment(str);
                                     //SteamVR_Controller.Input ((int)viveControllerLeft.index).TriggerHapticPulse(500);

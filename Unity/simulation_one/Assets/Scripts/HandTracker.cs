@@ -7,25 +7,37 @@ public class HandTracker : MonoBehaviour {
     public GameObject physicalHandObj;
     public float X_ROTATE, Y_ROTATE, Z_ROTATE;
     public float X_TRANSLATE, Y_TRANSLATE, Z_TRANSLATE;
+    public float compareThreshold;      // How close do the transforms need to be to be 'equal'
+    public float baseApproachSpeed;     // Scale this by the impairment factor
+    public float maximumShakeOffset;    // Shake strength relative to this value (0.8 recommended)
+    public bool useSmoothedJitter;      // Instead of randomly picking a location on every frame,
+                                        // make it more smooth by picking a random destination, then 
+                                        // moving towards it at a constant rate, and then repeat.
 
-    private int activeImpairmentAmt = 0;
-    private bool impaired = false;  // We probably don't need this
+    private const float UNITY_VIVE_SCALE            = 18.77f;
+    private const float IMPAIRMENT_CAST_PRECISION   = 1000.0f;
+
     private System.Random random = new System.Random ();
+    private int activeImpairmentAmt = 0;
+    private bool impaired = false;                                          // We probably don't need this
+    private float scaledMoveSpeed;                                          // Will be ase * impairment factor
+    private Vector3 approachDestination;
 	
 	// Update is called once per frame
 	void Update () {
 
         if (impaired) {
-            this.transform.position = new Vector3(
-                physicalHandObj.transform.localPosition.x * 18.77f + X_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f),
-                physicalHandObj.transform.localPosition.y * 18.77f + Y_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f),
-                physicalHandObj.transform.localPosition.z * 18.77f + Z_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / 1000.0f)
-            );
+            if (!useSmoothedJitter) {
+                this.transform.position = generateRandomDestination ();
+            } else {
+                this.transform.position = Vector3.MoveTowards (transform.position, approachDestination, scaledMoveSpeed);
+                if (positionMatch(this.transform.position, approachDestination)) approachDestination = generateRandomDestination ();
+            }
         } else {
-            this.transform.position = new Vector3(
-                physicalHandObj.transform.localPosition.x * 18.77f + X_TRANSLATE,
-                physicalHandObj.transform.localPosition.y * 18.77f + Y_TRANSLATE,
-                physicalHandObj.transform.localPosition.z * 18.77f + Z_TRANSLATE
+            this.transform.position = new Vector3 (
+                physicalHandObj.transform.localPosition.x * UNITY_VIVE_SCALE + X_TRANSLATE,
+                physicalHandObj.transform.localPosition.y * UNITY_VIVE_SCALE + Y_TRANSLATE,
+                physicalHandObj.transform.localPosition.z * UNITY_VIVE_SCALE + Z_TRANSLATE
             );
         }
 
@@ -34,12 +46,48 @@ public class HandTracker : MonoBehaviour {
 	}
 
     /*
+    * Stephanie's feedback was that the jitter was unnatural / too random 
+    * which is fair, considering we randomly pick a spot on every frame.
+    * This is an alternative way, where we pick a random destination, then
+    * move to it, and repeat. It should be a bit smoother.
+    *
+    * This function generates that destination.
+    */
+    private Vector3 generateRandomDestination () {
+        return new Vector3 (
+            physicalHandObj.transform.localPosition.x * UNITY_VIVE_SCALE + X_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
+            physicalHandObj.transform.localPosition.y * UNITY_VIVE_SCALE + Y_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
+            physicalHandObj.transform.localPosition.z * UNITY_VIVE_SCALE + Z_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION)
+        );
+    }
+
+
+    /*
+    * See if the movement towards the point has been completed
+    */
+    private bool positionMatch (Vector3 v1, Vector3 v2) {
+        return (
+            System.Math.Abs(v1.x-v2.x) < compareThreshold &&
+            System.Math.Abs(v1.y-v2.y) < compareThreshold && 
+            System.Math.Abs(v1.z-v2.z) < compareThreshold
+        );
+    }
+
+
+    /*
     * Offsets the transform by a random value below or equal to the given value
     */
-    public void applyImpairment (float maxOffset) {
-        this.activeImpairmentAmt = (int) (1000 * maxOffset);
+    public void applyImpairment (float impairmentStrength) {
+
+        if (useSmoothedJitter) { 
+            approachDestination = generateRandomDestination (); 
+            scaledMoveSpeed = impairmentStrength * baseApproachSpeed;
+        }
+
+        this.activeImpairmentAmt = (int) (1000 * impairmentStrength * maximumShakeOffset);
         this.impaired = true;
     }
+
 
     public void clearImpairment () {
         this.activeImpairmentAmt = 0;
