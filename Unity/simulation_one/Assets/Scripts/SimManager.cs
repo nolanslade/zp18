@@ -9,6 +9,8 @@ public class SimManager : MonoBehaviour {
 
     public bool persistenceEnabled;
 
+    public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
+    public float fogImpairmentMaxOpacity;   // At 100% strength the fog will be this opaque
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
     private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";   
@@ -20,7 +22,8 @@ public class SimManager : MonoBehaviour {
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
-    
+    private const float PHYSICS_BASE_AMT                = -30.0f;
+
     // State management
     public enum GameState
     {
@@ -410,6 +413,12 @@ public class SimManager : MonoBehaviour {
                         rightHandTracker.modifyStrength(factor);
                         leftHandTracker.modifyStrength(factor);
                         break;
+                    case Impairment.ImpairmentType.VISUAL_FOG:
+                        // TODO
+                        break;
+                    case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
+                        //Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT - SOMETHING, 0.0f);
+                        break;
                     default:
                         break;
                 }
@@ -427,6 +436,12 @@ public class SimManager : MonoBehaviour {
                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
                     rightHandTracker.clearImpairment();
                     leftHandTracker.clearImpairment();
+                    break;
+                case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
+                    Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT, 0.0f);
+                    break;
+                case Impairment.ImpairmentType.VISUAL_FOG:
+                    // TODO
                     break;
                 default:
                     break;
@@ -587,7 +602,12 @@ public class SimManager : MonoBehaviour {
                                     //SteamVR_Controller.Input ((int)viveControllerLeft.index).TriggerHapticPulse(500);
                                     //SteamVR_Controller.Input ((int)viveControllerRight.index).TriggerHapticPulse(500);
                                     break;
-                                // TODO ... others
+                                case Impairment.ImpairmentType.VISUAL_FOG:
+                                    // TODO - enable panel and set opacity
+                                    break;
+                                case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
+                                    Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT - str * gravityImpairmentMaxDrop, 0);
+                                    break;
                                 default:
                                     Debug.Log("Invalid impairment type");
                                     break;
