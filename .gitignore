@@ -87,3 +87,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#Output Data files
+OutputData/

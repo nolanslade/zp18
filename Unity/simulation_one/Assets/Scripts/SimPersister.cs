@@ -149,8 +149,9 @@ public class SimPersister {
             timeWaitedForTreatmentTotal.ToString(),
             amountPayedForTreatmentTotal.ToString()
         );
-
+            fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
             fileWriter.WriteLine(s);
+            closeStreamWriter();
 
             if (debugMode)
                 Debug.Log(s);
