@@ -47,22 +47,13 @@ public class SimPersister {
         Debug.Log(Application.persistentDataPath);
         // TODO check for file here + make sure valid directory
         Debug.Log("Initializing file writer.");
-        if(!System.IO.Directory.Exists(Application.persistentDataPath + "//OutputData")) {
-            System.IO.Directory.CreateDirectory(Application.persistentDataPath + "//OutputData");
+        if(!System.IO.Directory.Exists(Application.dataPath + "/OutputData")) {
+            System.IO.Directory.CreateDirectory(Application.dataPath + "/OutputData");
         }
 
-        System.IO.File.CreateText(Application.persistentDataPath + "//OutputData//" + logFileName).Dispose();
-        fileWriter = new System.IO.StreamWriter(Application.persistentDataPath + "//OutputData//" + logFileName, true);
+        System.IO.File.CreateText(Application.dataPath + "/OutputData/" + logFileName).Dispose();
+        fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
 
-        /*
-        Debug.Log("Initializing file writer2.");
-        System.IO.StreamReader fileReader = new System.IO.StreamReader(Application.dataPath + logFileName);
-        Debug.Log("Initializing file writer3.");
-        Debug.Log(fileReader.ReadToEnd());
-        Debug.Log("Initializing file writer4.");
-        fileReader.Close();
-        Debug.Log("Initializing file writer5.");
-        */
         Debug.Log("Call writing introduction");
         writeIntroduction ();
     }
@@ -97,6 +88,7 @@ public class SimPersister {
     		);
             Debug.Log("Writing Headers");
             fileWriter.WriteLine(s);
+            closeStreamWriter();
 
         } 
 
