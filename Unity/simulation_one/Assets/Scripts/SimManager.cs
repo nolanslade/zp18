@@ -14,10 +14,10 @@ public class SimManager : MonoBehaviour {
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
-    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";
+    private const string CONFIG_PATH    = "C:/Users/Aaska/Documents/4thYear/Capstone/ZP/sim_config.txt";//"C:/Users/CS4ZP6 user/Documents/sim_config.txt";
 
     private const bool usingConfigFile                  = false;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
-    private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state 
+    private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
     private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
@@ -30,14 +30,14 @@ public class SimManager : MonoBehaviour {
     {
         PAUSED,         // Still allows for physical movement
         RUNNING,
-        TRANSITION,     // Countdown state between days 
+        TRANSITION,     // Countdown state between days
         COMPLETE,       // All days successfully completed - simulation is over
         ERROR
     }
 
     enum TutorialStep
     {
-        BUCKET, 
+        BUCKET,
         HOLD_CONTAINER,
         FILL,
         GO_TO_SINK,
@@ -46,8 +46,8 @@ public class SimManager : MonoBehaviour {
         DONE_TUTORIAL
     }
 
-    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
-                    nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, 
+    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration,
+                    nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay,
                     amountPayedForTreatmentTotal, avgSpeedLastSecond;
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
     private int currentDay, totalDays;
@@ -57,11 +57,11 @@ public class SimManager : MonoBehaviour {
     // For countdown sound effects
     private bool  countdownStarted;
     private float countDownElapsed;             // Starts from 0, counts up with delta time
-    private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1    
+    private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
 
     // Key scene objects
     public GameObject audioManager;
-    public GameObject flowManager;          // Manages tap flow 
+    public GameObject flowManager;          // Manages tap flow
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
     public GameObject physicalCamera;       // Child object of [CameraRig]
     public GameObject pauseOverlay;
@@ -99,7 +99,7 @@ public class SimManager : MonoBehaviour {
     private Treatment currentDayTreatment;
 
 
-	/* 
+	/*
     * Initialization method
     * Runs once at scene load
     */
@@ -128,11 +128,11 @@ public class SimManager : MonoBehaviour {
             Debug.Log("Setting days.");
             totalDays = this.configParser.numDays();
             Debug.Log ("Starting with total days: " + totalDays);
-            
+
             if (totalDays == -1) {
                 currentGameState = GameState.ERROR;
                 Debug.Log ("Startup error: days invalid.");
-            } 
+            }
 
             else {
 
@@ -144,7 +144,7 @@ public class SimManager : MonoBehaviour {
                     this.curtainLeft.SetActive(true);
                     foreach (GameObject tree in GameObject.FindGameObjectsWithTag ("Trees")) { Destroy (tree); }
                     foreach (GameObject extTerr in GameObject.FindGameObjectsWithTag ("ExteriorTerrain")) { Destroy (extTerr); }
-                } 
+                }
 
                 else {
                     this.curtainRight.SetActive(false);
@@ -154,7 +154,7 @@ public class SimManager : MonoBehaviour {
                 currentDay                  = 0;                    // Training/tutorial day
                 currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
-                elapsedDayTime              = 0.0f;               
+                elapsedDayTime              = 0.0f;
                 elapsedTotalTime            = 0.0f;                 // Don't ever reset this
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
@@ -165,21 +165,21 @@ public class SimManager : MonoBehaviour {
             }
         }
     }
-	
+
 
     /*
     * Creates the parser object to read in the configuration
-    * file for this simulation. 
+    * file for this simulation.
     * Returns true on success of all parameters being set, false on any error.
     */
     private bool establishSimulationParameters () {
 
         Debug.Log("Establishing params.");
-       
+
         if (usingConfigFile) {
             Debug.Log ("Using custom parameters: " + CONFIG_PATH);
             this.configParser = new ConfigParser(CONFIG_PATH);
-            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0); 
+            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
 
         else {
@@ -213,7 +213,7 @@ public class SimManager : MonoBehaviour {
     }
 
 
-    /* 
+    /*
     * Custom payment - this can be used if a reward function multiplier
     * is being applied for the current day. Since the default payout
     * is one unit, the multiplier can be passed in as the custom amount.
@@ -277,7 +277,7 @@ public class SimManager : MonoBehaviour {
 
     public DayConfiguration getCurrentDayConfiguration () {
         return this.currentDayConfig;
-    } 
+    }
 
 
     /*
@@ -319,7 +319,7 @@ public class SimManager : MonoBehaviour {
     }
 
 
-    /* 
+    /*
     * Hard reset to some value for current amount of water in the bucket.
     */
     public void setCurrentWaterCarry (int numDrops) {
@@ -340,7 +340,7 @@ public class SimManager : MonoBehaviour {
 
 
     /*
-    * For the speed penalty impairment (and perhaps others) - 
+    * For the speed penalty impairment (and perhaps others) -
     * depreciates the value of the container content by some amount.
     */
     public void decreasePayload (int amt) {
@@ -364,8 +364,8 @@ public class SimManager : MonoBehaviour {
 
     /*
     * If the participant meets the criteria to receive treatment, then
-    * make the necessary changes to the simulation environment to 
-    * reflect the treatment being taken. This depends on the type of 
+    * make the necessary changes to the simulation environment to
+    * reflect the treatment being taken. This depends on the type of
     * treatment, i.e. pay or wait, as well as how effective the treatment
     * is, etc.
     */
@@ -374,7 +374,7 @@ public class SimManager : MonoBehaviour {
         currentDayTreatment.obtain(elapsedDayTime);
         bool isEffective = currentDayTreatment.isEffective();
         float effectiveness = currentDayTreatment.getEffectiveness();
-        
+
         if (obtainType == PillManager.TreatmentObtainType.PAY) {
 
             currentScore -= effectiveCost;
@@ -382,7 +382,7 @@ public class SimManager : MonoBehaviour {
             if (isEffective) {
                 audioManagerComponent.playSound(AudioManager.SoundType.TAKE_MEDICINE);
                 modifyImpairmentFactors(effectiveness);
-            } 
+            }
 
             else {
                 // TODO - maybe should have another sound effect to let them know it didnt work
@@ -408,8 +408,8 @@ public class SimManager : MonoBehaviour {
         // If factor = 1.0f, then it means remove 100% of the current
         // impairment strengths.
 
-        if (factor >= 1.0f) { 
-            unapplyImpairments(); 
+        if (factor >= 1.0f) {
+            unapplyImpairments();
         }
 
         else {
@@ -422,7 +422,7 @@ public class SimManager : MonoBehaviour {
                     case Impairment.ImpairmentType.VISUAL_FOG:
                         Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
                         // TODO -> set opacity properly using previous strength
-                        fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMaxAlpha * 0.0f);                        
+                        fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMaxAlpha * 0.0f);
                         break;
                     case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                         //Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT - SOMETHING, 0.0f); ???
@@ -463,10 +463,10 @@ public class SimManager : MonoBehaviour {
     /* Standard distance formula for 3D points */
     private double distanceBetween (Vector3 a, Vector3 b) {
         return (
-            System.Math.Sqrt ( 
+            System.Math.Sqrt (
                 System.Math.Pow(b.x - a.x, 2.0) +
                 System.Math.Pow(b.y - a.y, 2.0) +
-                System.Math.Pow(b.z - a.z, 2.0) 
+                System.Math.Pow(b.z - a.z, 2.0)
             )
         );
     }
@@ -482,7 +482,7 @@ public class SimManager : MonoBehaviour {
 
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
-            
+
             elapsedTotalTime += Time.deltaTime;
             persistTime      += Time.deltaTime;
 
@@ -511,7 +511,7 @@ public class SimManager : MonoBehaviour {
                 Persistence parameter list (ordered):
 
                 float                   elapsedTotalTime,
-                int                     currentDay,             
+                int                     currentDay,
                 SimManager.GameState    currentState,
                 float                   headsetX,
                 float                   headsetY,
@@ -547,7 +547,7 @@ public class SimManager : MonoBehaviour {
                     currentScore,       // TODO
                     currentScore,       // TODO
                     // ********
-                    // carrying stuff 
+                    // carrying stuff
                     // shake imp...
                     // shake imp...
                     // treatment on this day?
@@ -581,21 +581,21 @@ public class SimManager : MonoBehaviour {
 
         else if (currentGameState == GameState.ERROR || this.configParser.getConfigs() == null) {
 
-            // TODO - should put a red haze into the headset or 
+            // TODO - should put a red haze into the headset or
             // something with the error message in the middle
             int a = 1;
-        } 
+        }
 
 
         else if (currentGameState == GameState.PAUSED) {
 
             // TODO - anything else needed here?
             int a = 1;
-        } 
+        }
 
 
         else if (currentGameState == GameState.TRANSITION) {
-            
+
             elapsedDayTime += Time.deltaTime;
 
             if (elapsedDayTime > TRANSITION_TIME) {
@@ -629,7 +629,7 @@ public class SimManager : MonoBehaviour {
                                     leftHandTracker.applyImpairment(str);
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
-                                    fogImpairmentPanel.SetActive(true); 
+                                    fogImpairmentPanel.SetActive(true);
                                     Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
                                     fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, str * fogImpairmentMaxAlpha);
                                     break;
@@ -680,27 +680,27 @@ public class SimManager : MonoBehaviour {
                 countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
                 */
 
-                float remaining = currentDayDuration - elapsedDayTime; 
+                float remaining = currentDayDuration - elapsedDayTime;
                 if (remaining < COUNTDOWN_THRESHOLD) {
 
                     countDownElapsed += Time.deltaTime;
-                    
+
                     if (!countdownStarted) {
                         countdownStarted = true;
                         Debug.Log("Starting count down");
                         audioManagerComponent.playSound (
-                            (remaining < CRITICAL_COUNTDOWN) ? 
+                            (remaining < CRITICAL_COUNTDOWN) ?
                                 AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
                         );
                     }
 
                     else if (countDownElapsed >= countDownRelativeThreshold) {
-                        
+
                         countDownRelativeThreshold += 1.0f;
                         Debug.Log("Increasing count down threshold");
 
                         audioManagerComponent.playSound (
-                            (remaining < CRITICAL_COUNTDOWN) ? 
+                            (remaining < CRITICAL_COUNTDOWN) ?
                                 AudioManager.SoundType.CRITICAL_TICK : AudioManager.SoundType.NORMAL_TICK
                         );
                     }
@@ -724,7 +724,7 @@ public class SimManager : MonoBehaviour {
                         currentGameState = GameState.COMPLETE;
                         audioManagerComponent.playSound(AudioManager.SoundType.SIM_COMPLETE);
                         resetCountdown();
-                    } 
+                    }
 
                     else {
                         audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
@@ -735,22 +735,22 @@ public class SimManager : MonoBehaviour {
                         resetCountdown();
                     }
                 }
-            } 
+            }
 
             /*
             * Intro / Tutorial Day: "Day 0"
-            * 
+            *
             * Here we can:
             *    - Gauge the user's unimpaired walking speed
             *    - Familiarize the user with the environment
-            
+
             * No timing requirement. The user will 'pass' day 0
             * if they successfully carry some water over to the
             * sink. Then, enter a transition state before the
             * start of day one.
             */
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
-                audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE); 
+                audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
