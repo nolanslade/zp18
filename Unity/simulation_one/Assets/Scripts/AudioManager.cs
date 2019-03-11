@@ -17,7 +17,7 @@ public class AudioManager : MonoBehaviour {
 						simCompleteClip, countNormalClip, countCriticalClip;
 
 	private AudioSource source;
-	private bool muted = false;
+    private bool muted  = false;
 
 	public enum SoundType 
 	{

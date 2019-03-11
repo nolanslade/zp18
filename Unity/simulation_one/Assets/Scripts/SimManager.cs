@@ -14,7 +14,7 @@ public class SimManager : MonoBehaviour {
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
     private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
-    private const string CONFIG_PATH    = "C:/Users/Aaska/Documents/4thYear/Capstone/ZP/sim_config.txt";//"C:/Users/CS4ZP6 user/Documents/sim_config.txt";
+    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";
 
     private const bool usingConfigFile                  = false;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
@@ -179,6 +179,17 @@ public class SimManager : MonoBehaviour {
         if (usingConfigFile) {
             Debug.Log ("Using custom parameters: " + CONFIG_PATH);
             this.configParser = new ConfigParser(CONFIG_PATH);
+            if (this.configParser.getSimSound().Contains("disable"))
+            {
+                audioManagerComponent.mute();
+            }
+
+            if (this.configParser.getSimInstruction().Contains("disable"))
+            {
+                instructionManagerComponent.setInstructionsDisable();
+            }
+            
+
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
 

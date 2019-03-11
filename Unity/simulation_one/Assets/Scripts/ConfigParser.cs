@@ -24,12 +24,20 @@ public class ConfigParser {
     private string dbConnection;
     private int dayCount;                               //total number of days in the config file, used for parseConfigs()
     private List<string> dayList = new List<string>();  //contains all day information ready to be split into dayConfigs
+    private List<string> sim = new List<string>();      //contains all info about the simulation itself
 
     // Simulation parameters
     private DayConfiguration [] dayConfigs = null;
     private bool lowNauseaMode;
     private bool instructionsEnabled;
-    
+
+    string name;
+    string[] output;
+    string description;
+    string instructions;
+    string sound;
+    string scene;
+
     /*
     * If not using a config file - use these default values (for testing)
     *
@@ -38,6 +46,7 @@ public class ConfigParser {
     * - Day two: speed penalty (pay 50 / wait 15s), 2 minutes
     * - Day three: speed penalty, fog (fog @ 80%, pay 100 / wait 25s), 2 minutes
     */
+
     public ConfigParser () {
 
         // Metrics
@@ -122,9 +131,8 @@ public class ConfigParser {
     * by parsing in the file if the path argument is valid.
     */
     public ConfigParser (string path) {
-
         lowNauseaMode = ParticipantData.nauseaSensitive;
-
+       
         // TODO
 
         // NEED CONFIG OPTION FOR THIS
@@ -133,8 +141,7 @@ public class ConfigParser {
         // ---------
 
         this.configFilePath = path;
-        dbConnection = null;
-        List<string> sim = new List<string>();          //contains all info about the simulation itself
+        dbConnection = null;          
         List<string> dayByLine = new List<string>();    //each line in a list for day portion of file
         StreamReader reader = new StreamReader(this.configFilePath);
         string line = reader.ReadLine();
@@ -154,7 +161,7 @@ public class ConfigParser {
                 {
                     isSim = true;
                     isDay = false;
-                    sim.Add(fields[i]);
+                    this.sim.Add(fields[i]);
                 }
                // currently the day group is further split into it's separate lines for better parsing 
                 else if (fields[i].Contains(ConfigKeyword.DAY))
@@ -168,7 +175,9 @@ public class ConfigParser {
 
                 if ((fields[i].Contains(ConfigKeyword.INDENT)) && isSim)
                 {
-                    sim.Add(fields[i].Replace(ConfigKeyword.INDENT, ""));
+                    string simParam = fields[i].Replace(ConfigKeyword.INDENT, "");
+                    string[] split = simParam.Split(delimiter[3]);
+                    this.sim.Add(split[0]);
                 }
                 else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isDay)
                 {
@@ -180,6 +189,11 @@ public class ConfigParser {
 
             line = reader.ReadLine();
         }
+
+       /* foreach(string i in this.sim)
+        {
+            Debug.Log("SIM" + i);
+        }*/
 
 
         //gets rid of the comments (#)
@@ -195,11 +209,58 @@ public class ConfigParser {
           foreach(string i in dayList){
             Debug.Log(i);
           }*/
-
+        
+        parseSim();
         parseConfig();
         // TODO - parse the file (if it exists) and load in day configurations
     }
 
+    private bool parseSim()
+    {
+
+
+        
+
+        char[] delimiter = { '\n', ':', '\t', '#', ' ', '%', ','};
+        foreach (string i in this.sim)
+        {
+            if (i.Contains(ConfigKeyword.NAME))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.name = split[1];
+            }
+            else if (i.Contains(ConfigKeyword.OUTPUT))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.output = split[1].Split(delimiter[6]);
+            }
+            else if (i.Contains(ConfigKeyword.DESCRIPTION))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.description = split[1];
+            }
+            else if (i.Contains(ConfigKeyword.INSTRUCTIONS))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.instructions = split[1];
+            }
+            else if (i.Contains(ConfigKeyword.SOUND))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.sound = split[1];
+
+            }
+            else if (i.Contains(ConfigKeyword.SCENE))
+            {
+                string[] split = i.Split(delimiter[1]);
+                this.scene = split[1];
+            }
+        }
+
+
+
+        return true;
+    }
 
     /*
 	* Parse the file and create objects for each parsed item
@@ -211,9 +272,8 @@ public class ConfigParser {
 
         try
         {
-            Debug.Log("PARSING FILE");
             this.dayConfigs = new DayConfiguration[this.dayCount];
-            int day = 0, trackDays = -1, impair = -1, countCost = 0;
+            int day = 0, trackDays = -1, impair = -1;
             bool isImp = false;
             bool isTreat = false;
             bool isCost = false;
@@ -272,7 +332,6 @@ public class ConfigParser {
                         else if (this.dayList[i].Contains("Shake"))
                         {
                             impair = 2;
-                            Debug.Log("SHAKE");
                         }
                         else if (this.dayList[i].Contains("Speed"))
                         {
@@ -408,7 +467,6 @@ public class ConfigParser {
                         isImp = false;
                         isTreat = false;
                         isCost = false;
-                        countCost = 0;
                         impair = -1;
                         dur = 0.00f; wait = 0.00f; certainty = 0.00f; factor = 0.00f; C = 0.00f; a = 0.00f; b = 0.00f; c = 0.00f;
                     }
@@ -452,6 +510,31 @@ public class ConfigParser {
     */
     public DayConfiguration [] getConfigs () {
         return this.dayConfigs;
+    }
+
+    public string getSimName()
+    {
+        return this.name;
+    }
+    public string[] getSimOutput()
+    {
+        return this.output;
+    }
+    public string getSimDescription()
+    {
+        return this.description;
+    }
+    public string getSimInstruction()
+    {
+        return this.instructions;
+    }
+    public string getSimSound()
+    {
+        return this.sound;
+    }
+    public string getSimScene()
+    {
+        return this.scene;
     }
 
     public string dbConn () {

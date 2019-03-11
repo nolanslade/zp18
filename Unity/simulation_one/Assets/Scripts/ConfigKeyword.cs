@@ -26,6 +26,7 @@ public sealed class ConfigKeyword {
     public static readonly string NAME          = "Name";           // Configuration name/id
     public static readonly string OUTPUT        = "Output";         // Output type specification
     public static readonly string DESCRIPTION   = "Description";    // For simulation
+    public static readonly string INSTRUCTIONS  = "Instructions";   // For simulation instrunctions
     public static readonly string SOUND         = "Sound";          // For simulation sound
     public static readonly string SCENE         = "Scene";          // For simulation scene
 
