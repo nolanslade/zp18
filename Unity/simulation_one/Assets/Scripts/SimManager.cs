@@ -46,7 +46,7 @@ public class SimManager : MonoBehaviour {
         DONE_TUTORIAL
     }
 
-    private float currentPayload, currentScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
+    private float currentPayload, currentScore, dayScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
                     nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay, 
                     amountPayedForTreatmentTotal, avgSpeedLastSecond;
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
@@ -153,6 +153,7 @@ public class SimManager : MonoBehaviour {
 
                 currentDay                  = 0;                    // Training/tutorial day
                 currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
+                dayScore                    = 0.0f;
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
                 elapsedDayTime              = 0.0f;               
                 elapsedTotalTime            = 0.0f;                 // Don't ever reset this
@@ -205,7 +206,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f;
+            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f; this.dayScore += 1.0f;
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
@@ -220,7 +221,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += customAmount; this.currentCumulativePayment += customAmount;
+            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += 1.0f;
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
@@ -265,6 +266,11 @@ public class SimManager : MonoBehaviour {
 
     public float getCurrentScore () {        // Not cumulative! This amount will decrease because of penalizing or payment for treatments
         return currentScore;
+    }
+
+    public float getDaySccore()
+    {
+        return dayScore;
     }
 
     public bool isComplete () {
@@ -531,9 +537,9 @@ public class SimManager : MonoBehaviour {
 
                 // Get user speed over last second (in meters)
                 posB = physicalCamera.transform.position;
-                //Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
-                //Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
-                //Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
+                Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
+                Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
+                Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
 
                 simPersister.persist (
 
@@ -545,7 +551,7 @@ public class SimManager : MonoBehaviour {
                     physicalCamera.transform.position.z,
                     elapsedDayTime,
                     currentScore,       // TODO
-                    currentScore,       // TODO
+                    dayScore,       // TODO
                     // ********
                     // carrying stuff 
                     // shake imp...
@@ -555,7 +561,8 @@ public class SimManager : MonoBehaviour {
                     timeWaitedForTreatmentDay,
                     amountPayedForTreatmentDay,
                     timeWaitedForTreatmentTotal,
-                    amountPayedForTreatmentTotal
+                    amountPayedForTreatmentTotal,
+                    distanceBetween(posA, posB)
 
                 );
 
@@ -601,6 +608,7 @@ public class SimManager : MonoBehaviour {
             if (elapsedDayTime > TRANSITION_TIME) {
 
                 currentDay += 1;
+                dayScore = 0.0f;
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here

@@ -84,7 +84,8 @@ public class SimPersister {
                 "Time Waited For Treatment Day",
                 "Amount Payed For Treatment Day",
                 "Time Waited For Treatment Total",
-                "Amount Payed For Treatment Total"
+                "Amount Payed For Treatment Total",
+                "Speed"
     		);
             Debug.Log("Writing Headers");
             fileWriter.WriteLine(s);
@@ -121,7 +122,8 @@ public class SimPersister {
         float                   timeWaitedForTreatmentDay,
         float                   amountPayedForTreatmentDay,
         float                   timeWaitedForTreatmentTotal,
-        float                   amountPayedForTreatmentTotal
+        float                   amountPayedForTreatmentTotal,
+        double                   speed
 
     	//float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
     	//float 					speedPenaltyFactorCurrent	// This will drop if treatment received
