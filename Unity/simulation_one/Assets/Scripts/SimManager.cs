@@ -52,6 +52,10 @@ public class SimManager : MonoBehaviour {
                     nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay,
                     amountPayedForTreatmentTotal, avgSpeedLastSecond;
 
+    // Impairment strength trackers for persistence only
+    private float shakeImpStrCurrent = 0.0f;
+    private float shakeImpStrInitial = 0.0f;
+
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
     private int currentDay, totalDays, currentPayload;
     private float persistTime = 0.0f;
@@ -63,6 +67,7 @@ public class SimManager : MonoBehaviour {
     private float countDownRelativeThreshold;   // starts from 1.0, goes up in 1 second increments until threshold - 1
 
     // Key scene objects
+    public GameObject containerBase;
     public GameObject audioManager;
     public GameObject flowManager;          // Manages tap flow
     public GameObject virtualCamera;        // [CameraRig] object - position relative to Unity Units
@@ -448,6 +453,8 @@ public class SimManager : MonoBehaviour {
                     case Impairment.ImpairmentType.PHYSICAL_SHAKE:
                         rightHandTracker.modifyStrength(factor);
                         leftHandTracker.modifyStrength(factor);
+                        shakeImpStrCurrent -= factor;
+                        if (shakeImpStrCurrent < 0.0f) shakeImpStrCurrent = 0.0f;
                         break;
                     case Impairment.ImpairmentType.VISUAL_FOG:
                         Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
@@ -475,6 +482,7 @@ public class SimManager : MonoBehaviour {
                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
                     rightHandTracker.clearImpairment();
                     leftHandTracker.clearImpairment();
+                    shakeImpStrCurrent = 0.0f;
                     break;
                 case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                     Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT, 0.0f);
@@ -544,15 +552,21 @@ public class SimManager : MonoBehaviour {
                     float                   headsetX,
                     float                   headsetY,
                     float                   headsetZ,
+                    float                   headsetXRotate,
+                    float                   headsetYRotate,
+                    float                   headsetZRotate,
+
+                    float (9 of them) -> left hand positions, right hand positions, container positions
+
     	            float 					dayTime, 				         // Total day time (running state only)
     	            float 					totalScore,                      // Includes deductions for payment
     	            float 					dayScore,                        // Includes deductions for payment
                     int                     currentlyCarrying,               // Water droplets inside of the container
                     /BELOW NOT YET SUPPORTED
-                    float                   tremorImpairmentFactorInitial,
-                    float                   tremorImpairmentFactorCurrent,
                     bool                    dayHasTreatment,
                     /ABOVE NOT YET SUPPORTED
+                    float tremorImpairmentCurrentStrength,
+                    float tremorImpairmentInitialStrength,
                     float timeWaitedForTreatmentDay,
                     float amountPayedForTreatmentDay,
                     float timeWaitedForTreatmentTotal,
@@ -568,18 +582,30 @@ public class SimManager : MonoBehaviour {
                     elapsedTotalTime,
                     currentDay,
                     currentGameState,
-                    physicalCamera.transform.position.x,
-                    physicalCamera.transform.position.y,
-                    physicalCamera.transform.position.z,
+                    physicalCamera.transform.position.x / UNITY_VIVE_SCALE,
+                    physicalCamera.transform.position.y / UNITY_VIVE_SCALE,
+                    physicalCamera.transform.position.z / UNITY_VIVE_SCALE,
+                    physicalCamera.transform.rotation.x,
+                    physicalCamera.transform.rotation.y,
+                    physicalCamera.transform.rotation.z,
+                    leftHandVirtual.transform.position.x / UNITY_VIVE_SCALE,
+                    leftHandVirtual.transform.position.y / UNITY_VIVE_SCALE,
+                    leftHandVirtual.transform.position.z / UNITY_VIVE_SCALE,
+                    rightHandVirtual.transform.position.x / UNITY_VIVE_SCALE,
+                    rightHandVirtual.transform.position.y / UNITY_VIVE_SCALE,
+                    rightHandVirtual.transform.position.z / UNITY_VIVE_SCALE,
+                    containerBase.transform.position.x / UNITY_VIVE_SCALE,
+                    containerBase.transform.position.y / UNITY_VIVE_SCALE,
+                    containerBase.transform.position.z / UNITY_VIVE_SCALE,
                     elapsedDayTime,
-                    currentScore,       // TODO
-                    dayScore,       // TODO
+                    currentScore,       
+                    dayScore,       
                     currentPayload,
                     // ********
-                    // shake imp...
-                    // shake imp...
                     // treatment on this day?
                     // ********
+                    shakeImpStrCurrent,
+                    shakeImpStrInitial,
                     timeWaitedForTreatmentDay,
                     amountPayedForTreatmentDay,
                     timeWaitedForTreatmentTotal,
@@ -647,6 +673,9 @@ public class SimManager : MonoBehaviour {
                     Debug.Log("Next day duration loaded.");
 
                     // Call out to necessary scripts to apply impairments for the current day (if any)
+                    shakeImpStrCurrent = 0.0f;
+                    shakeImpStrInitial = 0.0f;
+
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
                             float str = imp.getStrength();
@@ -654,6 +683,8 @@ public class SimManager : MonoBehaviour {
                                 case Impairment.ImpairmentType.PHYSICAL_SHAKE:
                                     rightHandTracker.applyImpairment(str);
                                     leftHandTracker.applyImpairment(str);
+                                    shakeImpStrCurrent = str;
+                                    shakeImpStrInitial = str;
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);

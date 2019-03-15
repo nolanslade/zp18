@@ -34,13 +34,10 @@ public class DestinationLimiter : MonoBehaviour {
     * If the headset enters the target area, enable scoring
     */
     void OnTriggerEnter(Collider col) {
-
-        Debug.Log("Dest limiter trigger");
         
         // This should only trigger if the colliding object is the headset
         if (enabled  && col.gameObject.CompareTag("MainCamera")) {
             if (simScriptComp.currentState() == SimManager.GameState.RUNNING) {
-                Debug.Log("Enabling payment - participant entered destination area.");
                 simScriptComp.togglePayment(true);
             }
         }
@@ -54,7 +51,6 @@ public class DestinationLimiter : MonoBehaviour {
 
         // This should only trigger if the colliding object is the headset
         if (enabled && col.gameObject.CompareTag("MainCamera")) {
-            Debug.Log("Disabling payment - participant left destination area.");
             simScriptComp.togglePayment(false);
         }
     }
