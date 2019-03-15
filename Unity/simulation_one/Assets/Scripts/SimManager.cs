@@ -74,6 +74,8 @@ public class SimManager : MonoBehaviour {
     public GameObject curtainRight;
     public GameObject instructionManager;
     public GameObject fogImpairmentPanel;
+    public GameObject sourceUI;
+    public GameObject destUI;
 
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
@@ -164,6 +166,9 @@ public class SimManager : MonoBehaviour {
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
                 Debug.Log("Starting up " + currentGameState);
+                Debug.Log("Enabling UIs");
+                this.destUI.SetActive(true);
+                this.sourceUI.SetActive(true);
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
                 instructionManagerComponent.setTemporaryMessage("Objective: locate and walk to the bucket", 8.0f);
