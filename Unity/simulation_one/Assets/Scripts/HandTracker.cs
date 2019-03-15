@@ -13,8 +13,7 @@ public class HandTracker : MonoBehaviour {
     public bool useSmoothedJitter;      // Instead of randomly picking a location on every frame,
                                         // make it more smooth by picking a random destination, then 
                                         // moving towards it at a constant rate, and then repeat.
-
-    private const float UNITY_VIVE_SCALE            = 18.77f;
+                                        
     private const float IMPAIRMENT_CAST_PRECISION   = 1000.0f;
 
     private System.Random random = new System.Random ();
@@ -35,9 +34,9 @@ public class HandTracker : MonoBehaviour {
             }
         } else {
             this.transform.position = new Vector3 (
-                physicalHandObj.transform.localPosition.x * UNITY_VIVE_SCALE + X_TRANSLATE,
-                physicalHandObj.transform.localPosition.y * UNITY_VIVE_SCALE + Y_TRANSLATE,
-                physicalHandObj.transform.localPosition.z * UNITY_VIVE_SCALE + Z_TRANSLATE
+                physicalHandObj.transform.localPosition.x * SimManager.UNITY_VIVE_SCALE + X_TRANSLATE,
+                physicalHandObj.transform.localPosition.y * SimManager.UNITY_VIVE_SCALE + Y_TRANSLATE,
+                physicalHandObj.transform.localPosition.z * SimManager.UNITY_VIVE_SCALE + Z_TRANSLATE
             );
         }
 
@@ -55,9 +54,9 @@ public class HandTracker : MonoBehaviour {
     */
     private Vector3 generateRandomDestination () {
         return new Vector3 (
-            physicalHandObj.transform.localPosition.x * UNITY_VIVE_SCALE + X_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
-            physicalHandObj.transform.localPosition.y * UNITY_VIVE_SCALE + Y_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
-            physicalHandObj.transform.localPosition.z * UNITY_VIVE_SCALE + Z_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION)
+            physicalHandObj.transform.localPosition.x * SimManager.UNITY_VIVE_SCALE + X_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
+            physicalHandObj.transform.localPosition.y * SimManager.UNITY_VIVE_SCALE + Y_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION),
+            physicalHandObj.transform.localPosition.z * SimManager.UNITY_VIVE_SCALE + Z_TRANSLATE + (((float) random.Next(activeImpairmentAmt)) / IMPAIRMENT_CAST_PRECISION)
         );
     }
 

@@ -7,6 +7,8 @@ using Valve.VR;
 
 public class SimManager : MonoBehaviour {
 
+    public static string APPLICATION_VERSION  = "1.4";
+    public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
 
@@ -24,8 +26,7 @@ public class SimManager : MonoBehaviour {
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
     private const float PHYSICS_BASE_AMT                = -30.0f;    // Default gravity strength
-    private const float UNITY_VIVE_SCALE                = 18.77f;    // Unity units / this value = metres in the physical world
-
+    
     // State management
     public enum GameState
     {
@@ -126,7 +127,7 @@ public class SimManager : MonoBehaviour {
         else {
 
             Debug.Log("Initializing persister.");
-            simPersister = new SimPersister (this.configParser.dbConn());
+            simPersister = new SimPersister (this, this.configParser.dbConn());
             Debug.Log("Setting days.");
             totalDays = this.configParser.numDays();
             Debug.Log ("Starting with total days: " + totalDays);
@@ -297,6 +298,10 @@ public class SimManager : MonoBehaviour {
 
     public DayConfiguration getCurrentDayConfiguration () {
         return this.currentDayConfig;
+    }
+
+    public string getSimConfigName () {
+        return usingConfigFile ? "N/A" : "--" ;
     }
 
 

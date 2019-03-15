@@ -12,6 +12,8 @@ using UnityEngine;
  */
 public class SimPersister {
 
+    private SimManager simScriptComp;
+
     private bool debugMode = true;
 
     // Logging / Metrics parameters
@@ -23,6 +25,7 @@ public class SimPersister {
 
     private const string LOG_FILE_PREF  = "WATERSIM_log_";
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
+    private const string HEAD_DATE_PATT = "yyyy-MMM-dd HH:mm";
     private const string LOG_FILE_SUFF  = ".txt";
     private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}";
 
@@ -31,7 +34,9 @@ public class SimPersister {
     /*
 	* Creates a new persister object - writes to DB or log files
     */
-    public SimPersister (string conn) {
+    public SimPersister (SimManager simScript, string conn) {
+
+        this.simScriptComp = simScript;
 
         Debug.Log("Setting persistence file name.");
         this.participantName = ParticipantData.name;
@@ -63,8 +68,22 @@ public class SimPersister {
     */
     private void writeIntroduction () {
     	
-    	try { 
+    	try {
 
+            // General Info
+            fileWriter.Write (
+                "Participant name: "            + ParticipantData.name +
+                "\nNausea Reduction: "          + ParticipantData.nauseaSensitive.ToString() +
+                "\nClaustrophobia Reduction: "  + ParticipantData.claustrophicSensitive.ToString() +
+                "\n"+
+                "\nExperiment Date & Time: "    + this.startTime.ToString(HEAD_DATE_PATT) +
+                "\nConfiguration Type: "        + this.simScriptComp.getSimConfigName() == "--" ? "default" : "Config file" +
+                "\nConfiguration File Name: "   + this.simScriptComp.getSimConfigName() +
+                "Application Version: "         + SimManager.APPLICATION_VERSION +
+                "\n"
+            );
+
+            // CSV Headers
             fileWriter.WriteLine(string.Format(
                 TXT_OUTPUT_FMT,
                 "Global_Time",
