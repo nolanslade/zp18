@@ -22,8 +22,9 @@ namespace Valve.VR.InteractionSystem
 
         [Tooltip("The local point which acts as a positional and rotational offset to use while held")]
         public Transform attachmentOffset;
+        public Transform attachmentOffset2;
 
-		[Tooltip( "How fast must this object be moving to attach due to a trigger hold instead of a trigger press? (-1 to disable)" )]
+        [Tooltip( "How fast must this object be moving to attach due to a trigger hold instead of a trigger press? (-1 to disable)" )]
         public float catchingSpeedThreshold = -1;
 
         public ReleaseStyle releaseVelocityStyle = ReleaseStyle.GetFromHand;
@@ -79,8 +80,14 @@ namespace Valve.VR.InteractionSystem
             {
                 interactable.handFollowTransform = attachmentOffset;
             }
+            else if (attachmentOffset2 != null)
+            {
+                interactable.handFollowTransform = attachmentOffset2;
+            }
 
-		}
+
+
+        }
 
 
         //-------------------------------------------------
@@ -128,7 +135,10 @@ namespace Valve.VR.InteractionSystem
             
             if (startingGrabType != GrabTypes.None)
             {
-				hand.AttachObject( gameObject, startingGrabType, attachmentFlags, attachmentOffset );
+                if(hand.handType == SteamVR_Input_Sources.RightHand)
+                    hand.AttachObject( gameObject, startingGrabType, attachmentFlags, attachmentOffset );
+                else
+                    hand.AttachObject(gameObject, startingGrabType, attachmentFlags, attachmentOffset2);
                 hand.HideGrabHint();
             }
 		}
