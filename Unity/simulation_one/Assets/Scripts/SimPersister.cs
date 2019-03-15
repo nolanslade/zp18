@@ -71,17 +71,13 @@ public class SimPersister {
     	try {
 
             // General Info
-            fileWriter.Write (
-                "Participant name: "            + ParticipantData.name +
-                "\nNausea Reduction: "          + ParticipantData.nauseaSensitive.ToString() +
-                "\nClaustrophobia Reduction: "  + ParticipantData.claustrophicSensitive.ToString() +
-                "\n"+
-                "\nExperiment Date & Time: "    + this.startTime.ToString(HEAD_DATE_PATT) +
-                "\nConfiguration Type: "        + this.simScriptComp.getSimConfigName() == "--" ? "default" : "Config file" +
-                "\nConfiguration File Name: "   + this.simScriptComp.getSimConfigName() +
-                "Application Version: "         + SimManager.APPLICATION_VERSION +
-                "\n"
-            );
+            fileWriter.WriteLine("Participant name: "         + ParticipantData.name);
+            fileWriter.WriteLine("Nausea Reduction: "         + ParticipantData.nauseaSensitive.ToString());
+            fileWriter.WriteLine("Claustrophobia Reduction: " + ParticipantData.claustrophicSensitive.ToString());
+            fileWriter.WriteLine("Experiment Date & Time: "   + this.startTime.ToString(HEAD_DATE_PATT));
+            fileWriter.WriteLine("Configuration Type: "       + (this.simScriptComp.getSimConfigName() == "--" ? "default" : "Config file"));
+            fileWriter.WriteLine("Configuration File Name: "  + this.simScriptComp.getSimConfigName());
+            fileWriter.WriteLine("Application Version: "      + SimManager.APPLICATION_VERSION + "\n");
 
             // CSV Headers
             fileWriter.WriteLine(string.Format(
