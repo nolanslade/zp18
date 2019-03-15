@@ -77,7 +77,8 @@ public class SimPersister {
             fileWriter.WriteLine("Experiment Date & Time: "   + this.startTime.ToString(HEAD_DATE_PATT));
             fileWriter.WriteLine("Configuration Type: "       + (this.simScriptComp.getSimConfigName() == "--" ? "default" : "Config file"));
             fileWriter.WriteLine("Configuration File Name: "  + this.simScriptComp.getSimConfigName());
-            fileWriter.WriteLine("Application Version: "      + SimManager.APPLICATION_VERSION + "\n");
+            fileWriter.WriteLine("Application Version: "      + SimManager.APPLICATION_VERSION);
+            fileWriter.WriteLine("");
 
             // CSV Headers
             fileWriter.WriteLine(string.Format(

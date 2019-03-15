@@ -28,6 +28,7 @@ public class FlowManager : MonoBehaviour {
 
     void Start () {
         this.audioManagerComponent = audioManager.GetComponent<AudioManager>();
+        this.simScriptComp = simManager.GetComponent<SimManager>();
     }
 
     // Update is called once per frame
