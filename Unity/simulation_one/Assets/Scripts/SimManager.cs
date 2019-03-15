@@ -233,7 +233,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += 1.0f;
+            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += customAmount;
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
