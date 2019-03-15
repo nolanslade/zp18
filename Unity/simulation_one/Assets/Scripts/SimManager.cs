@@ -24,6 +24,7 @@ public class SimManager : MonoBehaviour {
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
     private const float PHYSICS_BASE_AMT                = -30.0f;    // Default gravity strength
+    private const float UNITY_VIVE_SCALE                = 18.77f;    // Unity units / this value = metres in the physical world
 
     // State management
     public enum GameState
@@ -46,12 +47,12 @@ public class SimManager : MonoBehaviour {
         DONE_TUTORIAL
     }
 
-    private float currentPayload, currentScore, dayScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
+    private float currentScore, dayScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
                     nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay,
                     amountPayedForTreatmentTotal, avgSpeedLastSecond;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
-    private int currentDay, totalDays;
+    private int currentDay, totalDays, currentPayload;
     private float persistTime = 0.0f;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
 
@@ -153,6 +154,7 @@ public class SimManager : MonoBehaviour {
                 }
 
                 currentDay                  = 0;                    // Training/tutorial day
+                currentPayload              = 0;                    // Amount of droplets in bucket
                 currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
                 dayScore                    = 0.0f;
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
@@ -479,9 +481,9 @@ public class SimManager : MonoBehaviour {
 
 
     /* Standard distance formula for 3D points */
-    private double distanceBetween (Vector3 a, Vector3 b) {
+    private float distanceBetween (Vector3 a, Vector3 b) {
         return (
-            System.Math.Sqrt (
+            (float) System.Math.Sqrt (
                 System.Math.Pow(b.x - a.x, 2.0) +
                 System.Math.Pow(b.y - a.y, 2.0) +
                 System.Math.Pow(b.z - a.z, 2.0)
@@ -525,36 +527,34 @@ public class SimManager : MonoBehaviour {
             if (persistenceEnabled && persistTime > PERSIST_RATE && currentGameState != GameState.COMPLETE) {
 
                 /*
-
                 Persistence parameter list (ordered):
-
-                float                   elapsedTotalTime,
-                int                     currentDay,
-                SimManager.GameState    currentState,
-                float                   headsetX,
-                float                   headsetY,
-                float                   headsetZ,
-                float                   dayTime,                         // Total day time (running state only)
-                float                   totalScore,                      // Includes deductions for payment
-                float                   dayScore,                        // Includes deductions for payment
-                int                     currentlyCarrying,               // Water droplets inside of the container
-                float                   tremorImpairmentFactorInitial,
-                float                   tremorImpairmentFactorCurrent,
-                bool                    dayHasTreatment,
-                float                   timeWaitedForTreatmentDay,
-                float                   amountPayedForTreatmentDay,
-                float                   timeWaitedForTreatmentTotal,
-                float                   amountPayedForTreatmentTotal
+                    float 					globalTime,				         // Total simulation runtime (any state)
+    	            int 					currentDay,				
+    	            SimManager.GameState 	currentState,
+                    float                   headsetX,
+                    float                   headsetY,
+                    float                   headsetZ,
+    	            float 					dayTime, 				         // Total day time (running state only)
+    	            float 					totalScore,                      // Includes deductions for payment
+    	            float 					dayScore,                        // Includes deductions for payment
+                    int                     currentlyCarrying,               // Water droplets inside of the container
+                    /BELOW NOT YET SUPPORTED
+                    float                   tremorImpairmentFactorInitial,
+                    float                   tremorImpairmentFactorCurrent,
+                    bool                    dayHasTreatment,
+                    /ABOVE NOT YET SUPPORTED
+                    float timeWaitedForTreatmentDay,
+                    float amountPayedForTreatmentDay,
+                    float timeWaitedForTreatmentTotal,
+                    float amountPayedForTreatmentTotal,
+                    float speed                           // Avg speed over last second
                 */
 
                 // Get user speed over last second (in meters)
                 posB = physicalCamera.transform.position;
-                Debug.Log("PosA now: " + posA.x + ", " + posA.y + ", " + posA.z);
-                Debug.Log("PosB now: " + posB.x + ", " + posB.y + ", " + posB.z);
-                Debug.Log("Calculated speed: " + distanceBetween(posA, posB).ToString() + " m/s");
+                avgSpeedLastSecond = distanceBetween(posA, posB) / UNITY_VIVE_SCALE;
 
                 simPersister.persist (
-
                     elapsedTotalTime,
                     currentDay,
                     currentGameState,
@@ -564,8 +564,8 @@ public class SimManager : MonoBehaviour {
                     elapsedDayTime,
                     currentScore,       // TODO
                     dayScore,       // TODO
+                    currentPayload,
                     // ********
-                    // carrying stuff
                     // shake imp...
                     // shake imp...
                     // treatment on this day?
@@ -574,14 +574,11 @@ public class SimManager : MonoBehaviour {
                     amountPayedForTreatmentDay,
                     timeWaitedForTreatmentTotal,
                     amountPayedForTreatmentTotal,
-                    distanceBetween(posA, posB)
-
+                    avgSpeedLastSecond
                 );
 
                 persistTime = 0.0f;
                 posA = physicalCamera.transform.position;
-                //Debug.Log("PosA reset: " + posA.x + ", " + posA.y + ", " + posA.z);
-
             }
         }
 

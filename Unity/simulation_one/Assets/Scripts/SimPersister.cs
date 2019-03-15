@@ -24,6 +24,7 @@ public class SimPersister {
     private const string LOG_FILE_PREF  = "WATERSIM_log_";
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string LOG_FILE_SUFF  = ".txt";
+    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}";
 
     private System.IO.StreamWriter fileWriter;
 
@@ -44,17 +45,14 @@ public class SimPersister {
     		// TODO - log something here?
     		int a = 1;
     	}
-        Debug.Log(Application.persistentDataPath);
-        // TODO check for file here + make sure valid directory
-        Debug.Log("Initializing file writer.");
+
+        // Check for file here + make sure valid directory
         if(!System.IO.Directory.Exists(Application.dataPath + "/OutputData")) {
             System.IO.Directory.CreateDirectory(Application.dataPath + "/OutputData");
         }
 
         System.IO.File.CreateText(Application.dataPath + "/OutputData/" + logFileName).Dispose();
         fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
-
-        Debug.Log("Call writing introduction");
         writeIntroduction ();
     }
 
@@ -65,32 +63,26 @@ public class SimPersister {
     */
     private void writeIntroduction () {
     	
-    	try {
-            string s = "";
-             
-             const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}";
-             
-             s = string.Format (
-    			fmt,
-    			"Global Time",
-                "Current Day",
-                "Current State",
-                "Headset X",
-                "Headset Y",
-                "Headset Z",
-                "Day Time",
-                "Total Score",
-                "Day Score",
-                "Time Waited For Treatment Day",
-                "Amount Payed For Treatment Day",
-                "Time Waited For Treatment Total",
-                "Amount Payed For Treatment Total",
-                "Speed"
-    		);
-            Debug.Log("Writing Headers");
-            fileWriter.WriteLine(s);
-            closeStreamWriter();
+    	try { 
 
+            fileWriter.WriteLine(string.Format(
+                TXT_OUTPUT_FMT,
+                "Global_Time",
+                "Current_Day",
+                "Day_Time",
+                "Current_State",
+                "Headset_X",
+                "Headset_Y",
+                "Headset_Z",
+                "Avg_Moving_Speed_Last_Second",
+                "Current_Water_In_Bucket",
+                "Total_Score",
+                "Day_Score",
+                "Time_Waited_Treatment_Day",
+                "Amount_Payed_Treatment_Day",
+                "Time_Waited_Treatment_Total",
+                "Amount_Payed_For_Treatment_Total"
+            )); closeStreamWriter(); 
         } 
 
     	catch (System.Exception e) {
@@ -113,8 +105,8 @@ public class SimPersister {
     	float 					dayTime, 				         // Total day time (running state only)
     	float 					totalScore,                      // Includes deductions for payment
     	float 					dayScore,                        // Includes deductions for payment
-    	/*
         int                     currentlyCarrying,               // Water droplets inside of the container
+        /*
         float                   tremorImpairmentFactorInitial,
         float                   tremorImpairmentFactorCurrent,
         bool                    dayHasTreatment,
@@ -123,40 +115,36 @@ public class SimPersister {
         float                   amountPayedForTreatmentDay,
         float                   timeWaitedForTreatmentTotal,
         float                   amountPayedForTreatmentTotal,
-        double                   speed
+        float                   speed                           // Avg speed over last second
 
     	//float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
     	//float 					speedPenaltyFactorCurrent	// This will drop if treatment received
     	// .... 
     	) {
-
-        string s = "";
-    	//const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}"; // TODO 
-        const string fmt = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}";
     	
     	try {
-            s = string.Format(
-            fmt,
-            globalTime.ToString(),
-            currentDay.ToString(),
-            currentState.ToString(),
-            headsetX.ToString(),
-            headsetY.ToString(),
-            headsetZ.ToString(),
-            dayTime.ToString(),
-            totalScore.ToString(),
-            dayScore.ToString(),
-            timeWaitedForTreatmentDay.ToString(),
-            amountPayedForTreatmentDay.ToString(),
-            timeWaitedForTreatmentTotal.ToString(),
-            amountPayedForTreatmentTotal.ToString()
-        );
-            fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
-            fileWriter.WriteLine(s);
-            closeStreamWriter();
 
-           /* if (debugMode)
-                Debug.Log(s);*/
+            fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
+            fileWriter.WriteLine (
+                string.Format (
+                    TXT_OUTPUT_FMT,
+                    globalTime.ToString(),
+                    currentDay.ToString(),
+                    dayTime.ToString(),
+                    currentState.ToString(),
+                    headsetX.ToString(),
+                    headsetY.ToString(),
+                    headsetZ.ToString(),
+                    speed.ToString(),
+                    currentlyCarrying.ToString(),
+                    totalScore.ToString(),
+                    dayScore.ToString(),
+                    timeWaitedForTreatmentDay.ToString(),
+                    amountPayedForTreatmentDay.ToString(),
+                    timeWaitedForTreatmentTotal.ToString(),
+                    amountPayedForTreatmentTotal.ToString()
+                )
+            ); closeStreamWriter();
     	} 
 
     	catch (System.Exception e) {

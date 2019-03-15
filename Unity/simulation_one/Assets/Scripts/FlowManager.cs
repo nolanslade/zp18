@@ -23,6 +23,9 @@ public class FlowManager : MonoBehaviour {
     public GameObject audioManager;                 // Water sound effects
     private AudioManager audioManagerComponent;
 
+    public GameObject simManager;
+    private SimManager simScriptComp;
+
     void Start () {
         this.audioManagerComponent = audioManager.GetComponent<AudioManager>();
     }
@@ -39,6 +42,7 @@ public class FlowManager : MonoBehaviour {
         stopFlow();
         GameObject[] allDrops = GameObject.FindGameObjectsWithTag("Water");
         foreach (GameObject drop in allDrops) Destroy (drop);
+        simScriptComp.setCurrentWaterCarry(0);
     }
 
     public void startFlow () {
