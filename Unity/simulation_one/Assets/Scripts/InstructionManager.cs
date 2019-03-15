@@ -16,9 +16,10 @@ public class InstructionManager : MonoBehaviour {
     public GameObject instrText;
     private UnityEngine.UI.Text instrTextComponent;
     private float currentMsgTimeRemaining;
+    private bool instructionsEnabled = true;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         this.instrTextComponent = instrText.GetComponent<UnityEngine.UI.Text>();
         currentMsgTimeRemaining = 0.0f;
     }
@@ -34,6 +35,11 @@ public class InstructionManager : MonoBehaviour {
         }
 	}
 
+    public void setInstructionsDisable()
+    {
+        this.instructionsEnabled = false;
+    }
+
     /*
      * Enables the instruction panel and displays a message for a set duration
      * then disables both the message and panel.
@@ -41,6 +47,6 @@ public class InstructionManager : MonoBehaviour {
     public void setTemporaryMessage (string message, float displayDuration) {
         this.instrTextComponent.text = message;
         this.currentMsgTimeRemaining = displayDuration;
-        instrPanel.SetActive(true);
+        instrPanel.SetActive(instructionsEnabled);
     }
 }
