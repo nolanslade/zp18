@@ -280,7 +280,7 @@ public class SimManager : MonoBehaviour {
         return currentScore;
     }
 
-    public float getDaySccore()
+    public float getDayScore()
     {
         return dayScore;
     }

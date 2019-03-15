@@ -9,6 +9,7 @@ public class UIUpdate : MonoBehaviour {
     public GameObject timeRemainingText;
     public GameObject dayText;
     public GameObject moneyText;
+    public GameObject todayMoneyText;
     public UnityEngine.UI.Text text;
 
     private string totalDays;
@@ -17,7 +18,8 @@ public class UIUpdate : MonoBehaviour {
     private SimManager simManComp;
     private UnityEngine.UI.Text timeRemComp;
     private UnityEngine.UI.Text dayTextComp;
-    private UnityEngine.UI.Text moneyTextComp;
+    private UnityEngine.UI.Text moneyTextComp;          // Total score (includes today)
+    private UnityEngine.UI.Text todayMoneyTextComp;     // Score today
 
     // Only update every set duration, instead of every frame.
     public float customRefreshRate;
@@ -29,11 +31,12 @@ public class UIUpdate : MonoBehaviour {
 
     void Start ()
     {
-        this.simManComp     = simManager.GetComponent<SimManager>();
-        this.timeRemComp    = timeRemainingText.GetComponent<UnityEngine.UI.Text>();
-        this.dayTextComp    = dayText.GetComponent<UnityEngine.UI.Text>();
-        this.moneyTextComp  = moneyText.GetComponent<UnityEngine.UI.Text>();
-        this.totalDays      = simManComp.getTotalDays().ToString();
+        this.simManComp         = simManager.GetComponent<SimManager>();
+        this.timeRemComp        = timeRemainingText.GetComponent<UnityEngine.UI.Text>();
+        this.dayTextComp        = dayText.GetComponent<UnityEngine.UI.Text>();
+        this.moneyTextComp      = moneyText.GetComponent<UnityEngine.UI.Text>();
+        this.todayMoneyTextComp = todayMoneyText.GetComponent<UnityEngine.UI.Text>();
+        this.totalDays          = simManComp.getTotalDays().ToString();
     }
 
     // Update is called once per frame
@@ -49,6 +52,7 @@ public class UIUpdate : MonoBehaviour {
                 timeRemComp.text = simManComp.getRemainingDayTime().ToString("0.0");
                 dayTextComp.text = "Day: " + simManComp.getCurrentDay().ToString() + " / " + totalDays;
                 moneyTextComp.text = "$" + simManComp.getCurrentScore().ToString("0.00");
+                todayMoneyTextComp.text = "$" + simManComp.getDayScore().ToString("0.00");
                 elapsed = 0.0f;
             }
         }
