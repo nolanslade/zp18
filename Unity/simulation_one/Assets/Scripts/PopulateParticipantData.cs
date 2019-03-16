@@ -36,8 +36,8 @@ public class PopulateParticipantData : MonoBehaviour {
 	*/
 	public void populateStaticData () {
 		ParticipantData.name = this.name.text;
-		ParticipantData.claustrophicSensitive = this.nausea.isOn;
-		ParticipantData.nauseaSensitive = this.claustrophobic.isOn;
+		ParticipantData.nauseaSensitive = this.nausea.isOn;
+		ParticipantData.claustrophicSensitive = this.claustrophobic.isOn;
 	}
 
 	/*
