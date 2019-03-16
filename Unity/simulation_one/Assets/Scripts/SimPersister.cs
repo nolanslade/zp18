@@ -104,6 +104,10 @@ public class SimPersister {
                 "Container_Z_Position",
                 "Avg_Moving_Speed_Last_Second",
                 "Current_Water_In_Bucket",
+                "Cumulative_Water_Carried",
+                "Daily_Cumulative_Water_Carried",
+                "Cumulative_Water_Spilled",
+                "Daily_Cumulative_Water_Spilled",
                 "Total_Score",
                 "Day_Score",
                 "Shake_Impairment_Day_Current_Strength",
@@ -148,6 +152,10 @@ public class SimPersister {
     	float 					totalScore,                      // Includes deductions for payment
     	float 					dayScore,                        // Includes deductions for payment
         int                     currentlyCarrying,               // Water droplets inside of the container
+        int                     cumulativeCarrying,              // Amount of water carried total
+        int                     dailyCumulativeCarrying,         // Total amount of water carried on this day
+        int                     cumulativeSpilled,               // Total amount of water spilled
+        int                     dailyCumulativeSpilled,          // Total amount of water spilled on this day
         /*
         float                   tremorImpairmentFactorInitial,
         float                   tremorImpairmentFactorCurrent,
@@ -169,8 +177,8 @@ public class SimPersister {
     	try {
 
             fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
-            fileWriter.WriteLine (
-                string.Format (
+            fileWriter.WriteLine(
+                string.Format(
                     TXT_OUTPUT_FMT,
                     globalTime.ToString(),
                     currentDay.ToString(),
@@ -193,6 +201,10 @@ public class SimPersister {
                     bucketZ.ToString(),
                     speed.ToString(),
                     currentlyCarrying.ToString(),
+                    cumulativeCarrying.ToString(),
+                    dailyCumulativeCarrying.ToString(),
+                    cumulativeSpilled.ToString(),
+                    dailyCumulativeSpilled.ToString(),
                     totalScore.ToString(),
                     dayScore.ToString(),
                     tremorImpairmentCurrentStrength.ToString(),

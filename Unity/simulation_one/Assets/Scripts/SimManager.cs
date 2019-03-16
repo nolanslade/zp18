@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,7 +58,7 @@ public class SimManager : MonoBehaviour {
     private float shakeImpStrInitial = 0.0f;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
-    private int currentDay, totalDays, currentPayload;
+    private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, dailyCumulativeDelivered;
     private float persistTime = 0.0f;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
 
@@ -163,6 +164,10 @@ public class SimManager : MonoBehaviour {
 
                 currentDay                  = 0;                    // Training/tutorial day
                 currentPayload              = 0;                    // Amount of droplets in bucket
+                cumulativePayload           = 0;                    // Amount of droplets ever carried
+                dailyCumulativePayload      = 0;                    // Amount of droplets carried on this day
+                cumulativeDelivered         = 0;                    // Amount of droplets ever successfully delivered
+                dailyCumulativeDelivered      = 0;                    // Amount of droplets successfully delivered on this day
                 currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
                 dayScore                    = 0.0f;
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
@@ -231,7 +236,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f; this.dayScore += 1.0f;
+            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f; this.dayScore += 1.0f; this.dailyCumulativeDelivered += 1; this.cumulativeDelivered += 1;
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
@@ -246,7 +251,7 @@ public class SimManager : MonoBehaviour {
     */
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += customAmount;
+            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += customAmount; this.dailyCumulativeDelivered += 1; this.cumulativeDelivered += 1;
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
@@ -370,6 +375,12 @@ public class SimManager : MonoBehaviour {
         this.currentPayload += amt;
         if (currentTutorialStep == TutorialStep.FILL && currentPayload > FILL_BUCKET_TRIGGER_THRESHOLD) {
             advanceTutorialStep();
+        }
+
+        if (currentTutorialStep == TutorialStep.DONE_TUTORIAL)
+        {
+            this.cumulativePayload += amt;
+            this.dailyCumulativePayload += amt;
         }
     }
 
@@ -601,6 +612,10 @@ public class SimManager : MonoBehaviour {
                     currentScore,       
                     dayScore,       
                     currentPayload,
+                    cumulativePayload,
+                    dailyCumulativePayload,
+                    Math.Abs(cumulativeDelivered - cumulativePayload),
+                    Math.Abs(dailyCumulativeDelivered - dailyCumulativePayload),
                     // ********
                     // treatment on this day?
                     // ********
@@ -654,6 +669,8 @@ public class SimManager : MonoBehaviour {
 
                 currentDay += 1;
                 dayScore = 0.0f;
+                dailyCumulativePayload = 0;
+                dailyCumulativeDelivered = 0;
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here
