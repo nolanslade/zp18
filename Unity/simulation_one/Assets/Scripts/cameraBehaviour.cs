@@ -13,18 +13,17 @@ using UnityEngine;
  */
 public class CameraBehaviour : MonoBehaviour {
 
-    const float UNIT_RATIO = 18.77f;    // Ratio of 1 meter to unity units
     GameObject physicalCamera;
 
     void Start () {
         physicalCamera = GameObject.FindGameObjectWithTag("physicalCamera");
     }
 	
-	void FixedUpdate () {
+	void Update () {
         transform.position = new Vector3 (
-            physicalCamera.transform.localPosition.x * UNIT_RATIO,
-            physicalCamera.transform.localPosition.y * UNIT_RATIO,
-            physicalCamera.transform.localPosition.z * UNIT_RATIO
+            physicalCamera.transform.localPosition.x * SimManager.UNITY_VIVE_SCALE,
+            physicalCamera.transform.localPosition.y * SimManager.UNITY_VIVE_SCALE,
+            physicalCamera.transform.localPosition.z * SimManager.UNITY_VIVE_SCALE
         );
 	}
 }

@@ -157,8 +157,6 @@ public class SimPersister {
         int                     cumulativeSpilled,               // Total amount of water spilled
         int                     dailyCumulativeSpilled,          // Total amount of water spilled on this day
         /*
-        float                   tremorImpairmentFactorInitial,
-        float                   tremorImpairmentFactorCurrent,
         bool                    dayHasTreatment,
         */
         float                   tremorImpairmentCurrentStrength,
