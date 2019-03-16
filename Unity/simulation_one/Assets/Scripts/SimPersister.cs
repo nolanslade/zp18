@@ -149,8 +149,6 @@ public class SimPersister {
     	float 					dayScore,                        // Includes deductions for payment
         int                     currentlyCarrying,               // Water droplets inside of the container
         /*
-        float                   tremorImpairmentFactorInitial,
-        float                   tremorImpairmentFactorCurrent,
         bool                    dayHasTreatment,
         */
         float                   tremorImpairmentCurrentStrength,
