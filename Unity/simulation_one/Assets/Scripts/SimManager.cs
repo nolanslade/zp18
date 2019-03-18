@@ -58,7 +58,8 @@ public class SimManager : MonoBehaviour {
     private float shakeImpStrInitial = 0.0f;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
-    private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, dailyCumulativeDelivered;
+    private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, 
+                    dailyCumulativeDelivered, totalSpilled, todaySpilled;
     private float persistTime = 0.0f;
     private bool paymentEnabled = true;                // Used with the destination limiter. Only pay the user if they're standing close enough
 
@@ -162,17 +163,20 @@ public class SimManager : MonoBehaviour {
                     this.curtainLeft.SetActive(false);
                 }
 
+                totalSpilled                = 0;
+                todaySpilled                = 0;
                 currentDay                  = 0;                    // Training/tutorial day
                 currentPayload              = 0;                    // Amount of droplets in bucket
                 cumulativePayload           = 0;                    // Amount of droplets ever carried
                 dailyCumulativePayload      = 0;                    // Amount of droplets carried on this day
                 cumulativeDelivered         = 0;                    // Amount of droplets ever successfully delivered
-                dailyCumulativeDelivered      = 0;                    // Amount of droplets successfully delivered on this day
+                dailyCumulativeDelivered    = 0;                    // Amount of droplets successfully delivered on this day
                 currentScore                = 0.0f;                 // Holds across all days except 0, except when paying for treatment or penalized
                 dayScore                    = 0.0f;
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
                 elapsedDayTime              = 0.0f;
                 elapsedTotalTime            = 0.0f;                 // Don't ever reset this
+
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
                 Debug.Log("Starting up " + currentGameState);
@@ -222,6 +226,24 @@ public class SimManager : MonoBehaviour {
 
 
     /*
+    * We'll track most metrics during the tutorial just so we can look
+    * into how they're doing. But once the tutorial is done, we need
+    * to reset everything to a blank slate for day one.
+    */
+    private void resetMetricsForDayOne () {
+        currentScore                = 0.0f;
+        currentCumulativePayment    = 0.0f;
+        elapsedDayTime              = 0.0f;
+        totalSpilled                = 0;
+        todaySpilled                = 0;
+        cumulativePayload           = 0;
+        dailyCumulativePayload      = 0;
+        cumulativeDelivered         = 0;
+        dailyCumulativeDelivered    = 0;
+    }
+
+
+    /*
     * Toggles whether or not payment should be allowed
     * for whatever reason.
     */
@@ -231,12 +253,36 @@ public class SimManager : MonoBehaviour {
 
 
     /*
+    * Some drainage objects will increase spill totals if
+    * water hits them.
+    */
+    public void registerSpill () {
+        // Not checking for day 0 because we reset the counters
+        // at the start of day 1 in update()
+        if (currentGameState == GameState.RUNNING) {
+            this.totalSpilled++; this.todaySpilled++;
+        }
+    }
+
+
+    /*
     * Standard reward payment - 1 unit of payment per water droplet
     * colliding with the target drain
     */
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += 1.0f; this.currentCumulativePayment += 1.0f; this.dayScore += 1.0f; this.dailyCumulativeDelivered += 1; this.cumulativeDelivered += 1;
+
+            float scoreAmt; // this sucks, we should just set it once start of day
+            if (currentDay > 0) scoreAmt = currentDayConfig.getRewardMultiplier();
+            else scoreAmt = 1.0f;
+
+            this.currentScore               += scoreAmt; 
+            this.currentCumulativePayment   += scoreAmt; 
+            this.dayScore                   += scoreAmt; 
+
+            this.dailyCumulativeDelivered   ++; 
+            this.cumulativeDelivered        ++;
+
             if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
                 advanceTutorialStep();
             }
@@ -248,7 +294,10 @@ public class SimManager : MonoBehaviour {
     * Custom payment - this can be used if a reward function multiplier
     * is being applied for the current day. Since the default payout
     * is one unit, the multiplier can be passed in as the custom amount.
-    */
+    *
+
+    DEPRECATED - adjusted payReward() above to use the effective multiplier
+
     public void payReward (float customAmount) {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
             this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += customAmount; this.dailyCumulativeDelivered += 1; this.cumulativeDelivered += 1;
@@ -256,7 +305,7 @@ public class SimManager : MonoBehaviour {
                 advanceTutorialStep();
             }
         }
-    }
+    }*/
 
 
     /*
@@ -377,11 +426,13 @@ public class SimManager : MonoBehaviour {
             advanceTutorialStep();
         }
 
-        if (currentTutorialStep == TutorialStep.DONE_TUTORIAL)
-        {
+        // Nolan mar 17
+        // Changing kerala's code here - not making it tutorial
+        // dependent, because instructions could be disabled
+        // if (currentTutorialStep == TutorialStep.DONE_TUTORIAL) {
             this.cumulativePayload += amt;
             this.dailyCumulativePayload += amt;
-        }
+        // }
     }
 
 
@@ -614,8 +665,10 @@ public class SimManager : MonoBehaviour {
                     currentPayload,
                     cumulativePayload,
                     dailyCumulativePayload,
-                    Math.Abs(cumulativeDelivered - cumulativePayload),
-                    Math.Abs(dailyCumulativeDelivered - dailyCumulativePayload),
+                    //Math.Abs(cumulativeDelivered - cumulativePayload),
+                    //Math.Abs(dailyCumulativeDelivered - dailyCumulativePayload),
+                    totalSpilled,
+                    todaySpilled,
                     // ********
                     // treatment on this day?
                     // ********
@@ -829,9 +882,7 @@ public class SimManager : MonoBehaviour {
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
-                currentScore = 0.0f;
-                currentCumulativePayment = 0.0f;
-                elapsedDayTime = 0.0f;
+                resetMetricsForDayOne();
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
                 Debug.Log("Day 0 over " + currentGameState);

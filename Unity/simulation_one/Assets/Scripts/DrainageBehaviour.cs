@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DrainageBehaviour : MonoBehaviour {
 
-    public bool isTargetDrain;
+    public bool isTargetDrain, registersSpills;
     public GameObject simManager;
     private SimManager simScriptComp;
 
@@ -16,6 +16,8 @@ public class DrainageBehaviour : MonoBehaviour {
         if (col.collider.gameObject.tag == "Water") {
             if (this.isTargetDrain) {
                 simScriptComp.payReward();
+            } else if (this.registersSpills) {
+                simScriptComp.registerSpill();
             } Destroy(col.collider.gameObject);
         }
     }
