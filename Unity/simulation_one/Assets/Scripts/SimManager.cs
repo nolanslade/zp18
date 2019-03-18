@@ -606,9 +606,9 @@ public class SimManager : MonoBehaviour {
                 /*
                 Persistence parameter list (ordered):
 
-                float                   globalTime,                      // Total simulation runtime (any state)
-                int                     currentDay,             
-                SimManager.GameState    currentState,
+                float 					globalTime,				         // Total simulation runtime (any state)
+    	        int 					currentDay,				
+    	        SimManager.GameState 	currentState,
                 float                   headsetX,
                 float                   headsetY,
                 float                   headsetZ,
@@ -624,22 +624,24 @@ public class SimManager : MonoBehaviour {
                 float                   bucketX,
                 float                   bucketY,
                 float                   bucketZ,
-                float                   dayTime,                            // Total day time (running state only)
-                float                   totalScore,                         // Includes deductions for payment
-                float                   dayScore,                           // Includes deductions for payment
+                float 					dayTime, 				            // Total day time (running state only)
+    	        float 					totalScore,                         // Includes deductions for payment
+    	        float 					dayScore,                            // Includes deductions for payment
                 float                   payRate,                            // How much 1 droplet of water is worth today
                 int                     currentlyCarrying,                  // Water droplets inside of the container
                 int                     cumulativeCarrying,                 // Amount of water carried total
                 int                     dailyCumulativeCarrying,            // Total amount of water carried on this day
                 int                     cumulativeSpilled,                  // Total amount of water spilled
                 int                     dailyCumulativeSpilled,             // Total amount of water spilled on this day
+                int                     cumulativeDelivered,                // All drops that have reached the destination 
+                int                     todayDelivered,                     // Above, except for today
                 float                   tremorImpairmentCurrentStrength,
                 float                   tremorImpairmentInitialStrength,
                 float                   timeWaitedForTreatmentDay,
                 float                   amountPayedForTreatmentDay,
                 float                   timeWaitedForTreatmentTotal,
                 float                   amountPayedForTreatmentTotal,
-                float                   speed                               // Avg speed over last second
+                float                   speed                           // Avg speed over last second
                 */
 
                 // Get user speed over last second (in meters)
@@ -674,6 +676,8 @@ public class SimManager : MonoBehaviour {
                     dailyCumulativePayload,
                     totalSpilled,
                     todaySpilled,
+                    cumulativeDelivered,
+                    dailyCumulativeDelivered,
                     shakeImpStrCurrent,
                     shakeImpStrInitial,
                     timeWaitedForTreatmentDay,

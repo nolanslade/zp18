@@ -27,7 +27,7 @@ public class SimPersister {
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string HEAD_DATE_PATT = "yyyy-MMM-dd HH:mm";
     private const string LOG_FILE_SUFF  = ".txt";
-    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33}";
+    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35}";
 
     private System.IO.StreamWriter fileWriter;
 
@@ -105,17 +105,19 @@ public class SimPersister {
                 "Avg_Moving_Speed_Last_Second_M/sec",
                 "Current_Water_In_Bucket",
                 "Cumulative_Water_Carried",
-                "Daily_Cumulative_Water_Carried",
+                "Today_Water_Carried",
                 "Cumulative_Water_Spilled",
-                "Daily_Cumulative_Water_Spilled",
+                "Today_Water_Spilled",
+                "Cumulative_Water_Delivered",
+                "Today_Water_Delivered",
                 "Total_Score",
-                "Day_Score",
+                "Today_Score",
                 "Current_Pay_Per_Drop",
                 "Shake_Impairment_Day_Current_Strength_Pcnt",
                 "Shake_Impairment_Day_Initial_Strength_Pcnt",
-                "Time_Waited_Treatment_Day_Seconds",
+                "Seconds_Waited_Treatment_Day",
                 "Amount_Payed_Treatment_Day",
-                "Time_Waited_Treatment_Total_Seconds",
+                "Seconds_Waited_Treatment_Total",
                 "Amount_Payed_For_Treatment_Total"
             )); closeStreamWriter(); 
         } 
@@ -158,6 +160,8 @@ public class SimPersister {
         int                     dailyCumulativeCarrying,         // Total amount of water carried on this day
         int                     cumulativeSpilled,               // Total amount of water spilled
         int                     dailyCumulativeSpilled,          // Total amount of water spilled on this day
+        int                     cumulativeDelivered,             // All drops that have reached the destination 
+        int                     todayDelivered,                  // Above, except for today
         /*
         float                   tremorImpairmentFactorInitial,
         float                   tremorImpairmentFactorCurrent,
@@ -205,6 +209,8 @@ public class SimPersister {
                     dailyCumulativeCarrying.ToString(),
                     cumulativeSpilled.ToString(),
                     dailyCumulativeSpilled.ToString(),
+                    cumulativeDelivered.ToString(),
+                    todayDelivered.ToString(),
                     totalScore.ToString(),
                     dayScore.ToString(),
                     payRate.ToString(),
