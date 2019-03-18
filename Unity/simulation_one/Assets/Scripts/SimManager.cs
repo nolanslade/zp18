@@ -730,6 +730,7 @@ public class SimManager : MonoBehaviour {
                 dayScore = 0.0f;
                 dailyCumulativePayload = 0;
                 dailyCumulativeDelivered = 0;
+                todaySpilled = 0;
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here
