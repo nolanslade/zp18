@@ -90,7 +90,7 @@ public class ConfigParser {
         float dayTwoDur = 120.0f;
         Impairment [] dayTwoImps = new Impairment [1];
         Treatment dayTwoTreatment = null;
-        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
+        dayTwoImps [0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.5f);
         int dayTwo = 2;
 
         // Day Three
@@ -112,7 +112,7 @@ public class ConfigParser {
             0.0f,
             0.0f
         );
-        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
+        dayThreeImps[0] = new Impairment (Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.5f);
         int dayThree = 3;
 
 

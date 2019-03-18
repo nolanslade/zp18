@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Valve.VR;
 
 public class HandTracker : MonoBehaviour {
 
     public GameObject physicalHandObj;
+    private Valve.VR.InteractionSystem.Hand handScr;
     public float X_ROTATE, Y_ROTATE, Z_ROTATE;
     public float X_TRANSLATE, Y_TRANSLATE, Z_TRANSLATE;
     public float compareThreshold;      // How close do the transforms need to be to be 'equal'
@@ -21,11 +23,29 @@ public class HandTracker : MonoBehaviour {
     private bool impaired = false;                                          // We probably don't need this
     private float scaledMoveSpeed;                                          // Will be ase * impairment factor
     private Vector3 approachDestination;
-	
-	// Update is called once per frame
-	void Update () {
+    private ushort ImpairmentStr;
+    private const ushort MAX_SHAKE_STR = (ushort) 3999;
+
+    public float customRefreshRate;
+    private float elapsed;
+
+    void Start ()
+    {
+        this.handScr = this.gameObject.GetComponent<Valve.VR.InteractionSystem.Hand>();
+        this.elapsed = 0.0f;
+        this.ImpairmentStr = (ushort)0;
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         if (impaired) {
+            elapsed += Time.deltaTime;
+            if (elapsed > customRefreshRate)
+            {
+                handScr.TriggerHapticPulse((ushort)(ImpairmentStr * MAX_SHAKE_STR));
+                elapsed = 0.0f;
+            }
             if (!useSmoothedJitter) {
                 this.transform.position = generateRandomDestination ();
             } else {
@@ -42,7 +62,8 @@ public class HandTracker : MonoBehaviour {
 
         this.transform.rotation = physicalHandObj.transform.rotation;
         this.transform.Rotate(X_ROTATE, Y_ROTATE, Z_ROTATE);
-	}
+            
+    }
 
     /*
     * Stephanie's feedback was that the jitter was unnatural / too random 
@@ -82,7 +103,7 @@ public class HandTracker : MonoBehaviour {
             approachDestination = generateRandomDestination (); 
             scaledMoveSpeed = impairmentStrength * baseApproachSpeed;
         }
-
+        ImpairmentStr = (ushort)impairmentStrength;
         this.activeImpairmentAmt = (int) (1000 * impairmentStrength * maximumShakeOffset);
         this.impaired = true;
     }
@@ -90,6 +111,7 @@ public class HandTracker : MonoBehaviour {
 
     public void clearImpairment () {
         this.activeImpairmentAmt = 0;
+        this.ImpairmentStr = (ushort)0;
         this.impaired = false;
     }
 
@@ -97,10 +119,13 @@ public class HandTracker : MonoBehaviour {
     /*
     * Takes current strength and multiplies it by factor to either
     * decrease or increase the strenght of the impairment
+    * 
+    * THIS DOESN'T WORK !!!! YET
     */
     public void modifyStrength (float factor) {
         Debug.Log ("Modifying shake strength " + activeImpairmentAmt.ToString() + " by factor " + factor.ToString());
         this.activeImpairmentAmt = ((int) (activeImpairmentAmt * factor));
         Debug.Log ("New strength: " + activeImpairmentAmt.ToString());
+        ImpairmentStr = (ushort)factor;
     }
 }
