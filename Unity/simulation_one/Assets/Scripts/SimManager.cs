@@ -605,32 +605,41 @@ public class SimManager : MonoBehaviour {
 
                 /*
                 Persistence parameter list (ordered):
-                    float 					globalTime,				         // Total simulation runtime (any state)
-    	            int 					currentDay,				
-    	            SimManager.GameState 	currentState,
-                    float                   headsetX,
-                    float                   headsetY,
-                    float                   headsetZ,
-                    float                   headsetXRotate,
-                    float                   headsetYRotate,
-                    float                   headsetZRotate,
 
-                    float (9 of them) -> left hand positions, right hand positions, container positions
-
-    	            float 					dayTime, 				         // Total day time (running state only)
-    	            float 					totalScore,                      // Includes deductions for payment
-    	            float 					dayScore,                        // Includes deductions for payment
-                    int                     currentlyCarrying,               // Water droplets inside of the container
-                    /BELOW NOT YET SUPPORTED
-                    bool                    dayHasTreatment,
-                    /ABOVE NOT YET SUPPORTED
-                    float tremorImpairmentCurrentStrength,
-                    float tremorImpairmentInitialStrength,
-                    float timeWaitedForTreatmentDay,
-                    float amountPayedForTreatmentDay,
-                    float timeWaitedForTreatmentTotal,
-                    float amountPayedForTreatmentTotal,
-                    float speed                           // Avg speed over last second
+                float                   globalTime,                      // Total simulation runtime (any state)
+                int                     currentDay,             
+                SimManager.GameState    currentState,
+                float                   headsetX,
+                float                   headsetY,
+                float                   headsetZ,
+                int                     headsetXRotate,
+                int                     headsetYRotate,
+                int                     headsetZRotate,
+                float                   controllerLX,
+                float                   controllerLY,
+                float                   controllerLZ,
+                float                   controllerRX,
+                float                   controllerRY,
+                float                   controllerRZ,
+                float                   bucketX,
+                float                   bucketY,
+                float                   bucketZ,
+                float                   dayTime,                            // Total day time (running state only)
+                float                   totalScore,                         // Includes deductions for payment
+                float                   dayScore,                           // Includes deductions for payment
+                float                   payRate,                            // How much 1 droplet of water is worth today
+                int                     currentlyCarrying,                  // Water droplets inside of the container
+                int                     cumulativeCarrying,                 // Amount of water carried total
+                int                     dailyCumulativeCarrying,            // Total amount of water carried on this day
+                int                     cumulativeSpilled,                  // Total amount of water spilled
+                int                     dailyCumulativeSpilled,             // Total amount of water spilled on this day
+                float                   tremorImpairmentCurrentStrength,
+                float                   tremorImpairmentInitialStrength,
+                float                   timeWaitedForTreatmentDay,
+                float                   amountPayedForTreatmentDay,
+                float                   timeWaitedForTreatmentTotal,
+                float                   amountPayedForTreatmentTotal,
+                float                   speed                               // Avg speed over last second
                 */
 
                 // Get user speed over last second (in meters)
@@ -658,17 +667,13 @@ public class SimManager : MonoBehaviour {
                     containerBase.transform.position.z / UNITY_VIVE_SCALE,
                     elapsedDayTime,
                     currentScore,       
-                    dayScore,       
+                    dayScore,   
+                    currentPayRate,    
                     currentPayload,
                     cumulativePayload,
                     dailyCumulativePayload,
-                    //Math.Abs(cumulativeDelivered - cumulativePayload),
-                    //Math.Abs(dailyCumulativeDelivered - dailyCumulativePayload),
                     totalSpilled,
                     todaySpilled,
-                    // ********
-                    // treatment on this day?
-                    // ********
                     shakeImpStrCurrent,
                     shakeImpStrInitial,
                     timeWaitedForTreatmentDay,

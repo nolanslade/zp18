@@ -27,7 +27,7 @@ public class SimPersister {
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string HEAD_DATE_PATT = "yyyy-MMM-dd HH:mm";
     private const string LOG_FILE_SUFF  = ".txt";
-    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32}";
+    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33}";
 
     private System.IO.StreamWriter fileWriter;
 
@@ -110,6 +110,7 @@ public class SimPersister {
                 "Daily_Cumulative_Water_Spilled",
                 "Total_Score",
                 "Day_Score",
+                "Current_Pay_Per_Drop",
                 "Shake_Impairment_Day_Current_Strength_Pcnt",
                 "Shake_Impairment_Day_Initial_Strength_Pcnt",
                 "Time_Waited_Treatment_Day_Seconds",
@@ -151,6 +152,7 @@ public class SimPersister {
         float 					dayTime, 				         // Total day time (running state only)
     	float 					totalScore,                      // Includes deductions for payment
     	float 					dayScore,                        // Includes deductions for payment
+        float                   payRate,                         // How much 1 droplet of water is worth today
         int                     currentlyCarrying,               // Water droplets inside of the container
         int                     cumulativeCarrying,              // Amount of water carried total
         int                     dailyCumulativeCarrying,         // Total amount of water carried on this day
@@ -168,10 +170,8 @@ public class SimPersister {
         float                   timeWaitedForTreatmentTotal,
         float                   amountPayedForTreatmentTotal,
         float                   speed                           // Avg speed over last second
-
-    	//float 					speedPenaltyFactorInitial, 	// 0 if no impairment applied
-    	//float 					speedPenaltyFactorCurrent	// This will drop if treatment received
-    	// .... 
+        // ......
+        
     	) {
     	
     	try {
@@ -207,6 +207,7 @@ public class SimPersister {
                     dailyCumulativeSpilled.ToString(),
                     totalScore.ToString(),
                     dayScore.ToString(),
+                    payRate.ToString(),
                     tremorImpairmentCurrentStrength.ToString(),
                     tremorImpairmentInitialStrength.ToString(),
                     timeWaitedForTreatmentDay.ToString(),
