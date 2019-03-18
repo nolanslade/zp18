@@ -51,7 +51,7 @@ public class SimManager : MonoBehaviour {
 
     private float currentScore, dayScore, currentCumulativePayment, elapsedDayTime, elapsedTotalTime, currentDayDuration, 
                     nextDayDuration, timeWaitedForTreatmentDay, timeWaitedForTreatmentTotal, amountPayedForTreatmentDay,
-                    amountPayedForTreatmentTotal, avgSpeedLastSecond;
+                    amountPayedForTreatmentTotal, avgSpeedLastSecond, currentPayRate;
 
     // Impairment strength trackers for persistence only
     private float shakeImpStrCurrent = 0.0f;
@@ -166,6 +166,7 @@ public class SimManager : MonoBehaviour {
                 totalSpilled                = 0;
                 todaySpilled                = 0;
                 currentDay                  = 0;                    // Training/tutorial day
+                currentPayRate              = 1.0f;                 // Day 0 uses a default rate of $1 per water droplet
                 currentPayload              = 0;                    // Amount of droplets in bucket
                 cumulativePayload           = 0;                    // Amount of droplets ever carried
                 dailyCumulativePayload      = 0;                    // Amount of droplets carried on this day
@@ -272,13 +273,9 @@ public class SimManager : MonoBehaviour {
     public void payReward () {
         if (paymentEnabled && currentGameState == GameState.RUNNING) {
 
-            float scoreAmt; // this sucks, we should just set it once start of day
-            if (currentDay > 0) scoreAmt = currentDayConfig.getRewardMultiplier();
-            else scoreAmt = 1.0f;
-
-            this.currentScore               += scoreAmt; 
-            this.currentCumulativePayment   += scoreAmt; 
-            this.dayScore                   += scoreAmt; 
+            this.currentScore               += currentPayRate; 
+            this.currentCumulativePayment   += currentPayRate; 
+            this.dayScore                   += currentPayRate; 
 
             this.dailyCumulativeDelivered   ++; 
             this.cumulativeDelivered        ++;
@@ -732,6 +729,7 @@ public class SimManager : MonoBehaviour {
                     // Establish key parameters from the day configuration object
                     currentDayConfig = configParser.getConfigs()[currentDay - 1];
                     currentDayDuration = currentDayConfig.getDuration();
+                    currentPayRate = currentDayConfig.getRewardMultiplier();
                     Debug.Log("Next day config loaded.");
 
                     if (currentDay != this.configParser.numDays()) {
