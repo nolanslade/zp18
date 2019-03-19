@@ -747,8 +747,8 @@ public class SimManager : MonoBehaviour {
 
                 if (limboIndex == limboInstrs.Length)
                 {
-                    Debug.Log("Ending Limbo...");
-                    currentGameState = GameState.RUNNING;
+                    Debug.Log("Iterated through all limbo instructions.");
+                    exitLimbo();
                     audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);     
                     flowManagerComponent.startFlow();     
                 }
