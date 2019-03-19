@@ -33,6 +33,7 @@ public class ConfigParser
     private bool instructionsEnabled;
     private bool soundEnabled;
 
+    private float watervalue;
     private string name;
     private string[] output;
     private string description;
@@ -115,6 +116,7 @@ public class ConfigParser
             0.0f,
             0.0f
         );
+
         dayThreeImps[0] = new Impairment(Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
         int dayThree = 3;
 
@@ -224,10 +226,7 @@ public class ConfigParser
 
     private bool parseSim()
     {
-
-
-
-
+        
         char[] delimiter = { '\n', ':', '\t', '#', ' ', '%', ',' };
         foreach (string i in this.sim)
         {
@@ -252,7 +251,11 @@ public class ConfigParser
                 this.instructions = split[1];
                 if (this.instructions.Contains("disabled"))
                 {
-                    instructionsEnabled = false;
+                    this.instructionsEnabled = false;
+                }
+                else
+                {
+                    this.instructionsEnabled = true;
                 }
             }
             else if (i.Contains(ConfigKeyword.SOUND))
@@ -261,7 +264,11 @@ public class ConfigParser
                 this.sound = split[1];
                 if (this.sound.Contains("disabled"))
                 {
-                    soundEnabled = false;
+                    this.soundEnabled = false;
+                }
+                else
+                {
+                    this.soundEnabled = true;
                 }
 
             }
@@ -294,8 +301,9 @@ public class ConfigParser
             bool isTreat = false;
             bool isWait = false;
             bool isCost = false;
-            float dur = 0.00f, watervalue = 1.00f, wait = 0.00f, certainty = 1.00f, strength = 0.00f;
+            float dur = 0.00f, wait = 0.00f, certainty = 1.00f, strength = 0.00f;
             float cost_C = 0.00f, cost_a = 0.00f, cost_b = 0.00f, cost_c = 0.00f, wait_C = 0.00f, wait_a = 0.00f, wait_b = 0.00f, wait_c = 0.00f;
+            watervalue = 1.00f;
             char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' };
             List<Impairment> helperArray = new List<Impairment>();
 
@@ -308,11 +316,9 @@ public class ConfigParser
                     day = int.Parse(split[split.Length - 1]);
 
                     trackDays++;
-                    Debug.Log("day " + this.dayList[i]);
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.DURATION))
                 {
-                    Debug.Log("dur " + this.dayList[i]);
                     string time = this.dayList[i].Split(new char[] { ':' }, 2)[1];
                     string[] split = time.Split(delimiter[1]);
                     dur = float.Parse(split[0]) * 60 + float.Parse(split[1]);
@@ -326,7 +332,6 @@ public class ConfigParser
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.IMPAIRMENT))
                 {
-                    Debug.Log("impair " + this.dayList[i]);
                     isImp = true; 
                     isTreat = false;
                     isWait = false;
@@ -334,7 +339,6 @@ public class ConfigParser
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.TREATMENT))
                 {
-                    Debug.Log("treatment " + this.dayList[i]);
                     isTreat = true;
                     isImp = false;
                     isWait = false;
@@ -349,7 +353,6 @@ public class ConfigParser
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.COST))
                 {
-                    Debug.Log("Cost " + this.dayList[i]);
                     isCost = true;
                     isTreat = false;
                     isImp = false;
@@ -389,7 +392,6 @@ public class ConfigParser
                 {
                      if (this.dayList[i].Contains(ConfigKeyword.CERTAINTY))
                     {
-                        Debug.Log("Certainty " + this.dayList[i]);
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
                         certainty = float.Parse(splitPercent[0]) / 100;
@@ -456,13 +458,11 @@ public class ConfigParser
 
                     if (this.dayList[i].Contains(ConfigKeyword.C) && this.dayList[i].Contains(ConfigKeyword.COST) == false)
                     {
-                        Debug.Log("C " + this.dayList[i]);
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         cost_C = float.Parse(split[1]);
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.a))
                     {
-                        Debug.Log("a " + this.dayList[i]);
                         if (this.dayList[i].Contains("default"))
                         {
                             cost_a = 1.00f;
@@ -478,7 +478,6 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        Debug.Log("b " + this.dayList[i]);
                         if (this.dayList[i].Contains("default"))
                         {
                             cost_b = 1.00f;
@@ -493,7 +492,6 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.c) && this.dayList[i].Contains(ConfigKeyword.COST) == false)
                     {
-                        Debug.Log("c " + this.dayList[i]);
                         if (this.dayList[i].Contains("default"))
                         {
                             cost_c = 1.00f;
@@ -509,10 +507,9 @@ public class ConfigParser
                     }
 
                 }
-                Debug.Log("i value: " + i);
-                if ((trackDays >= 0 && this.dayList[i + 1].Contains(ConfigKeyword.DAY) == true) || (i + 1) == this.dayList.Count)
+
+                if ((i + 1) == this.dayList.Count || (trackDays >= 0 && this.dayList[i + 1].Contains(ConfigKeyword.DAY) == true))
                 {
-                    Debug.Log("trackdays " + trackDays);
                     Impairment impairObj;
                     Impairment[] dayImpairs;
                     Treatment dayTreats;
@@ -530,9 +527,8 @@ public class ConfigParser
                         dayImpairs = helperArray.ToArray();
                     }
 
-                    if (cost_C != 0.00f)
+                    if (cost_C != 0.00f && wait_C != 0)
                     {
-                        Debug.Log("COST treats cost: " + cost_C + " wait: " + wait_C);
                         dayTreats = new Treatment(
                           cost_C,
                           cost_a,
@@ -548,14 +544,13 @@ public class ConfigParser
                           0.0f,
                           0.0f);
                     }
-                    else if(wait_C != 0.00f)
+                    else if(cost_C == 0.00f && cost_a == 0.00f && cost_b == 0.00f && cost_c == 0.00f && wait_C != 0.00f)
                     {
-                        Debug.Log("WAIT treats cost: " + cost_C + " wait: " + wait_C);
                         dayTreats = new Treatment(
-                          cost_C,
-                          cost_a,
-                          cost_b,
-                          cost_c,
+                          Treatment.NONE,
+                          Treatment.NONE,
+                          Treatment.NONE,
+                          Treatment.NONE,
                           wait_C,
                           wait_a,
                           wait_b,
@@ -567,11 +562,29 @@ public class ConfigParser
                           0.0f);
 
                     }
-                    else
+                    else if (cost_C != 0.00f && wait_C == 0.00f && wait_a == 0.00f && wait_b == 0.00f && wait_c == 0.00f)
                     {
-                        Debug.Log("ELSE treats cost: " + cost_C + " wait: " + wait_C);
+                        dayTreats = new Treatment(
+                          cost_C,
+                          cost_a,
+                          cost_b,
+                          cost_c,
+                          Treatment.NONE,
+                          Treatment.NONE,
+                          Treatment.NONE,
+                          Treatment.NONE,
+                          1.0f,
+                          1.0f,
+                          0.0f,
+                          0.0f,
+                          0.0f);
+
+                    }
+                    else 
+                    {
                         dayTreats = null;
                     }
+
 
 
 
@@ -655,6 +668,10 @@ public class ConfigParser
     public string getSimScene()
     {
         return this.scene;
+    }
+    public float getWaterValue()
+    {
+        return this.watervalue;
     }
 
     public string dbConn()
