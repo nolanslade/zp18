@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Water Simulation: Application Breakdown}
+\author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
+\date{March 2019}
+
+\begin{document}
+
+\maketitle
+
+%% What we could do is include hyperlinks to the classes we mention on GitHub so they
+%% could immediately jump to where we're talking about / make the changes they want to
+
+\section*{Overview}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Scene Components}
+\subsection*{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc)
+
+\subsection*{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
+
+\subsection*{Tutorials \& Instructions} % Triggers/markers, object destruction/moving through steps
+
+\subsection*{Receiving Treatment} % Medication station, pills/pedestals/UI, how they are used
+
+\subsection*{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Script Components}
+\subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
+
+\subsection*{Immersion} % Audio, haptic feedback, etc
+
+\subsection*{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc , participant data
+
+\subsection{Task Design}
+\subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
+\subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
+\subsubsection*{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
+\subsubsection*{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
+\subsubsection*{Instructions} % Tutorial framework, how it's coded -> beginning + mid-way via limbo / treatments
+
+\subsection*{Custom Configuration} % Aaska's stuff -> using the config file/parsing
+
+\end{document}
