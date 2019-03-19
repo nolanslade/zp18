@@ -35,7 +35,9 @@ public class SimManager : MonoBehaviour {
         RUNNING,
         TRANSITION,     // Countdown state between days
         COMPLETE,       // All days successfully completed - simulation is over
-        ERROR
+        ERROR,
+        LIMBO           // Essentially the same as paused, but reserving the paused
+                        // state just for the actual act of pausing the game
     }
 
     enum TutorialStep
@@ -56,6 +58,11 @@ public class SimManager : MonoBehaviour {
     // Impairment strength trackers for persistence only
     private float shakeImpStrCurrent = 0.0f;
     private float shakeImpStrInitial = 0.0f;
+
+    // Limbo functionality
+    private Instruction [] limboInstrs;         // Instructions to display during limbo
+    private int limboIndex;                     // What instruction we're on
+    private float limboElapsed;                 // Since last instruction display
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
     private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, 
@@ -363,6 +370,30 @@ public class SimManager : MonoBehaviour {
 
     public string getSimConfigName () {
         return usingConfigFile ? "N/A" : "--" ;
+    }
+
+
+    /*
+    * Puts the simulation into a limbo state (like being paused)
+    * for a given duration of time in order to display instructions. 
+    * For example, when treatment becomes available, we can put
+    * the simulation into limbo until all instructions have been
+    * displayed. Then, the simulation can resume.
+    */
+    public void limbo (Instruction [] instructionsToDisplay) {
+        Debug.Log("Entering limbo (function-call exit)");
+        this.currentGameState = GameState.LIMBO;
+        this.limboInstrs = instructionsToDisplay;
+        this.limboIndex = 0;        // After the first is displayed in this function for its duration, we'll move onto the second
+        this.limboElapsed = 0.0f;
+
+        // Always display the first instruction before going back to update()
+        this.instructionManagerComponent.setTemporaryMessage(instructionsToDisplay[0].message, instructionsToDisplay[0].displayDuration);
+    }
+
+    public void exitLimbo () {
+        Debug.Log("Exiting limbo state");
+        this.currentGameState = GameState.RUNNING;
     }
 
 
@@ -705,6 +736,30 @@ public class SimManager : MonoBehaviour {
         }
 
 
+        else if (currentGameState == GameState.LIMBO) {
+
+            limboElapsed += Time.deltaTime;
+
+            if (limboElapsed > limboInstrs[limboIndex].displayDuration)
+            {
+                limboIndex++;
+                limboElapsed = 0.0f;
+
+                if (limboIndex == limboInstrs.Length)
+                {
+                    Debug.Log("Ending Limbo...");
+                    currentGameState = GameState.RUNNING;
+                    audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);     
+                    flowManagerComponent.startFlow();     
+                }
+                else
+                {
+                    this.instructionManagerComponent.setTemporaryMessage(limboInstrs[limboIndex].message, limboInstrs[limboIndex].displayDuration);
+                }
+            }
+        }
+
+
         else if (currentGameState == GameState.ERROR || this.configParser.getConfigs() == null) {
 
             // TODO - should put a red haze into the headset or
@@ -783,17 +838,72 @@ public class SimManager : MonoBehaviour {
 
                     // Set up the treatment station if there should be treatments available
                     if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
-                        pillManagerComponent.activatePanels();
-                    } Debug.Log("Next day treatments loaded.");
 
-                    // Reset simulation parameters and play effects
-                    currentGameState = GameState.RUNNING;
-                    elapsedDayTime = 0.0f;
-                    Debug.Log("Preparing to start day.");
-                    transitionOverlay.SetActive(false);
-                    audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);
-                    flowManagerComponent.startFlow();
-                    Debug.Log("Starting day " + currentGameState);
+                        // *****
+                        // TODO - update this so that we only activate the right panels
+                        // *****
+                        pillManagerComponent.activatePanels();
+
+                        // Set an appropriate temporary message / instruction set depending on the treatment
+                        // scenario, e.g. is there just wait, just pay, or both?
+                        bool hasPay = currentDayTreatment.hasPayOption();
+                        bool hasWait = currentDayTreatment.hasWaitOption();
+
+                        if (hasPay && hasWait)
+                        {
+                            Debug.Log("Initializing limbo for pay&wait treatment...");
+                            Instruction [] instrs = new Instruction [5];
+                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
+                            Instruction instrThree = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly using the red pill bottle.", 7.0f);
+                            Instruction instrFour = new Instruction ("Option 2: use the blue pill bottle to\nwait for a duration of time to remove the\nimpairment for free.", 8.0f);
+                            Instruction instrFive = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);
+                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree; instrs[3] = instrFour; instrs[4] = instrFive;
+                            limbo (instrs);
+                        } 
+
+                        else if (hasPay)
+                        {
+                            Debug.Log("Initializing limbo for pay-only treatment...");
+                            Instruction[] instrs = new Instruction [3];
+                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo = new Instruction ("You can choose to either complete\nthis day impaired, or, pay a fee to remove\nthe impairment instantly.", 8.0f);
+                            Instruction instrThree = new Instruction ("If you wish to pay to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            limbo (instrs);
+                        }
+
+                        else if (hasWait)
+                        {
+                            Debug.Log("Initializing limbo for wait-only treatment...");
+                            Instruction[] instrs = new Instruction [3];
+                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo = new Instruction ("You can choose to either complete\nthis day impaired, or, wait a duration of time\nto remove the impairment at no cost.", 9.0f);
+                            Instruction instrThree = new Instruction ("If you wish to wait to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            limbo (instrs);
+                        }
+
+                        else Debug.Log("No treatment options found. Not displaying instruction message.");
+                    }
+
+                    Debug.Log("Finished loading current day treatment options.");
+
+                    if (currentGameState != GameState.LIMBO) {
+                        // Reset simulation parameters and play effects
+                        currentGameState = GameState.RUNNING;
+                        elapsedDayTime = 0.0f;
+                        Debug.Log("Preparing to start day.");
+                        transitionOverlay.SetActive(false);
+                        audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);      // On days with limbo, these two lines
+                        flowManagerComponent.startFlow();                                       // need to be done elsewhere
+                        Debug.Log("Starting day " + currentGameState);
+                    } else {
+                        elapsedDayTime = 0.0f;
+                        Debug.Log("Preparing to start day with limbo enabled at start.");
+                        transitionOverlay.SetActive(false);
+                        Debug.Log("Starting day " + currentGameState + " with limbo enabled.");
+                    }
                 }
             }
         }

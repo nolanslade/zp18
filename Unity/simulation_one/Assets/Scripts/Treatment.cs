@@ -10,6 +10,8 @@
  */
 public class Treatment {
 
+    public static float NONE = -99.0f;
+
 	// Cost Function Parameters
 	// Default function: cost = C * (omega - DT + (1/omega)*T^2)
 	// Dynamic function: cost = C * (c - bT + aT^2)
@@ -126,6 +128,36 @@ public class Treatment {
         }
 
         return death;
+    }
+
+
+    /*
+    * True if this treatment configuration will offer the participant the
+    * option to wait, and receive the treatment for free.
+    */
+    public bool hasWaitOption ()
+    {
+        return (
+            this.wait_C != NONE &&
+            this.wait_a != NONE &&
+            this.wait_b != NONE &&
+            this.wait_c != NONE
+        );
+    }
+
+
+    /*
+    * True if this treatment configuration will offer the participant the
+    * option to pay a dollar value, and receive the treatment instantly.
+    */
+    public bool hasPayOption ()
+    {
+        return (
+            this.cost_C != NONE &&
+            this.cost_a != NONE &&
+            this.cost_b != NONE &&
+            this.cost_c != NONE
+        );
     }
 
 
