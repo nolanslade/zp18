@@ -1,6 +1,14 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
 \title{Water Simulation: Application Breakdown}
 \author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
 \date{March 2019}
@@ -30,18 +38,34 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Script Components}
 \subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
+\href{https://bit.ly/2Th9Ey3}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
+\href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
+\href{https://bit.ly/2TOMwMq}{\textbf{HandInput.cs}}: TODO - Vyome
 
 \subsection*{Immersion} % Audio, haptic feedback, etc
+\href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including water flowing, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, water could flow at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
+
 
 \subsection*{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc , participant data
 
-\subsection{Task Design}
+
+\subsection*{Task Design}
 \subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
 \subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
 \subsubsection*{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
 \subsubsection*{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
 \subsubsection*{Instructions} % Tutorial framework, how it's coded -> beginning + mid-way via limbo / treatments
+\subsubsection*{User Interfaces}
+
 
 \subsection*{Custom Configuration} % Aaska's stuff -> using the config file/parsing
+
+
+\subsection*{Persistence} % How do we track data / what do we track / how do we print it out
+\href{https://bit.ly/2Fhq8B2}{\textbf{ParticipantData.cs}}: Static class populated after the participant presses the start button on the welcome screen. The participant's name and sensitivity information is gathered from the input form, and kept inside public static variables \textit{name} (string), \textit{nauseaSensitive} (bool), and \textit{claustrophicSensitive} (bool). These values can be accessed at any point during runtime. \newline \newline
+\href{https://bit.ly/2WgL6qR}{\textbf{PopulateParticipantData.cs}}: Facilitates the population of the ParticipantData static class. Each field of the welcome screen input form is mapped to GameObject variable within this script. When the confirm button is pressed, the values of each form element are retrieved, and the ParticipantData variables are assigned accordingly. Once this process is complete, this script also loads the main simulation scene, using a \textit{LoadLevel} method call. \newline \newline
+\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}: Contains definitions for log file naming, output data directories, as well as output data string formats. When instantiated, this class validates the output directory, and creates a new text file for persistence, which is named using the start time and participant name (if available). Once the output file is created, the constructor calls the \textit{writeIntroduction()} method, which summarizes the participant and application information, and prints CSV column headers.
+
+This class offers a public method \texit{persist()} - it takes a number of important simulation metrics as arguments, and persists them into the output file in CSV format.
 
 \end{document}
