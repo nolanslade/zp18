@@ -839,10 +839,8 @@ public class SimManager : MonoBehaviour {
                     // Set up the treatment station if there should be treatments available
                     if ((currentDayTreatment = currentDayConfig.getTreatment()) != null) {
 
-                        // *****
-                        // TODO - update this so that we only activate the right panels
-                        // *****
-                        pillManagerComponent.activatePanels();
+                        // Now updates acccording to the conditionals below
+                        // pillManagerComponent.activatePanels();
 
                         // Set an appropriate temporary message / instruction set depending on the treatment
                         // scenario, e.g. is there just wait, just pay, or both?
@@ -851,6 +849,7 @@ public class SimManager : MonoBehaviour {
 
                         if (hasPay && hasWait)
                         {
+                            pillManagerComponent.activatePanels(); // Activates both sets of panels/pills, etc
                             Debug.Log("Initializing limbo for pay&wait treatment...");
                             Instruction [] instrs = new Instruction [5];
                             Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
@@ -864,6 +863,7 @@ public class SimManager : MonoBehaviour {
 
                         else if (hasPay)
                         {
+                            pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.PAY);
                             Debug.Log("Initializing limbo for pay-only treatment...");
                             Instruction[] instrs = new Instruction [3];
                             Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
@@ -875,6 +875,7 @@ public class SimManager : MonoBehaviour {
 
                         else if (hasWait)
                         {
+                            pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.WAIT);
                             Debug.Log("Initializing limbo for wait-only treatment...");
                             Instruction[] instrs = new Instruction [3];
                             Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
