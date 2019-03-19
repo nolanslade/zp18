@@ -212,12 +212,12 @@ public class SimManager : MonoBehaviour {
         if (usingConfigFile) {
             Debug.Log ("Using custom parameters: " + CONFIG_PATH);
             this.configParser = new ConfigParser(CONFIG_PATH);
-            if (this.configParser.getSimSound().Contains("disable"))
+            if (!this.configParser.getSimSound())
             {
                 audioManagerComponent.mute();
             }
 
-            if (this.configParser.getSimInstruction().Contains("disable"))
+            if (!this.configParser.getSimInstruction())
             {
                 instructionManagerComponent.setInstructionsDisable();
             }

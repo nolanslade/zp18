@@ -33,11 +33,12 @@ public sealed class ConfigKeyword {
     public static readonly string DURATION      = "Duration";       // For a given day
     public static readonly string IMPAIRMENT    = "Impairment";     // For a given day
     public static readonly string TREATMENT     = "Treatment";      // For a given day
+    public static readonly string WATERVALUE    = "WaterValue";     // For a given day 
 
 
     // Key-value tier 3 keywords
-    public static readonly string TYPE          = "Type";           // For a given impairment
-    public static readonly string FACTOR        = "Factor";         // For a given impairment
+    public static readonly string TYPE            = "Type";           // For a given impairment
+    public static readonly string STRENGTH        = "Strength";         // For a given impairment
 
     // Key-value, tier 4
     public static readonly string WAIT          = "Wait";           // For a given treatment - 
