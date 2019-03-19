@@ -85,6 +85,9 @@ public class PillManager : MonoBehaviour {
     }
 
 
+    /*
+    * Activates both the panels for wait and pay options
+    */
     public void activatePanels()
     {
         treatmentDay = true;
@@ -97,6 +100,32 @@ public class PillManager : MonoBehaviour {
         treatmentInformationPanel.SetActive(true);
     }
 
+
+    /*
+    * Activates only the components corresponding to the desired
+    * treatment type, PAY or WAIT
+    */
+    public void activePanel (TreatmentObtainType panelType) {
+        
+        if (panelType == TreatmentObtainType.PAY) {
+            payPedestal.SetActive(true);
+            payPill.SetActive(true);
+            payPanel.SetActive(true);
+            treatmentInformationPanel.SetActive(true);
+        } 
+
+        else if (panelType == TreatmentObtainType.WAIT) {
+            waitPedestal.SetActive(true);
+            waitPill.SetActive(true);
+            waitPanel.SetActive(true);
+            treatmentInformationPanel.SetActive(true);
+        }
+    }
+
+
+    /*
+    * Disables all panels related to treatment
+    */
     public void disablePanels()
     {
         treatmentDay = false;
@@ -108,6 +137,7 @@ public class PillManager : MonoBehaviour {
         waitPedestal.SetActive(false);
         treatmentInformationPanel.SetActive(false);
     }
+
 
     // Update is called once per frame
     void Update()
