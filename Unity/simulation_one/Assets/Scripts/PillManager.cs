@@ -110,7 +110,7 @@ public class PillManager : MonoBehaviour {
     * Activates only the components corresponding to the desired
     * treatment type, PAY or WAIT
     */
-    public void activePanel (TreatmentObtainType panelType) {
+    public void activatePanel (TreatmentObtainType panelType) {
         
         if (panelType == TreatmentObtainType.PAY) {
             treatmentDay = true;
