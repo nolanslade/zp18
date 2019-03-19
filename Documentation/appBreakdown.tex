@@ -63,7 +63,9 @@
 
 \subsection*{Persistence} % How do we track data / what do we track / how do we print it out
 \href{https://bit.ly/2Fhq8B2}{\textbf{ParticipantData.cs}}: Static class populated after the participant presses the start button on the welcome screen. The participant's name and sensitivity information is gathered from the input form, and kept inside public static variables \textit{name} (string), \textit{nauseaSensitive} (bool), and \textit{claustrophicSensitive} (bool). These values can be accessed at any point during runtime. \newline \newline
-\href{https://bit.ly/2WgL6qR}{\textbf{PopulateParticipantData.cs}}:  \newline \newline
-\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}:
+\href{https://bit.ly/2WgL6qR}{\textbf{PopulateParticipantData.cs}}: Facilitates the population of the ParticipantData static class. Each field of the welcome screen input form is mapped to GameObject variable within this script. When the confirm button is pressed, the values of each form element are retrieved, and the ParticipantData variables are assigned accordingly. Once this process is complete, this script also loads the main simulation scene, using a \textit{LoadLevel} method call. \newline \newline
+\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}: Contains definitions for log file naming, output data directories, as well as output data string formats. When instantiated, this class validates the output directory, and creates a new text file for persistence, which is named using the start time and participant name (if available). Once the output file is created, the constructor calls the \textit{writeIntroduction()} method, which summarizes the participant and application information, and prints CSV column headers.
+
+This class offers a public method \texit{persist()} - it takes a number of important simulation metrics as arguments, and persists them into the output file in CSV format.
 
 \end{document}
