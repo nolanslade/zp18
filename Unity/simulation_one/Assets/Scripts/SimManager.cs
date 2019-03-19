@@ -94,6 +94,7 @@ public class SimManager : MonoBehaviour {
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
     public GameObject bucketPickUpTrigger;
+    public GameObject bucketPickUpTriggerLower;
     public GameObject farSinkMarker;
     public GameObject farSinkTrigger;
 
@@ -406,6 +407,7 @@ public class SimManager : MonoBehaviour {
                 currentTutorialStep = TutorialStep.HOLD_CONTAINER;
                 instructionManagerComponent.setTemporaryMessage("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
                 bucketPickUpTrigger.SetActive(true);
+                bucketPickUpTriggerLower.SetActive(true);
                 break;
             case TutorialStep.HOLD_CONTAINER:
                 currentTutorialStep = TutorialStep.FILL;
