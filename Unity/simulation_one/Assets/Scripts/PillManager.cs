@@ -27,7 +27,10 @@ public class PillManager : MonoBehaviour {
 
     private float treatmentCost;
     private float treatmentWait;
+
     private bool treatmentDay;
+    private bool justPay;
+    private bool justWait;
 
 
     public enum TreatmentObtainType 
@@ -43,6 +46,8 @@ public class PillManager : MonoBehaviour {
         this.payTextComp = payText.GetComponent<UnityEngine.UI.Text>();
         this.waitTextComp = waitText.GetComponent<UnityEngine.UI.Text>();
         treatmentDay = false;
+        justWait = false;
+        justPay = false;
     }
 
 
@@ -108,6 +113,8 @@ public class PillManager : MonoBehaviour {
     public void activePanel (TreatmentObtainType panelType) {
         
         if (panelType == TreatmentObtainType.PAY) {
+            treatmentDay = true;
+            justPay = true;
             payPedestal.SetActive(true);
             payPill.SetActive(true);
             payPanel.SetActive(true);
@@ -115,6 +122,8 @@ public class PillManager : MonoBehaviour {
         } 
 
         else if (panelType == TreatmentObtainType.WAIT) {
+            treatmentDay = true;
+            justWait = true;
             waitPedestal.SetActive(true);
             waitPill.SetActive(true);
             waitPanel.SetActive(true);
@@ -129,6 +138,8 @@ public class PillManager : MonoBehaviour {
     public void disablePanels()
     {
         treatmentDay = false;
+        justWait = false;
+        justPay = false;
         payPanel.SetActive(false);
         waitPanel.SetActive(false);
         payPill.SetActive(false);
@@ -149,10 +160,16 @@ public class PillManager : MonoBehaviour {
             // Reducing frame-by-frame operations
             if (elapsed > customRefreshRate)
             {
-                treatmentCost = simManagerComponent.getCurrentTreatmentCost();
-                treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
-                payTextComp.text = "$ " + treatmentCost.ToString("0.00");
-                waitTextComp.text = treatmentWait.ToString() + " s.";
+                if (!justWait) {
+                    treatmentCost = simManagerComponent.getCurrentTreatmentCost();
+                    payTextComp.text = "$ " + treatmentCost.ToString("0.00");
+                }
+                
+                if (!justPay) {
+                    treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
+                    waitTextComp.text = treatmentWait.ToString() + " s.";
+                }
+
                 elapsed = 0.0f;
             }
         }
