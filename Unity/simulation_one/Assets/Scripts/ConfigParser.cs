@@ -588,7 +588,7 @@ public class ConfigParser
 
 
 
-                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats);
+                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats, watervalue);
                     isImp = false;
                     isTreat = false;
                     isCost = false;
