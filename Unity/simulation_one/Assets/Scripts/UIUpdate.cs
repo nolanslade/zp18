@@ -10,6 +10,7 @@ public class UIUpdate : MonoBehaviour {
     public GameObject dayText;
     public GameObject moneyText;
     public GameObject todayMoneyText;
+    public GameObject wageText;
     public UnityEngine.UI.Text text;
 
     private string totalDays;
@@ -20,6 +21,7 @@ public class UIUpdate : MonoBehaviour {
     private UnityEngine.UI.Text dayTextComp;
     private UnityEngine.UI.Text moneyTextComp;          // Total score (includes today)
     private UnityEngine.UI.Text todayMoneyTextComp;     // Score today
+    private UnityEngine.UI.Text wageTextComp;
 
     // Only update every set duration, instead of every frame.
     public float customRefreshRate;
@@ -37,6 +39,7 @@ public class UIUpdate : MonoBehaviour {
         this.moneyTextComp      = moneyText.GetComponent<UnityEngine.UI.Text>();
         this.todayMoneyTextComp = todayMoneyText.GetComponent<UnityEngine.UI.Text>();
         this.totalDays          = simManComp.getTotalDays().ToString();
+        this.wageTextComp       = wageText.GetComponent<UnityEngine.UI.Text>();
     }
 
     // Update is called once per frame
@@ -53,6 +56,7 @@ public class UIUpdate : MonoBehaviour {
                 dayTextComp.text = "Day: " + simManComp.getCurrentDay().ToString() + " / " + totalDays;
                 moneyTextComp.text = "$" + simManComp.getCurrentScore().ToString("0.00");
                 todayMoneyTextComp.text = "$" + simManComp.getDayScore().ToString("0.00");
+                wageTextComp.text = "Wage: $" + simManComp.getCurrentDayConfiguration().getRewardMultiplier().ToString("0.00") + "/droplet";
                 elapsed = 0.0f;
             }
         }
