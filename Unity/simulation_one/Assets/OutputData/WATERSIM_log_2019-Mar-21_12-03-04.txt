@@ -1,0 +1,12 @@
+Participant name: 
+Nausea Reduction: False
+Claustrophobia Reduction: False
+Experiment Date & Time: 2019-Mar-21 12:03
+Configuration Type: default
+Configuration File Name: --
+Application Version: 1.6
+
+Global_Time_Seconds,Current_Day,Day_Time_Seconds,Current_State,Head_X_Position_Meters,Head_Y_Position_Meters,Head_Z_Position_Meters,Head_X_Rotation_Degrees,Head_Y_Rotation_Degrees,Head_Z_Rotation_Degrees,L_Hand_X_Position_Meters,L_Hand_Y_Position_Meters,L_Hand_Z_Position_Meters,R_Hand_X_Position_Meters,R_Hand_Y_Position_Meters,R_Hand_Z_Position_Meters,Bucket_X_Position_Meters,Bucket_Y_Position_Meters,Bucket_Z_Position_Meters,Avg_Moving_Speed_Last_Second_M/sec,Current_Water_In_Bucket,Cumulative_Water_Carried,Today_Water_Carried,Cumulative_Water_Spilled,Today_Water_Spilled,Cumulative_Water_Delivered,Today_Water_Delivered,Total_Score,Today_Score,Current_Pay_Per_Drop,Shake_Impairment_Day_Current_Strength_Pcnt,Shake_Impairment_Day_Initial_Strength_Pcnt,Seconds_Waited_Treatment_Day,Amount_Payed_Treatment_Day,Seconds_Waited_Treatment_Total,Amount_Payed_For_Treatment_Total
+1.015222,0,0,RUNNING,0.169441,0.5078544,0.7021773,-6,-51,-4,-0.02663825,-0.02663825,0,-0.02663825,-0.02663825,0,1.241875,1.065623,0.4437931,0.8829945,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+2.082729,0,0,RUNNING,0.1697028,0.50774,0.702172,-6,-51,-4,-0.02663825,-0.02663825,0,-0.02663825,-0.02663825,0,1.241875,1.065623,0.4437931,0.0002857996,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
+3.090065,0,0,RUNNING,0.1694572,0.5078951,0.702169,-6,-51,-4,-0.02663825,-0.02663825,0,-0.02663825,-0.02663825,0,1.241875,1.065623,0.4437931,0.0002905227,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
