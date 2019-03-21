@@ -89,5 +89,5 @@ $RECYCLE.BIN/
 *.lnk
 
 #Output Data files
-OutputData/*.meta
-OutputData/*.txt
+Unity/simulation_one/Assets/OutputData/*.meta
+Unity/simulation_one/Assets/OutputData/*.txt
