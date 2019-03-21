@@ -449,40 +449,7 @@ public class SimManager : MonoBehaviour {
     public void advanceTutorialStep (TutorialStep stepToAdvanceTo)
     {
         if (currentTutorialStep != stepToAdvanceTo) {
-            switch (currentTutorialStep)
-            {
-                case TutorialStep.BUCKET:
-                    currentTutorialStep = TutorialStep.HOLD_CONTAINER;
-                    instructionManagerComponent.setTemporaryMessage("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
-                    bucketPickUpTrigger.SetActive(true);
-                    bucketPickUpTriggerLower.SetActive(true);
-                    break;
-                case TutorialStep.HOLD_CONTAINER:
-                    currentTutorialStep = TutorialStep.FILL;
-                    instructionManagerComponent.setTemporaryMessage("Fill up the bucket by placing it\nunder the running water", 6.0f);
-                    break;
-                case TutorialStep.FILL:
-                    currentTutorialStep = TutorialStep.GO_TO_SINK;
-                    instructionManagerComponent.setTemporaryMessage("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
-                    farSinkMarker.SetActive(true);
-                    farSinkTrigger.SetActive(true);
-                    break;
-                case TutorialStep.GO_TO_SINK:
-                    currentTutorialStep = TutorialStep.POUR_BUCKET;
-                    instructionManagerComponent.setTemporaryMessage("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
-                    break;
-                case TutorialStep.POUR_BUCKET:
-                    currentTutorialStep = TutorialStep.CONTINUE;
-                    instructionManagerComponent.setTemporaryMessage("To start the experiment, repeat this\nprocess until you've earned $150.", 7.0f);
-                    break;
-                case TutorialStep.CONTINUE:
-                    Debug.Log("All tutorial steps complete.");
-                    currentTutorialStep = TutorialStep.DONE_TUTORIAL;
-                    break;
-                default:
-                    Debug.Log("Invalid tutorial step.");
-                    break;
-            }
+            advanceTutorialStep();
         }
     }
 
