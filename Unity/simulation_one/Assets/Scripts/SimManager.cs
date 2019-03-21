@@ -528,6 +528,9 @@ public class SimManager : MonoBehaviour {
             currentScore -= effectiveCost;
             dayScore -= effectiveCost;
             Debug.Log("New score: " + currentScore.ToString());
+            Debug.Log("Increasing amounts payed for treatment, total and day.");
+            amountPayedForTreatmentDay += effectiveCost;
+            amountPayedForTreatmentTotal += effectiveCost;
 
             if (isEffective) {
                 Debug.Log("Treatment was effective. Modifying impairment.");
@@ -668,7 +671,7 @@ public class SimManager : MonoBehaviour {
                 /*
                 Persistence parameter list (ordered):
 
-                float 					globalTime,				         // Total simulation runtime (any state)
+    	        float 					globalTime,				         // Total simulation runtime (any state)
     	        int 					currentDay,				
     	        SimManager.GameState 	currentState,
                 float                   headsetX,
@@ -686,17 +689,21 @@ public class SimManager : MonoBehaviour {
                 float                   bucketX,
                 float                   bucketY,
                 float                   bucketZ,
-                float 					dayTime, 				            // Total day time (running state only)
-    	        float 					totalScore,                         // Includes deductions for payment
-    	        float 					dayScore,                            // Includes deductions for payment
-                float                   payRate,                            // How much 1 droplet of water is worth today
-                int                     currentlyCarrying,                  // Water droplets inside of the container
-                int                     cumulativeCarrying,                 // Amount of water carried total
-                int                     dailyCumulativeCarrying,            // Total amount of water carried on this day
-                int                     cumulativeSpilled,                  // Total amount of water spilled
-                int                     dailyCumulativeSpilled,             // Total amount of water spilled on this day
-                int                     cumulativeDelivered,                // All drops that have reached the destination 
-                int                     todayDelivered,                     // Above, except for today
+                float 					dayTime, 				         // Total day time (running state only)
+    	        float 					totalScore,                      // Includes deductions for payment
+    	        float 					dayScore,                        // Includes deductions for payment
+                float                   payRate,                         // How much 1 droplet of water is worth today
+                int                     currentlyCarrying,               // Water droplets inside of the container
+                int                     cumulativeCarrying,              // Amount of water carried total
+                int                     dailyCumulativeCarrying,         // Total amount of water carried on this day
+                int                     cumulativeSpilled,               // Total amount of water spilled
+                int                     dailyCumulativeSpilled,          // Total amount of water spilled on this day
+                int                     cumulativeDelivered,             // All drops that have reached the destination 
+                int                     todayDelivered,                  // Above, except for today
+                bool                    currentDayOffersPayTreatment,
+                bool                    currentDayOffersWaitTreatment,
+                float                   currentTreatmentPayCost,            // Dollars
+                float                   currentTreatmentWaitCost,           // Seconds
                 float                   tremorImpairmentCurrentStrength,
                 float                   tremorImpairmentInitialStrength,
                 float                   timeWaitedForTreatmentDay,
@@ -732,7 +739,7 @@ public class SimManager : MonoBehaviour {
                     elapsedDayTime,
                     currentScore,       
                     dayScore,   
-                    currentPayRate,    
+                    currentPayRate,
                     currentPayload,
                     cumulativePayload,
                     dailyCumulativePayload,
@@ -740,6 +747,10 @@ public class SimManager : MonoBehaviour {
                     todaySpilled,
                     cumulativeDelivered,
                     dailyCumulativeDelivered,
+                    currentDayTreatment.hasPayOption(),
+                    currentDayTreatment.hasWaitOption(),
+                    getCurrentTreatmentCost(),
+                    getCurrentTreatmentWaitTime(),
                     shakeImpStrCurrent,
                     shakeImpStrInitial,
                     timeWaitedForTreatmentDay,
@@ -814,6 +825,7 @@ public class SimManager : MonoBehaviour {
 
                 currentDay += 1;
                 dayScore = 0.0f;
+                amountPayedForTreatmentDay = 0.0f;
                 dailyCumulativePayload = 0;
                 dailyCumulativeDelivered = 0;
                 todaySpilled = 0;
@@ -849,7 +861,6 @@ public class SimManager : MonoBehaviour {
                                     leftHandTracker.applyImpairment(str);
                                     shakeImpStrCurrent = str;
                                     shakeImpStrInitial = str;
-                            
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);

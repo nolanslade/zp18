@@ -27,7 +27,7 @@ public class SimPersister {
     private const string LOG_FILE_PATT  = "yyyy-MMM-dd_HH-mm-ss";
     private const string HEAD_DATE_PATT = "yyyy-MMM-dd HH:mm";
     private const string LOG_FILE_SUFF  = ".txt";
-    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35}";
+    private const string TXT_OUTPUT_FMT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39}";
 
     private System.IO.StreamWriter fileWriter;
 
@@ -113,6 +113,10 @@ public class SimPersister {
                 "Total_Score",
                 "Today_Score",
                 "Current_Pay_Per_Drop",
+                "Current_Day_Has_Pay_Treatment",    // Bool
+                "Current_Day_Has_Wait_Treatment",   // Bool
+                "Current_Treatment_Pay_Cost",       // Dollars
+                "Current_Treatment_Wait_Cost",      // Seconds
                 "Shake_Impairment_Day_Current_Strength_Pcnt",
                 "Shake_Impairment_Day_Initial_Strength_Pcnt",
                 "Seconds_Waited_Treatment_Day",
@@ -162,11 +166,10 @@ public class SimPersister {
         int                     dailyCumulativeSpilled,          // Total amount of water spilled on this day
         int                     cumulativeDelivered,             // All drops that have reached the destination 
         int                     todayDelivered,                  // Above, except for today
-        /*
-        float                   tremorImpairmentFactorInitial,
-        float                   tremorImpairmentFactorCurrent,
-        bool                    dayHasTreatment,
-        */
+        bool                    currentDayOffersPayTreatment,
+        bool                    currentDayOffersWaitTreatment,
+        float                   currentTreatmentPayCost,            // Dollars
+        float                   currentTreatmentWaitCost,           // Seconds
         float                   tremorImpairmentCurrentStrength,
         float                   tremorImpairmentInitialStrength,
         float                   timeWaitedForTreatmentDay,
@@ -174,9 +177,8 @@ public class SimPersister {
         float                   timeWaitedForTreatmentTotal,
         float                   amountPayedForTreatmentTotal,
         float                   speed                           // Avg speed over last second
-        // ......
-        
-    	) {
+    	
+        ) {
     	
     	try {
 
@@ -214,6 +216,10 @@ public class SimPersister {
                     totalScore.ToString(),
                     dayScore.ToString(),
                     payRate.ToString(),
+                    currentDayOffersPayTreatment.ToString(),
+                    currentDayOffersWaitTreatment.ToString(),
+                    currentTreatmentPayCost.ToString(),
+                    currentTreatmentWaitCost.ToString(),
                     tremorImpairmentCurrentStrength.ToString(),
                     tremorImpairmentInitialStrength.ToString(),
                     timeWaitedForTreatmentDay.ToString(),
