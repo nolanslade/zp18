@@ -1,0 +1,30 @@
+Simulation
+	Name:Sample_Config
+	Output:.txt,database
+	Description:Sample 3-day (plus intro) configuration file.
+	Instructions:enabled  	# If not specified, enabled by default	
+	Sound:enabled        	# If not specified, enabled by default
+Day
+	Duration:1:30         	# Minutes:Seconds
+Day
+	Duration:1:30
+	WaterValue:1.5 		# If not specified, default is $1.00 / drop
+	Impairment
+		Type:Physical/Shake
+		Strength:50%
+Day
+	Duration:1:30
+	Impairment
+		Type:Physical/Shake
+		Strength:50%
+	Treatment
+		Wait
+			C:180		
+			a:1.05
+			b:31
+			c:220		
+		Cost
+			C:80
+			a:0.05
+			b:3
+			c:120
