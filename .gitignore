@@ -89,4 +89,5 @@ $RECYCLE.BIN/
 *.lnk
 
 #Output Data files
-OutputData/
+OutputData/*.meta
+OutputData/*.txt
