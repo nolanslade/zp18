@@ -11,7 +11,6 @@ public class UIUpdate : MonoBehaviour {
     public GameObject moneyText;
     public GameObject todayMoneyText;
     public GameObject wageText;
-    public UnityEngine.UI.Text text;
 
     private string totalDays;
 
