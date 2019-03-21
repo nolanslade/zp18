@@ -514,15 +514,23 @@ public class SimManager : MonoBehaviour {
     */
     public void determinePostTreatmentActions (PillManager.TreatmentObtainType obtainType, float effectiveCost, float effectiveWaitTime) {
 
+        Debug.Log("Determining post treatment actions.");
+
         currentDayTreatment.obtain(elapsedDayTime);
         bool isEffective = currentDayTreatment.isEffective();
         float effectiveness = currentDayTreatment.getEffectiveness();
 
+        Debug.Log("Obtained, effective: " + isEffective.ToString()  + ", effectiveness: " + effectiveness.ToString());
+
         if (obtainType == PillManager.TreatmentObtainType.PAY) {
 
+            Debug.Log("Decrementing score (" + currentScore.ToString() + ") by: " + effectiveCost.ToString());
             currentScore -= effectiveCost;
+            dayScore -= effectiveCost;
+            Debug.Log("New score: " + currentScore.ToString());
 
             if (isEffective) {
+                Debug.Log("Treatment was effective. Modifying impairment.");
                 audioManagerComponent.playSound(AudioManager.SoundType.TAKE_MEDICINE);
                 modifyImpairmentFactors(effectiveness);
             }
@@ -537,7 +545,9 @@ public class SimManager : MonoBehaviour {
         }
 
         else if (obtainType == PillManager.TreatmentObtainType.WAIT) {
-            int a = 1; // TODO
+            // ***********************************************
+            Debug.Log("WAIT ACTIONS NOT IMPLEMENTED"); // TODO
+            // ***********************************************
         }
     }
 
@@ -556,6 +566,9 @@ public class SimManager : MonoBehaviour {
         }
 
         else {
+
+            // TODO!!! need to update this to actually work properly for non 1.0f factors
+
             foreach (Impairment i in this.currentDayImpairments) {
                 switch (i.getType()) {
                     case Impairment.ImpairmentType.PHYSICAL_SHAKE:
@@ -872,8 +885,8 @@ public class SimManager : MonoBehaviour {
                             Instruction [] instrs = new Instruction [5];
                             Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
                             Instruction instrTwo = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
-                            Instruction instrThree = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly using the red pill bottle.", 7.0f);
-                            Instruction instrFour = new Instruction ("Option 2: use the blue pill bottle to\nwait for a duration of time to remove the\nimpairment for free.", 8.0f);
+                            Instruction instrThree = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly by\ngrabbing the red pill bottle.", 7.0f);
+                            Instruction instrFour = new Instruction ("Option 2: grab the blue pill bottle to\nwait for a duration of time to\nremove the impairment for free.", 8.0f);
                             Instruction instrFive = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);
                             instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree; instrs[3] = instrFour; instrs[4] = instrFive;
                             limbo (instrs);

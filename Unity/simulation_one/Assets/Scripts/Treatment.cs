@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 /**
  * McDSL: VR Simulation One
@@ -13,17 +14,17 @@ public class Treatment {
     public static float NONE = -99.0f;
 
 	// Cost Function Parameters
-	// Default function: cost = C * (omega - DT + (1/omega)*T^2)
-	// Dynamic function: cost = C * (c - bT + aT^2)
+	// Default function: cost = C * (omega - DT + ((1/omega)*T)^2)
+	// Dynamic function: cost = C * (c - bT + (aT)^2)
 	// Where T is the time of day, omega = length of current day, D = current day
 
     // Wait function similar - except in seconds.
 
-	private float cost_C;			// Original cost; will depreciate according to the below a,b,c		
+	private float cost_C;				
 	private float cost_a;	
 	private float cost_b;
 	private float cost_c;
-    private float wait_C;           // Same as above, expect for wait function      
+    private float wait_C;           
     private float wait_a;   
     private float wait_b;
     private float wait_c;
@@ -82,8 +83,8 @@ public class Treatment {
 	* applicable cost function and the current time
     */
     public float currentCost (float currentSimTime) {
-    	// cost = C * (c - bT + aT^2)
-    	return cost_C * (cost_c - cost_b * currentSimTime + cost_a * currentSimTime * currentSimTime);
+    	// cost = C * (c - bT + (aT)^2)
+    	return cost_C * (cost_c - (cost_b * currentSimTime) + ((cost_a * currentSimTime) * (cost_a * currentSimTime)));
     }
 
 
@@ -93,8 +94,8 @@ public class Treatment {
     * for free in return for waiting.
     */
     public float currentWaitTime (float currentSimTime) {
-        // wait time = C * (c - bT + aT^2)
-        return wait_C * (wait_c - wait_b * currentSimTime + wait_a * currentSimTime * currentSimTime);
+        // wait time = C * (c - bT + (aT)^2)
+        return wait_C * (wait_c - (wait_b * currentSimTime) + ((wait_a * currentSimTime) * (wait_a * currentSimTime)));
     }
 
 

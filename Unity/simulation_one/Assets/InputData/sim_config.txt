@@ -18,13 +18,8 @@ Day
 		Type:Physical/Shake
 		Strength:50%
 	Treatment
-		Wait
-			C:180		
-			a:1.05
-			b:31
-			c:220		
 		Cost
-			C:80
-			a:0.05
-			b:3
-			c:120
+			C:3
+			a:0.01111
+			b:2
+			c:90
