@@ -52,16 +52,12 @@ public class SimPersister {
     	}
 
         // Check for file here + make sure valid directory
-        Debug.Log("Checking for output data path.");
         if (!System.IO.Directory.Exists(Application.dataPath + "/OutputData")) {
-            Debug.Log("No output data path.");
             System.IO.Directory.CreateDirectory(Application.dataPath + "/OutputData");
         }
 
-        Debug.Log("Creating text file to output data.");
         System.IO.File.CreateText(Application.dataPath + "/OutputData/" + logFileName).Dispose();
         fileWriter = new System.IO.StreamWriter(Application.dataPath + "/OutputData/" + logFileName, true);
-        Debug.Log("Trying to write introduction.");
         writeIntroduction ();
     }
 

@@ -16,10 +16,7 @@ public class SimManager : MonoBehaviour {
     public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
-    private const string OUTPUT_DIR     = "C:/Users/CS4ZP6 user/Documents/sim_output/";         // Data persistence - files will be in this dir with a standard name + timestamp
-    private const string CONFIG_PATH    = "C:/Users/CS4ZP6 user/Documents/sim_config.txt";
-
-    private const bool usingConfigFile                  = false;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private const bool usingConfigFile                  = true;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
     private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
@@ -210,8 +207,12 @@ public class SimManager : MonoBehaviour {
         Debug.Log("Establishing params.");
 
         if (usingConfigFile) {
-            Debug.Log ("Using custom parameters: " + CONFIG_PATH);
-            this.configParser = new ConfigParser(CONFIG_PATH);
+
+            string configPath = Application.dataPath + "/InputData/sim_config.txt";
+            Debug.Log ("Using custom parameters: " + configPath);
+
+            this.configParser = new ConfigParser (configPath);
+
             if (!this.configParser.getSimSound())
             {
                 audioManagerComponent.mute();

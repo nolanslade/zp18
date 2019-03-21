@@ -139,16 +139,6 @@ public class ConfigParser
     {
         lowNauseaMode = ParticipantData.nauseaSensitive;
 
-        // TODO
-
-        // NEED CONFIG OPTION FOR THIS
-       
-
-        Debug.Log("CONFIG FILE RELATIVE PATH  " + Application.dataPath + "/InputData/sim_config.txt");
-
-
-        // ---------
-
         this.configFilePath = path;
         dbConnection = null;
         List<string> dayByLine = new List<string>();    //each line in a list for day portion of file
@@ -303,7 +293,7 @@ public class ConfigParser
             bool isCost = false;
             float dur = 0.00f, wait = 0.00f, certainty = 1.00f, strength = 0.00f;
             float cost_C = 0.00f, cost_a = 0.00f, cost_b = 0.00f, cost_c = 0.00f, wait_C = 0.00f, wait_a = 0.00f, wait_b = 0.00f, wait_c = 0.00f;
-            watervalue = 1.00f;
+            float watervalue = 1.00f;
             char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' };
             List<Impairment> helperArray = new List<Impairment>();
 
@@ -327,7 +317,7 @@ public class ConfigParser
                 else if (this.dayList[i].Contains(ConfigKeyword.WATERVALUE))
                 {
                     string[] split = this.dayList[i].Split(delimiter[1]);
-                    watervalue = float.Parse(split[1]) / 100;
+                    watervalue = float.Parse(split[1]);
 
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.IMPAIRMENT))
