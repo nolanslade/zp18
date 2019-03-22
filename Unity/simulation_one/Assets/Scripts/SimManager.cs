@@ -6,6 +6,17 @@ using UnityEngine.UI;
 using System.IO;
 using Valve.VR;
 
+/*
+* Nolan Slade
+* November 2018
+* 
+* Main event object; tracks simulation state, defines key
+* parameters, and contains several methods for important
+* actions including activating impairments, receiving treatment,
+* providing instructions, and state-switching.
+* 
+* Also defines enums for all tutorial steps, and possible game states.
+*/
 public class SimManager : MonoBehaviour {
 
     public static string APPLICATION_VERSION  = "1.7";
@@ -62,6 +73,10 @@ public class SimManager : MonoBehaviour {
     private Instruction [] limboInstrs;         // Instructions to display during limbo
     private int limboIndex;                     // What instruction we're on
     private float limboElapsed;                 // Since last instruction display
+
+    // Waiting for treatment
+    private bool waitingForTreatment = false;
+    private float waitingForTreatmentDuration = 0.0f;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
     private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, 
@@ -376,6 +391,10 @@ public class SimManager : MonoBehaviour {
         return usingConfigFile ? "N/A" : "--" ;
     }
 
+    public bool isWaitingForTreatment () {
+        return this.waitingForTreatment;
+    }
+
 
     /*
     * Puts the simulation into a limbo state (like being paused)
@@ -548,9 +567,53 @@ public class SimManager : MonoBehaviour {
         }
 
         else if (obtainType == PillManager.TreatmentObtainType.WAIT) {
-            // ***********************************************
-            Debug.Log("WAIT ACTIONS NOT IMPLEMENTED"); // TODO
-            // ***********************************************
+
+            // TODO
+            // Make the panel actually count down second by second, 
+            // rather than get updated by the wait time cost function.
+            // TODO
+
+            Debug.Log("Waiting for treatment started...");
+            this.waitingForTreatment = true;
+            this.waitingForTreatmentDuration = effectiveWaitTime;
+
+            // Limbo, display the instructions for how the waiting process is going to work.
+            Debug.Log("Initializing limbo for waiting for treatment...");
+            Instruction[] instrs = new Instruction [2];
+            Instruction instrOne = new Instruction ("You've decided to wait for treatment.\nUntil the timer reaches 0, you'll be\nunable to pick up the bucket.", 8.0f);
+            Instruction instrTwo = new Instruction ("Once the timer reaches 0, you will\nreceive treatment, and may begin\nearning money again, unimpaired.", 8.0f);
+            instrs[0] = instrOne; instrs[1] = instrTwo;
+            limbo(instrs);
+        }
+    }
+
+
+    /*
+    * Follows from the above - but actually carries out the changes, once they've been determined. 
+    * Only being used for the wait option right now.
+    */
+    private void applyPostTreatmentActions ()
+    {
+        bool isEffective = currentDayTreatment.isEffective();
+        float effectiveness = currentDayTreatment.getEffectiveness();
+
+        Debug.Log("Effective: " + isEffective.ToString());
+        Debug.Log("Effectiveness: " + effectiveness.ToString());
+
+        if (isEffective)
+        {
+            Debug.Log("Treatment was effective. Modifying impairment.");
+            audioManagerComponent.playSound(AudioManager.SoundType.TAKE_MEDICINE);
+            modifyImpairmentFactors(effectiveness);
+        }
+
+        else
+        {
+            // TODO - maybe should have another sound effect to let them know it didnt work
+            // or something else
+            Debug.Log(
+                "Treatment uneffective."
+            );
         }
     }
 
@@ -835,6 +898,8 @@ public class SimManager : MonoBehaviour {
                 dailyCumulativePayload = 0;
                 dailyCumulativeDelivered = 0;
                 todaySpilled = 0;
+                waitingForTreatment = false;
+                waitingForTreatmentDuration = 0.0f;
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here
@@ -969,6 +1034,20 @@ public class SimManager : MonoBehaviour {
             if (currentDay > 0) {
 
                 elapsedDayTime += Time.deltaTime;
+
+                // Track how long the participant has been waiting for treatment
+                // since the end of the limbo after they grabbed the pill bottle
+                if (waitingForTreatment)
+                {
+                    waitingForTreatmentDuration -= Time.deltaTime;
+                    if (waitingForTreatmentDuration <= 0.0f)
+                    {
+                        this.waitingForTreatment = false;
+                        waitingForTreatmentDuration = 0.0f;
+                        Debug.Log("Treatment wait time has been passed..");
+                        applyPostTreatmentActions();
+                    }
+                }
 
                 /*
                 countdownStarted;             // Whether or not the first beep has played
