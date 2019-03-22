@@ -281,7 +281,7 @@ public class PillManager : MonoBehaviour {
                     // then, the return value = time until full health returns. Otherwise,
                     // the return value = result of the treatment's wait-cost function
                     treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
-                    waitTextComp.text = treatmentWait.ToString() + " s.";
+                    waitTextComp.text = treatmentWait.ToString("0.0") + " s.";
                 }
 
                 elapsed = 0.0f;
