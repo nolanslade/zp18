@@ -16,7 +16,7 @@ public class SimManager : MonoBehaviour {
     public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
 
-    private const bool usingConfigFile                  = true;  // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
+    private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
     private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
@@ -749,8 +749,8 @@ public class SimManager : MonoBehaviour {
                     dailyCumulativeDelivered,
                     (currentDayTreatment != null ? currentDayTreatment.hasPayOption() : false),
                     (currentDayTreatment != null ? currentDayTreatment.hasWaitOption() : false),
-                    getCurrentTreatmentCost(),
-                    getCurrentTreatmentWaitTime(),
+                    ((currentDayTreatment != null && currentDayTreatment.hasPayOption()) ? getCurrentTreatmentCost() : -1.0f),
+                    ((currentDayTreatment != null && currentDayTreatment.hasWaitOption()) ? getCurrentTreatmentWaitTime() : -1.0f),
                     shakeImpStrCurrent,
                     shakeImpStrInitial,
                     timeWaitedForTreatmentDay,
