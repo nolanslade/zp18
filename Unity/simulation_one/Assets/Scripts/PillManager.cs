@@ -14,6 +14,7 @@ public class PillManager : MonoBehaviour {
     public GameObject treatmentInformationPanel;
     public GameObject waitPill;
     public GameObject waitPedestal;
+    public GameObject waitBucketPlatform;
     public GameObject payPill;
     public GameObject payPedestal;
 
@@ -202,6 +203,7 @@ public class PillManager : MonoBehaviour {
         waitPill.SetActive(false);
         payPedestal.SetActive(false);
         waitPedestal.SetActive(false);
+        waitBucketPlatform.SetActive(false);
         treatmentInformationPanel.SetActive(false);
         payBottlePositionA = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
         payBottlePositionB = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
@@ -213,6 +215,7 @@ public class PillManager : MonoBehaviour {
     public void disableComponentsForWaiting () 
     {
         justWait = true;
+        waitBucketPlatform.SetActive(true);
         payPanel.SetActive(false);
         payPill.SetActive(false);
         waitPill.SetActive(false);
