@@ -191,13 +191,29 @@ public class PillManager : MonoBehaviour {
     /*
     * Disables all panels related to treatment
     */
-    public void disablePanels()
+    public void disablePanels ()
     {
         treatmentDay = false;
         justWait = false;
         justPay = false;
         payPanel.SetActive(false);
         waitPanel.SetActive(false);
+        payPill.SetActive(false);
+        waitPill.SetActive(false);
+        payPedestal.SetActive(false);
+        waitPedestal.SetActive(false);
+        treatmentInformationPanel.SetActive(false);
+        payBottlePositionA = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
+        payBottlePositionB = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
+        waitBottlePositionA = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
+        waitBottlePositionB = new Vector3 (NULL_POS, NULL_POS, NULL_POS);
+    }
+
+
+    public void disableComponentsForWaiting () 
+    {
+        justWait = true;
+        payPanel.SetActive(false);
         payPill.SetActive(false);
         waitPill.SetActive(false);
         payPedestal.SetActive(false);
