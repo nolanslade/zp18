@@ -7,7 +7,7 @@ Simulation
 Day
 	Duration:1:30         	# Minutes:Seconds
 Day
-	Duration:1:30
+	Duration:0:5
 	WaterValue:1.5 		# If not specified, default is $1.00 / drop
 	Impairment
 		Type:Physical/Shake
@@ -19,12 +19,12 @@ Day
 		Strength:50%
 	Treatment
 		Wait
-			C:1
+			C:0.2
 			a:0.01111
-			b:2
+			b:3
 			c:90		
 		Cost
-			C:3
+			C:2
 			a:0.01111
-			b:2
+			b:3
 			c:90

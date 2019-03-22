@@ -119,7 +119,7 @@ public class SimManager : MonoBehaviour {
     public GameObject leftHandVirtual, rightHandVirtual;
     private HandTracker leftHandTracker, rightHandTracker;
     private Valve.VR.InteractionSystem.Hand leftHandScriptComp, rightHandScriptComp;
-    public HandTracker.HandSide currentCarryHand = HandTracker.HandSide.NONE;
+    private Valve.VR.InteractionSystem.Hand currentCarryHand = null;
 
     // Cached components
     private SimPersister simPersister;              // Outputs key data on specified intervals to csv and/or database
@@ -569,23 +569,18 @@ public class SimManager : MonoBehaviour {
             this.waitingForTreatmentDuration = effectiveWaitTime;
             pillManagerComponent.disableComponentsForWaiting();
 
-            // Check which hand is holding the bucket
-            currentCarryHand = (leftHandScriptComp.ObjectIsAttached(this.containerBase)) ? 
-                HandTracker.HandSide.LEFT : 
-                (rightHandScriptComp.ObjectIsAttached(this.containerBase) ? 
-                HandTracker.HandSide.RIGHT : 
-                HandTracker.HandSide.NONE);
+            // Detach the bucket from the hand holding it
+            currentCarryHand = getHandScriptHoldingObj(this.containerBase);
+            if (currentCarryHand != null)
+            {
+                currentCarryHand.DetachObject(this.containerBase);
+            }
 
-            // Drop the bucket
-            if (currentCarryHand == HandTracker.HandSide.LEFT)
-                leftHandScriptComp.DetachObject(containerBase);
-            else if (currentCarryHand == HandTracker.HandSide.RIGHT)
-                rightHandScriptComp.DetachObject(containerBase);
-
-            // Move the bucket to the platform and lock it into position (disable the pick up components)
-            containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = false;
-            containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = false;
-            containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = false;
+            // Move the bucket to the platform and lock it into position (disable the pick up hand scripts)
+            Debug.Log("Disabling hands: L=" + leftHandScriptComp.enabled + " R=" + rightHandScriptComp.enabled);
+            leftHandScriptComp.enabled = false;
+            rightHandScriptComp.enabled = false;
+            Debug.Log("Disabling hands: L=" + leftHandScriptComp.enabled + " R=" + rightHandScriptComp.enabled);
             containerBase.transform.position = new Vector3 (
                 CONTAINER_PLATFORM_SPAWN_X,
                 CONTAINER_PLATFORM_SPAWN_Y,
@@ -600,6 +595,32 @@ public class SimManager : MonoBehaviour {
             instrs[0] = instrOne; instrs[1] = instrTwo;
             limbo(instrs);
         }
+    }
+
+
+    /*
+    * Returns LEFT or RIGHT or NONE, depending on which hand is
+    * holding the given object.
+    */
+    public HandTracker.HandSide getHandSideHoldingObj (GameObject obj) {
+        return (leftHandScriptComp.ObjectIsAttached(obj)) ?
+            HandTracker.HandSide.LEFT :
+            (rightHandScriptComp.ObjectIsAttached(obj) ?
+            HandTracker.HandSide.RIGHT :
+            HandTracker.HandSide.NONE);
+    }
+
+
+    /*
+    * Same as above, except returns the corresponding side's hand script. 
+    * Returns null if none holding obj.
+    */
+    public Valve.VR.InteractionSystem.Hand getHandScriptHoldingObj (GameObject obj) {
+        return (leftHandScriptComp.ObjectIsAttached(obj)) ?
+            leftHandScriptComp :
+            (rightHandScriptComp.ObjectIsAttached(obj) ?
+            rightHandScriptComp :
+            null);
     }
 
 
@@ -1061,9 +1082,10 @@ public class SimManager : MonoBehaviour {
                     if (waitingForTreatmentDuration <= 0.0f)
                     {
                         // Re-enable bucket pick up 
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = true;
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = true;
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = true;
+                        Debug.Log("Enabling hands: L=" + leftHandScriptComp.enabled + " R=" + rightHandScriptComp.enabled);
+                        leftHandScriptComp.enabled = true;
+                        rightHandScriptComp.enabled = true;
+                        Debug.Log("Enabling hands: L=" + leftHandScriptComp.enabled + " R=" + rightHandScriptComp.enabled);
                         this.waitingForTreatment = false;
                         waitingForTreatmentDuration = 0.0f;
                         Debug.Log("Treatment wait time has been passed..");

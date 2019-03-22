@@ -100,24 +100,48 @@ public class PillManager : MonoBehaviour {
             if (t != TreatmentObtainType.WAIT)
                 disablePanels();
             simManagerComponent.determinePostTreatmentActions(t, effectiveCost, effectiveWaitTime);
-        } else {
+        }
+
+        else {
+
             Debug.Log("Invalid treatment obtain attempt. Resetting " + t.ToString() + " bottle position.");
+
             if (t == TreatmentObtainType.PAY) {
-                payPill.SetActive(false); payPill.SetActive(true);      // THIS DOESNT WORK - NEED ANOTHER WAY TO RESET IT
+
+                // Detach the pill from the hand holding it
+                Valve.VR.InteractionSystem.Hand handHoldingPill = simManagerComponent.getHandScriptHoldingObj(payPill);
+                if (handHoldingPill != null) {
+                    handHoldingPill.DetachObject(payPill);
+                }
+
+                // Then, reset its position
                 payPill.transform.position = new Vector3 (
                     payBottleInitXPosition,
                     payBottleInitYPosition,
                     payBottleInitZPosition
-                ); payBottlePositionA = payPill.transform.position;
+                ); payPill.transform.eulerAngles = new Vector3 (0.0f, 0.0f, 0.0f);
+
+                payBottlePositionA = payPill.transform.position;
             }
+
             else if (t == TreatmentObtainType.WAIT) {
-                waitPill.SetActive(false); waitPill.SetActive(true);    // THIS DOESNT WORK - NEED ANOTHER WAY TO RESET IT
+
+                // Detach the pill from the hand holding it
+                Valve.VR.InteractionSystem.Hand handHoldingPill = simManagerComponent.getHandScriptHoldingObj(waitPill);
+                if (handHoldingPill != null) {
+                    handHoldingPill.DetachObject(waitPill);
+                }
+
+                // Then, reset its position
                 waitPill.transform.position = new Vector3 (
                     waitBottleInitXPosition,
                     waitBottleInitYPosition,
                     waitBottleInitZPosition
-                ); waitBottlePositionA = waitPill.transform.position;
+                ); waitPill.transform.eulerAngles = new Vector3 (0.0f, 0.0f, 0.0f);
+
+                waitBottlePositionA = waitPill.transform.position;
             }
+
             else {
                 Debug.Log("Unrecognized bottle type. Not resetting position.");
             }
@@ -214,6 +238,13 @@ public class PillManager : MonoBehaviour {
 
     public void disableComponentsForWaiting () 
     {
+        // Detach the pill from the hand holding it
+        Valve.VR.InteractionSystem.Hand handHoldingPill = simManagerComponent.getHandScriptHoldingObj(waitPill);
+        if (handHoldingPill != null)
+        {
+            handHoldingPill.DetachObject(waitPill);
+        }
+
         justWait = true;
         waitBucketPlatform.SetActive(true);
         payPanel.SetActive(false);

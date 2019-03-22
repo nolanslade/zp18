@@ -509,14 +509,6 @@ namespace Valve.VR.InteractionSystem
             Debug.Log("Object Attached");
             if (spewDebugText)
                 HandDebugLog("AttachObject " + objectToAttach);
-
-            // Nolan Mar 22 - adding this to keep track of the hand holding the bucket
-            //if (String.Equals(objectToAttach.name, "ContainerBase")) {
-            //    Debug.Log("Bucket attached");
-            //    SimManager simManager = GameObject.Find("SimManager").GetComponent<SimManager>();
-            //    if (String.Equals(""))
-            //}
-
             objectToAttach.SendMessage("OnAttachedToHand", this, SendMessageOptions.DontRequireReceiver);
         }
 
@@ -633,19 +625,25 @@ namespace Valve.VR.InteractionSystem
         //-------------------------------------------------
         public Vector3 GetTrackedObjectVelocity(float timeOffset = 0)
         {
-            if (isActive)
+            try
             {
-                if (timeOffset == 0)
-                    return Player.instance.trackingOriginTransform.TransformVector(trackedObject.GetVelocity());
-                else
+                if (isActive)
                 {
-                    Vector3 velocity;
-                    Vector3 angularVelocity;
+                    if (timeOffset == 0)
+                        return Player.instance.trackingOriginTransform.TransformVector(trackedObject.GetVelocity());
+                    else
+                    {
+                        Vector3 velocity;
+                        Vector3 angularVelocity;
 
-                    bool success = trackedObject.GetVelocitiesAtTimeOffset(timeOffset, out velocity, out angularVelocity);
-                    if (success)
-                        return Player.instance.trackingOriginTransform.TransformVector(velocity);
+                        bool success = trackedObject.GetVelocitiesAtTimeOffset(timeOffset, out velocity, out angularVelocity);
+                        if (success)
+                            return Player.instance.trackingOriginTransform.TransformVector(velocity);
+                    }
                 }
+            } catch (NullReferenceException e)
+            {
+                Debug.Log("Null Reference Exception: GetTrackedObjectVelocity");
             }
 
             return Vector3.zero;
