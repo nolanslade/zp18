@@ -1061,9 +1061,9 @@ public class SimManager : MonoBehaviour {
                     if (waitingForTreatmentDuration <= 0.0f)
                     {
                         // Re-enable bucket pick up 
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = false;
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = false;
-                        containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = false;
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = true;
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = true;
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = true;
                         this.waitingForTreatment = false;
                         waitingForTreatmentDuration = 0.0f;
                         Debug.Log("Treatment wait time has been passed..");
