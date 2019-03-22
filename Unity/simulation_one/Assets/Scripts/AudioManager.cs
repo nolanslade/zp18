@@ -14,7 +14,7 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour {
 
 	public AudioClip 	waterFlowClip, takeMedicineClip, startDayClip, dayCompleteClip,
-						simCompleteClip, countNormalClip, countCriticalClip;
+						simCompleteClip, countNormalClip, countCriticalClip, destinationPourClip;
 
 	private AudioSource source;
     private bool muted  = false;
@@ -27,7 +27,8 @@ public class AudioManager : MonoBehaviour {
 		SIM_COMPLETE,
 		NORMAL_TICK,
 		CRITICAL_TICK,
-		DAY_COMPLETE
+		DAY_COMPLETE,
+        DESTINATION_POUR
 	}
 
 	void Start () {
@@ -49,20 +50,22 @@ public class AudioManager : MonoBehaviour {
 
 		if (!muted) {
 			switch (s) {
-				case SoundType.WATER_FLOW: 		source.clip = waterFlowClip; 		source.Play();
+				case SoundType.WATER_FLOW: 		    source.clip = waterFlowClip; 		    source.Play();
 					break;
-				case SoundType.TAKE_MEDICINE: 	source.clip = takeMedicineClip; 	source.Play();
+				case SoundType.TAKE_MEDICINE: 	    source.clip = takeMedicineClip; 	    source.Play();
 					break;
-				case SoundType.START_DAY: 		source.clip = startDayClip; 		source.Play();
+				case SoundType.START_DAY: 		    source.clip = startDayClip; 		    source.Play();
 					break;
-				case SoundType.SIM_COMPLETE: 	source.clip = simCompleteClip; 		source.Play();
+				case SoundType.SIM_COMPLETE: 	    source.clip = simCompleteClip; 		    source.Play();
 					break;
-				case SoundType.DAY_COMPLETE: 	source.clip = dayCompleteClip; 		source.Play();
+				case SoundType.DAY_COMPLETE: 	    source.clip = dayCompleteClip; 		    source.Play();
 					break;
-				case SoundType.NORMAL_TICK: 	source.clip = countNormalClip; 		source.Play();
+				case SoundType.NORMAL_TICK: 	    source.clip = countNormalClip; 		    source.Play();
 					break;
-				case SoundType.CRITICAL_TICK: 	source.clip = countCriticalClip; 	source.Play();
+				case SoundType.CRITICAL_TICK: 	    source.clip = countCriticalClip; 	    source.Play();
 					break;
+                case SoundType.DESTINATION_POUR:    source.clip = destinationPourClip;      source.Play();
+                    break;
 				default:
 					Debug.Log("Invalid sound type");
 					break;
