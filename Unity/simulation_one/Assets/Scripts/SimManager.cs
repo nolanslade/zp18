@@ -561,6 +561,7 @@ public class SimManager : MonoBehaviour {
             Debug.Log("Waiting for treatment started...");
             this.waitingForTreatment = true;
             this.waitingForTreatmentDuration = effectiveWaitTime;
+            pillManagerComponent.disableComponentsForWaiting();
 
             // Limbo, display the instructions for how the waiting process is going to work.
             Debug.Log("Initializing limbo for waiting for treatment...");
