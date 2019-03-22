@@ -36,7 +36,7 @@ public class FlowLimiter : MonoBehaviour {
             // This should only trigger if the colliding object is the headset
             if (col.gameObject.CompareTag("MainCamera")) {
                 flowManComponent.setFlowable(true);
-                if (simManComponent.currentState() == SimManager.GameState.RUNNING) {
+                if (simManComponent.currentState() == SimManager.GameState.RUNNING && !simManComponent.isWaitingForTreatment()) {
                     flowManComponent.startFlow();
                 }
             }
