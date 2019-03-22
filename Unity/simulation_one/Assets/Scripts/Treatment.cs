@@ -83,8 +83,9 @@ public class Treatment {
 	* applicable cost function and the current time
     */
     public float currentCost (float currentSimTime) {
-    	// cost = C * (c - bT + aT^2)
-    	return cost_C * (cost_c - cost_b * (currentSimTime / 60.0f) + cost_a * (currentSimTime / 60.0f) * (currentSimTime / 60.0f));
+        // cost = C * (c - bT + aT^2)
+        float timeInMinutes = currentSimTime / 60.0f;
+    	return cost_C * (cost_c - cost_b * timeInMinutes + cost_a * timeInMinutes * timeInMinutes);
     }
 
 
@@ -95,7 +96,8 @@ public class Treatment {
     */
     public float currentWaitTime (float currentSimTime) {
         // wait time = C * (c - bT + aT^2)
-        return wait_C * (wait_c - wait_b * (currentSimTime / 60.0f) + wait_a * (currentSimTime / 60.0f) * (currentSimTime / 60.0f));
+        float timeInMinutes = currentSimTime / 60.0f;
+        return wait_C * (wait_c - wait_b * timeInMinutes + wait_a * timeInMinutes * timeInMinutes);
     }
 
 
