@@ -35,7 +35,10 @@ public class SimManager : MonoBehaviour {
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
     private const float PHYSICS_BASE_AMT                = -30.0f;    // Default gravity strength
-    
+    private const float CONTAINER_PLATFORM_SPAWN_X      = 0.0f;      // When the bucket is moved to the wait platform for waiting for treatment
+    private const float CONTAINER_PLATFORM_SPAWN_Y      = 22.93f;
+    private const float CONTAINER_PLATFORM_SPAWN_Z      = -22.05f;
+
     // State management
     public enum GameState
     {
@@ -112,10 +115,11 @@ public class SimManager : MonoBehaviour {
     public GameObject farSinkMarker;
     public GameObject farSinkTrigger;
 
-    // For hand shake impairment
+    // Hands, trackers and Hand scripts
     public GameObject leftHandVirtual, rightHandVirtual;
     private HandTracker leftHandTracker, rightHandTracker;
-    // public GameObject viveControllerLeft, viveControllerRight;
+    private Valve.VR.InteractionSystem.Hand leftHandScriptComp, rightHandScriptComp;
+    public HandTracker.HandSide currentCarryHand = HandTracker.HandSide.NONE;
 
     // Cached components
     private SimPersister simPersister;              // Outputs key data on specified intervals to csv and/or database
@@ -146,6 +150,8 @@ public class SimManager : MonoBehaviour {
         this.flowManagerComponent           = flowManager.GetComponent<FlowManager>();
         this.pillManagerComponent           = pillManager.GetComponent<PillManager>();
         this.instructionManagerComponent    = instructionManager.GetComponent<InstructionManager>();
+        this.leftHandScriptComp             = leftHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
+        this.rightHandScriptComp            = rightHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();       
 
         // Prepare for the first day
         resetCountdown();
@@ -562,6 +568,29 @@ public class SimManager : MonoBehaviour {
             this.waitingForTreatment = true;
             this.waitingForTreatmentDuration = effectiveWaitTime;
             pillManagerComponent.disableComponentsForWaiting();
+
+            // Check which hand is holding the bucket
+            currentCarryHand = (leftHandScriptComp.ObjectIsAttached(this.containerBase)) ? 
+                HandTracker.HandSide.LEFT : 
+                (rightHandScriptComp.ObjectIsAttached(this.containerBase) ? 
+                HandTracker.HandSide.RIGHT : 
+                HandTracker.HandSide.NONE);
+
+            // Drop the bucket
+            if (currentCarryHand == HandTracker.HandSide.LEFT)
+                leftHandScriptComp.DetachObject(containerBase);
+            else if (currentCarryHand == HandTracker.HandSide.RIGHT)
+                rightHandScriptComp.DetachObject(containerBase);
+
+            // Move the bucket to the platform and lock it into position (disable the pick up components)
+            containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = false;
+            containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = false;
+            containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = false;
+            containerBase.transform.position = new Vector3 (
+                CONTAINER_PLATFORM_SPAWN_X,
+                CONTAINER_PLATFORM_SPAWN_Y,
+                CONTAINER_PLATFORM_SPAWN_Z
+            ); containerBase.transform.eulerAngles = new Vector3 (0.0f, 0.0f, 0.0f);
 
             // Limbo, display the instructions for how the waiting process is going to work.
             Debug.Log("Initializing limbo for waiting for treatment...");
@@ -1026,8 +1055,15 @@ public class SimManager : MonoBehaviour {
                 if (waitingForTreatment)
                 {
                     waitingForTreatmentDuration -= Time.deltaTime;
+                    timeWaitedForTreatmentDay += Time.deltaTime;
+                    timeWaitedForTreatmentTotal += Time.deltaTime;
+
                     if (waitingForTreatmentDuration <= 0.0f)
                     {
+                        // Re-enable bucket pick up 
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.Interactable>().enabled = false;
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.Throwable>().enabled = false;
+                        containerBase.GetComponent<Valve.VR.InteractionSystem.VelocityEstimator>().enabled = false;
                         this.waitingForTreatment = false;
                         waitingForTreatmentDuration = 0.0f;
                         Debug.Log("Treatment wait time has been passed..");

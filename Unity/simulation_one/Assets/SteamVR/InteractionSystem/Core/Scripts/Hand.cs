@@ -509,6 +509,14 @@ namespace Valve.VR.InteractionSystem
             Debug.Log("Object Attached");
             if (spewDebugText)
                 HandDebugLog("AttachObject " + objectToAttach);
+
+            // Nolan Mar 22 - adding this to keep track of the hand holding the bucket
+            //if (String.Equals(objectToAttach.name, "ContainerBase")) {
+            //    Debug.Log("Bucket attached");
+            //    SimManager simManager = GameObject.Find("SimManager").GetComponent<SimManager>();
+            //    if (String.Equals(""))
+            //}
+
             objectToAttach.SendMessage("OnAttachedToHand", this, SendMessageOptions.DontRequireReceiver);
         }
 

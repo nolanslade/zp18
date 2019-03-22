@@ -5,6 +5,13 @@ using Valve.VR;
 
 public class HandTracker : MonoBehaviour {
 
+    public enum HandSide
+    {
+        RIGHT,
+        LEFT,
+        NONE
+    }
+
     public GameObject physicalHandObj;
     private Valve.VR.InteractionSystem.Hand handScr;
     public float X_ROTATE, Y_ROTATE, Z_ROTATE;
