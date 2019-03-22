@@ -1049,6 +1049,7 @@ public class SimManager : MonoBehaviour {
                         waitingForTreatmentDuration = 0.0f;
                         Debug.Log("Treatment wait time has been passed..");
                         applyPostTreatmentActions();
+                        pillManagerComponent.disablePanels();
                     }
                 }
 

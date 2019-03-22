@@ -96,7 +96,8 @@ public class PillManager : MonoBehaviour {
 
         // Only apply changes to the environment if the transaction was approved
         if (transactionValid) {
-            disablePanels();
+            if (t != TreatmentObtainType.WAIT)
+                disablePanels();
             simManagerComponent.determinePostTreatmentActions(t, effectiveCost, effectiveWaitTime);
         } else {
             Debug.Log("Invalid treatment obtain attempt. Resetting " + t.ToString() + " bottle position.");
