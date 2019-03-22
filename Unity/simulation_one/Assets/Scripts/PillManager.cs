@@ -258,6 +258,11 @@ public class PillManager : MonoBehaviour {
                 }
                 
                 if (!justPay) {
+                    // the getCurrentTreatmentWaitTime() in SimManager return value
+                    // is dependent on whether or not the participant is currently waiting.
+                    // I.e., if the participant has grabbed the wait bottle and is waiting,
+                    // then, the return value = time until full health returns. Otherwise,
+                    // the return value = result of the treatment's wait-cost function
                     treatmentWait = simManagerComponent.getCurrentTreatmentWaitTime();
                     waitTextComp.text = treatmentWait.ToString() + " s.";
                 }

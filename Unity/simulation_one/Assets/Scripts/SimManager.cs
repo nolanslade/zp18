@@ -339,7 +339,10 @@ public class SimManager : MonoBehaviour {
     }
 
     public float getCurrentTreatmentWaitTime () {
-        return (currentDayTreatment == null || currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime(elapsedDayTime);
+        if (!waitingForTreatment)
+            return (currentDayTreatment == null || currentDayTreatment.hasBeenObtained()) ? -1.0f : currentDayTreatment.currentWaitTime(elapsedDayTime);
+        else
+            return (waitingForTreatmentDuration);
     }
 
     public float getTotalPaymentReceived () {       // Cumulative amount earned - not affected by deductions through penalizing or payment for treatment
