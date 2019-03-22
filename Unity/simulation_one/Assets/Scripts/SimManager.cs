@@ -314,24 +314,6 @@ public class SimManager : MonoBehaviour {
 
 
     /*
-    * Custom payment - this can be used if a reward function multiplier
-    * is being applied for the current day. Since the default payout
-    * is one unit, the multiplier can be passed in as the custom amount.
-    *
-
-    DEPRECATED - adjusted payReward() above to use the effective multiplier
-
-    public void payReward (float customAmount) {
-        if (paymentEnabled && currentGameState == GameState.RUNNING) {
-            this.currentScore += customAmount; this.currentCumulativePayment += customAmount; this.dayScore += customAmount; this.dailyCumulativeDelivered += 1; this.cumulativeDelivered += 1;
-            if (currentTutorialStep == TutorialStep.POUR_BUCKET) {
-                advanceTutorialStep();
-            }
-        }
-    }*/
-
-
-    /*
     * General use getters
     */
     public float getCurrentTreatmentCost () {

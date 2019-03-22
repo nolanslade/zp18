@@ -180,4 +180,12 @@ public class HandInput : MonoBehaviour
        
 
     }
+
+    // Nolan Mar 22 - trying to disconnect pill bottles, etc - not using the physics
+    public void disconnectSimple () {
+        if (!m_CurrentInteractable)
+            return;
+
+        m_Joint.connectedBody = null;
+    }
 }
