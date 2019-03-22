@@ -642,6 +642,12 @@ public class SimManager : MonoBehaviour {
     void Update () {
 
 
+        // Quit Application using Esc Key
+        if (Input.GetKey("escape")) {
+            Application.Quit();
+        }
+
+
         // Global timestamp tracking and data persistence
         if (currentGameState != GameState.COMPLETE) {
 
