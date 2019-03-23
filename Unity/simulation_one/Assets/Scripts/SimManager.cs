@@ -19,7 +19,7 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.7";
+    public static string APPLICATION_VERSION  = "1.8";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
