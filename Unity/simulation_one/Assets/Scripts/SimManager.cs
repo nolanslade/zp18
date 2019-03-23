@@ -231,7 +231,7 @@ public class SimManager : MonoBehaviour {
 
         if (usingConfigFile) {
 
-            string configPath = Application.dataPath + "/InputData/sim_config.txt";
+            string configPath = getSimConfigName();
             Debug.Log ("Using custom parameters: " + configPath);
 
             this.configParser = new ConfigParser (configPath);
@@ -379,7 +379,7 @@ public class SimManager : MonoBehaviour {
     }
 
     public string getSimConfigName () {
-        return usingConfigFile ? "N/A" : "--" ;
+        return usingConfigFile ? (Application.dataPath + "/InputData/sim_config.txt") : "--" ;
     }
 
     public bool isWaitingForTreatment () {
