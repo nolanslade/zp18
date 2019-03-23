@@ -6,9 +6,9 @@ Simulation
 	Sound:enabled        	# If not specified, enabled by default
 Day
 	Duration:1:30         	# Minutes:Seconds
+	WaterValue:1.0 		# If not specified, default is $1.00 / drop
 Day
-	Duration:0:5
-	WaterValue:1.5 		# If not specified, default is $1.00 / drop
+	Duration:1:30
 	Impairment
 		Type:Physical/Shake
 		Strength:50%
