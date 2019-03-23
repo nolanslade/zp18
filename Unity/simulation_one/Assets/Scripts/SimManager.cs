@@ -19,7 +19,7 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.7";
+    public static string APPLICATION_VERSION  = "1.8";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
@@ -231,7 +231,7 @@ public class SimManager : MonoBehaviour {
 
         if (usingConfigFile) {
 
-            string configPath = Application.dataPath + "/InputData/sim_config.txt";
+            string configPath = getSimConfigName();
             Debug.Log ("Using custom parameters: " + configPath);
 
             this.configParser = new ConfigParser (configPath);
@@ -379,7 +379,7 @@ public class SimManager : MonoBehaviour {
     }
 
     public string getSimConfigName () {
-        return usingConfigFile ? "N/A" : "--" ;
+        return usingConfigFile ? (Application.dataPath + "/InputData/sim_config.txt") : "--" ;
     }
 
     public bool isWaitingForTreatment () {
