@@ -19,13 +19,15 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.8";
+    public static string APPLICATION_VERSION  = "1.7";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
 
     public float gravityImpairmentMaxDrop;  // Drop gravity by a maximum of this amount @ 100% strength
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
+    public float fogImpairmentMinAlpha;     // At 0% strength the fog will be this opaque
+
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
@@ -231,7 +233,7 @@ public class SimManager : MonoBehaviour {
 
         if (usingConfigFile) {
 
-            string configPath = getSimConfigName();
+            string configPath = Application.dataPath + "/InputData/sim_config.txt";
             Debug.Log ("Using custom parameters: " + configPath);
 
             this.configParser = new ConfigParser (configPath);
@@ -379,7 +381,7 @@ public class SimManager : MonoBehaviour {
     }
 
     public string getSimConfigName () {
-        return usingConfigFile ? (Application.dataPath + "/InputData/sim_config.txt") : "--" ;
+        return usingConfigFile ? "N/A" : "--" ;
     }
 
     public bool isWaitingForTreatment () {
@@ -972,7 +974,8 @@ public class SimManager : MonoBehaviour {
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);
                                     Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
-                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, str * fogImpairmentMaxAlpha);
+                                    Debug.Log("Fog impairment amount: "  + fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str));
+                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str));
                                     break;
                                 case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                                     Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
