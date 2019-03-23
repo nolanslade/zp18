@@ -31,7 +31,7 @@ public class SimManager : MonoBehaviour {
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
-    private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
+    private const float DAY_ZERO_REQ_SCORE              = 10.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
@@ -402,14 +402,21 @@ public class SimManager : MonoBehaviour {
         this.limboInstrs = instructionsToDisplay;
         this.limboIndex = 0;        // After the first is displayed in this function for its duration, we'll move onto the second
         this.limboElapsed = 0.0f;
-
         // Always display the first instruction before going back to update()
         this.instructionManagerComponent.setTemporaryMessage(instructionsToDisplay[0].message, instructionsToDisplay[0].displayDuration);
+        if (Array.Exists(this.currentDayImpairments, element => element.getType() == Impairment.ImpairmentType.VISUAL_FOG))
+        {
+            fogImpairmentPanel.SetActive(false);
+        }
     }
 
     public void exitLimbo () {
         Debug.Log("Exiting limbo state");
         this.currentGameState = GameState.RUNNING;
+        if (Array.Exists(this.currentDayImpairments, element => element.getType() == Impairment.ImpairmentType.VISUAL_FOG))
+        {
+            fogImpairmentPanel.SetActive(true);
+        }
     }
 
 
