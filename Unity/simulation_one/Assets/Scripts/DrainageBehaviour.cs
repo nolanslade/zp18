@@ -42,7 +42,7 @@ public class DrainageBehaviour : MonoBehaviour {
                 elapsed = 0.0f;
                 if (!soundOn)
                 {
-                    audioManagerComponent.playSound(AudioManager.SoundType.WATER_FLOW);
+                    audioManagerComponent.playSound(AudioManager.SoundType.DESTINATION_POUR);
                     soundOn = true;
                 }
                 simScriptComp.payReward();
