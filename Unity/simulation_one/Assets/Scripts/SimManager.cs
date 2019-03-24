@@ -31,7 +31,7 @@ public class SimManager : MonoBehaviour {
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
-    private const float DAY_ZERO_REQ_SCORE              = 10.0f;    // Score needed to 'pass' day zero
+    private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
@@ -84,6 +84,7 @@ public class SimManager : MonoBehaviour {
     private float waitingForTreatmentDuration = 0.0f;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
+    private Vector3 posADay0, posBDay0;                 // Position tracking for Day 0 average speed tracking
     private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, 
                     dailyCumulativeDelivered, totalSpilled, todaySpilled;
     private float persistTime = 0.0f;
@@ -109,6 +110,7 @@ public class SimManager : MonoBehaviour {
     public GameObject fogImpairmentPanel;
     public GameObject sourceUI;
     public GameObject destUI;
+    public GameObject WaterDropletCounter;
 
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
@@ -130,6 +132,7 @@ public class SimManager : MonoBehaviour {
     private PillManager pillManagerComponent;       // Manages treatment + related information displays
     private FlowManager flowManagerComponent;       // Starts/stops tap flow, and cleans scene (erases all water) when necessary
     private InstructionManager instructionManagerComponent;
+    private WaterDropletCounter waterDropletCounterComponent;
 
     // Dynamic day-by-day elements
     private GameState currentGameState;
@@ -138,12 +141,16 @@ public class SimManager : MonoBehaviour {
     private Impairment [] currentDayImpairments;
     private Treatment currentDayTreatment;
 
+    //Variables for tracking speed during Day 0 for speed impairment
+    private float avgWalkingSpeedDay0;
+    private float secondsInDay1;
+    private bool speedPenaltyFlag = false;
 
-	/*
+    /*
     * Initialization method
     * Runs once at scene load
     */
-	void Start () {
+    void Start () {
 
         // Cache necessary components
         this.audioManagerComponent          = audioManager.GetComponent<AudioManager>();
@@ -153,7 +160,8 @@ public class SimManager : MonoBehaviour {
         this.pillManagerComponent           = pillManager.GetComponent<PillManager>();
         this.instructionManagerComponent    = instructionManager.GetComponent<InstructionManager>();
         this.leftHandScriptComp             = leftHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
-        this.rightHandScriptComp            = rightHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();       
+        this.rightHandScriptComp            = rightHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
+        this.waterDropletCounterComponent   = WaterDropletCounter.GetComponent<WaterDropletCounter>();
 
         // Prepare for the first day
         resetCountdown();
@@ -945,6 +953,7 @@ public class SimManager : MonoBehaviour {
                 todaySpilled = 0;
                 waitingForTreatment = false;
                 waitingForTreatmentDuration = 0.0f;
+                speedPenaltyFlag = false;
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here
@@ -981,11 +990,13 @@ public class SimManager : MonoBehaviour {
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);
                                     Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
-                                    Debug.Log("Fog impairment amount: "  + fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str));
                                     fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str));
                                     break;
                                 case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                                     Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
+                                    break;
+                                case Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY:
+                                    speedPenaltyFlag = true;
                                     break;
                                 default:
                                     Debug.Log("Invalid impairment type");
@@ -1078,6 +1089,10 @@ public class SimManager : MonoBehaviour {
             *     when needed
             */
             if (currentDay > 0) {
+                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * Array.Find(this.currentDayImpairments, imp => imp.getType() == Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY).getStrength())
+                {
+                    waterDropletCounterComponent.removeDropsFromContainer(1);
+                }
 
                 elapsedDayTime += Time.deltaTime;
 
@@ -1179,8 +1194,10 @@ public class SimManager : MonoBehaviour {
             * sink. Then, enter a transition state before the
             * start of day one.
             */
+
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
+                avgWalkingSpeedDay0 = avgWalkingSpeedDay0/Time.realtimeSinceStartup;
                 Debug.Log ("Day 0 passed.");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
@@ -1188,6 +1205,12 @@ public class SimManager : MonoBehaviour {
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
                 Debug.Log("Day 0 over " + currentGameState);
+            }
+
+            else
+            {
+                avgWalkingSpeedDay0 += avgSpeedLastSecond;
+                secondsInDay1 += Time.deltaTime;
             }
         }
     }

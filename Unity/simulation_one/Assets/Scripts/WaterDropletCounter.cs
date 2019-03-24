@@ -46,6 +46,7 @@ public class WaterDropletCounter : MonoBehaviour {
         foreach (GameObject drop in drops) {
             if (i >= amountToRemove)
                 break;
+            Destroy(drop);
             drops.Remove(drop);
             simScriptComp.decreasePayload(1);
             i++;
