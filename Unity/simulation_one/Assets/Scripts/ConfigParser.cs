@@ -141,7 +141,6 @@ public class ConfigParser
 
         this.configFilePath = path;
         dbConnection = null;
-        List<string> dayByLine = new List<string>();    //each line in a list for day portion of file
         StreamReader reader = new StreamReader(this.configFilePath);
         string line = reader.ReadLine();
         char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' }; //splitting a string requires chars therefore ConfigKeyword class cannot be used
@@ -156,7 +155,17 @@ public class ConfigParser
             //splits information into 2 groups, Simulation and Day
             for (int i = 0; i < fields.Length; i++)
             {
-                if (fields[i].Contains(ConfigKeyword.SIMULATION))
+
+                if (fields[i].Contains("#"))
+                {
+                    string[] split = fields[i].Split(delimiter[3]);
+                    fields[i] = split[0];
+                }
+                if (fields[i] == string.Empty)
+                {
+                    continue;
+                }
+                else if (fields[i].Contains(ConfigKeyword.SIMULATION))
                 {
                     isSim = true;
                     isDay = false;
@@ -166,7 +175,7 @@ public class ConfigParser
                 else if (fields[i].Contains(ConfigKeyword.DAY))
                 {
                     this.dayCount++;
-                    dayByLine.Add("Day " + dayCount.ToString());
+                    dayList.Add("Day " + dayCount.ToString());
                     isSim = false;
                     isDay = true;
                 }
@@ -180,7 +189,7 @@ public class ConfigParser
                 }
                 else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isDay)
                 {
-                    dayByLine.Add(fields[i].Replace(ConfigKeyword.INDENT, ""));
+                    dayList.Add(fields[i].Replace(ConfigKeyword.INDENT, ""));
 
                 }
 
@@ -196,16 +205,16 @@ public class ConfigParser
 
 
         //gets rid of the comments (#)
-        foreach (string i in dayByLine)
+      /*  foreach (string i in dayByLine)
         {
             string[] split = i.Split(delimiter[3]);
             dayList.Add(split[0]);
 
-        }
+        }*/
 
 
-        Debug.Log("DAYS " + dayCount);
-        /*  foreach(string i in dayList){
+    //    Debug.Log("DAYS " + dayCount);
+     /*     foreach(string i in dayList){
             Debug.Log(i);
           }*/
 
@@ -304,7 +313,6 @@ public class ConfigParser
                 {
                     string[] split = this.dayList[i].Split(delimiter[4]);
                     day = int.Parse(split[split.Length - 1]);
-
                     trackDays++;
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.DURATION))
@@ -353,12 +361,10 @@ public class ConfigParser
                     if (this.dayList[i].Contains("Fog"))
                     {
                         impair = 0;
-
                     }
                     else if (this.dayList[i].Contains("Gravity"))
                     {
                         impair = 1;
-
                     }
                     else if (this.dayList[i].Contains("Shake"))
                     {
@@ -367,7 +373,6 @@ public class ConfigParser
                     else if (this.dayList[i].Contains("Speed"))
                     {
                         impair = 3;
-
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.STRENGTH))
                     {
@@ -398,11 +403,11 @@ public class ConfigParser
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         wait_C = float.Parse(split[1]);
                     }
-                    else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.WAIT) == false)
+                    else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.WAIT) == false && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            wait_a = 1.00f;
+                            wait_a = (float)1 / (float)dayCount;
 
                         }
                         else
@@ -417,7 +422,7 @@ public class ConfigParser
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            wait_b = 1.00f;
+                            wait_b = 2;
 
                         }
                         else
@@ -431,7 +436,7 @@ public class ConfigParser
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            wait_c = 1.00f;
+                            wait_c = dur;
 
                         }
                         else
@@ -451,11 +456,11 @@ public class ConfigParser
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         cost_C = float.Parse(split[1]);
                     }
-                    else if (this.dayList[i].Contains(ConfigKeyword.a))
+                    else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            cost_a = 1.00f;
+                            cost_a = (float)1 / (float)dayCount;
 
                         }
                         else
@@ -470,7 +475,7 @@ public class ConfigParser
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            cost_b = 1.00f;
+                            cost_b = 2;
 
                         }
                         else
@@ -480,11 +485,11 @@ public class ConfigParser
 
                         }
                     }
-                    else if (this.dayList[i].Contains(ConfigKeyword.c) && this.dayList[i].Contains(ConfigKeyword.COST) == false)
+                    else if (this.dayList[i].Contains(ConfigKeyword.c) )
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            cost_c = 1.00f;
+                            cost_c = dur;
 
                         }
                         else
