@@ -4,6 +4,8 @@ Simulation
 	Description:Sample 3-day (plus intro) configuration file.
 	Instructions:enabled  	# If not specified, enabled by default	
 	Sound:enabled        	# If not specified, enabled by default
+Tutorial
+	Score:100		# If not specified, $150 by default
 Day
 	Duration:0:30         	# Minutes:Seconds
 Day

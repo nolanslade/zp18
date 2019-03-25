@@ -31,7 +31,7 @@ public class SimManager : MonoBehaviour {
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
-    private const float DAY_ZERO_REQ_SCORE              = 150.0f;    // Score needed to 'pass' day zero
+    private float DAY_ZERO_REQ_SCORE                    = 150.0f;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
@@ -255,7 +255,11 @@ public class SimManager : MonoBehaviour {
             {
                 instructionManagerComponent.setInstructionsDisable();
             }
-            
+
+            DAY_ZERO_REQ_SCORE = this.configParser.getDayZeroScore();
+
+
+
 
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }

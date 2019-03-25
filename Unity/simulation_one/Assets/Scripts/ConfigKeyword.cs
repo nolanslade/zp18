@@ -20,6 +20,7 @@ public sealed class ConfigKeyword {
 
     // Top-level keywords
     public static readonly string SIMULATION    = "Simulation";
+    public static readonly string TUTORIAL      = "Tutorial";
     public static readonly string DAY           = "Day";
 
     // Key-value tier 2 keywords
@@ -30,6 +31,8 @@ public sealed class ConfigKeyword {
     public static readonly string SOUND         = "Sound";          // For simulation sound
     public static readonly string SCENE         = "Scene";          // For simulation scene
 
+    public static readonly string SCORE         = "Score";          // For day 0 score
+
     public static readonly string DURATION      = "Duration";       // For a given day
     public static readonly string IMPAIRMENT    = "Impairment";     // For a given day
     public static readonly string TREATMENT     = "Treatment";      // For a given day
@@ -37,8 +40,8 @@ public sealed class ConfigKeyword {
 
 
     // Key-value tier 3 keywords
-    public static readonly string TYPE            = "Type";           // For a given impairment
-    public static readonly string STRENGTH        = "Strength";         // For a given impairment
+    public static readonly string TYPE          = "Type";           // For a given impairment
+    public static readonly string STRENGTH      = "Strength";         // For a given impairment
 
     // Key-value, tier 4
     public static readonly string WAIT          = "Wait";           // For a given treatment - 

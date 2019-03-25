@@ -33,6 +33,8 @@ public class ConfigParser
     private bool instructionsEnabled;
     private bool soundEnabled;
 
+    private float dayZeroScore;
+
     private float watervalue;
     private string name;
     private string[] output;
@@ -148,6 +150,7 @@ public class ConfigParser
         this.dayCount = 0;
         bool isSim = false;
         bool isDay = false;
+        bool isTut = false;
         while (line != null)
         {
             string[] fields = line.Split(delimiter[0]);
@@ -169,23 +172,37 @@ public class ConfigParser
                 {
                     isSim = true;
                     isDay = false;
+                    isTut = false;
                     this.sim.Add(fields[i]);
+                }
+                else if (fields[i].Contains(ConfigKeyword.TUTORIAL))
+                {
+                    isTut = true;
+                    isSim = false;
+                    isDay = false;
+
                 }
                 // currently the day group is further split into it's separate lines for better parsing
                 else if (fields[i].Contains(ConfigKeyword.DAY))
                 {
                     this.dayCount++;
-                    dayList.Add("Day " + dayCount.ToString());
-                    isSim = false;
+                    dayList.Add("Day " + dayCount.ToString());                    
                     isDay = true;
+                    isTut = false;
+                    isSim = false;
                 }
 
 
                 if ((fields[i].Contains(ConfigKeyword.INDENT)) && isSim)
                 {
                     string simParam = fields[i].Replace(ConfigKeyword.INDENT, "");
-                    string[] split = simParam.Split(delimiter[3]);
-                    this.sim.Add(split[0]);
+                    this.sim.Add(simParam);
+                }
+                else if((fields[i].Contains(ConfigKeyword.INDENT)) && isTut)
+                {
+                    string score = fields[i].Replace(ConfigKeyword.INDENT, "");
+                    string[] split = score.Split(delimiter[1]);
+                    this.dayZeroScore = float.Parse(split[1]);
                 }
                 else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isDay)
                 {
@@ -407,7 +424,7 @@ public class ConfigParser
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            wait_a = (float)1 / (float)dayCount;
+                            wait_a = (float)1 / (float)dur;
 
                         }
                         else
@@ -460,8 +477,7 @@ public class ConfigParser
                     {
                         if (this.dayList[i].Contains("default"))
                         {
-                            cost_a = (float)1 / (float)dayCount;
-
+                            cost_a = (float)1 / (float)dur;
                         }
                         else
                         {
@@ -644,6 +660,7 @@ public class ConfigParser
     {
         return this.name;
     }
+
     public string[] getSimOutput()
     {
         return this.output;
@@ -652,21 +669,34 @@ public class ConfigParser
     {
         return this.description;
     }
+
     public bool getSimInstruction()
     {
         return instructionsEnabled;
     }
+
     public bool getSimSound()
     {
         return soundEnabled;
     }
+
     public string getSimScene()
     {
         return this.scene;
     }
+
     public float getWaterValue()
     {
         return this.watervalue;
+    }
+
+    public float getDayZeroScore()
+    {
+        if(this.dayZeroScore == 0)
+        {
+            this.dayZeroScore = 150f;
+        }
+        return this.dayZeroScore;
     }
 
     public string dbConn()
