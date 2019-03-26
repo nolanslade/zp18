@@ -126,12 +126,10 @@ public class HandTracker : MonoBehaviour {
     /*
     * Takes current strength and multiplies it by factor to either
     * decrease or increase the strenght of the impairment
-    * 
-    * THIS DOESN'T WORK !!!! YET
     */
     public void modifyStrength (float factor) {
         Debug.Log ("Modifying shake strength " + activeImpairmentAmt.ToString() + " by factor " + factor.ToString());
-        this.activeImpairmentAmt = ((int) (activeImpairmentAmt * factor));
+        this.activeImpairmentAmt = ((int) (activeImpairmentAmt - (activeImpairmentAmt * factor)));
         Debug.Log ("New strength: " + activeImpairmentAmt.ToString());
         ImpairmentStr = (ushort)factor;
     }

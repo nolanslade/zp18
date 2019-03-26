@@ -19,7 +19,7 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.7";
+    public static string APPLICATION_VERSION  = "1.8";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
@@ -73,6 +73,8 @@ public class SimManager : MonoBehaviour {
     // Impairment strength trackers for persistence only
     private float shakeImpStrCurrent = 0.0f;
     private float shakeImpStrInitial = 0.0f;
+    private float speedImpStrCurrent = 0.0f;
+    private float fogImpStrCurrent   = 0.0f;
 
     // Limbo functionality
     private Instruction [] limboInstrs;         // Instructions to display during limbo
@@ -683,6 +685,7 @@ public class SimManager : MonoBehaviour {
 
         // If factor = 1.0f, then it means remove 100% of the current
         // impairment strengths.
+        factor = 0.9f;
 
         if (factor >= 1.0f) {
             unapplyImpairments();
@@ -697,13 +700,18 @@ public class SimManager : MonoBehaviour {
                     case Impairment.ImpairmentType.PHYSICAL_SHAKE:
                         rightHandTracker.modifyStrength(factor);
                         leftHandTracker.modifyStrength(factor);
-                        shakeImpStrCurrent -= factor;
+                        shakeImpStrCurrent  = shakeImpStrCurrent - (shakeImpStrCurrent * factor);
                         if (shakeImpStrCurrent < 0.0f) shakeImpStrCurrent = 0.0f;
                         break;
                     case Impairment.ImpairmentType.VISUAL_FOG:
                         Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
-                        // TODO -> set opacity properly using previous strength
-                        fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMaxAlpha * 0.0f);
+                        fogImpStrCurrent = fogImpStrCurrent - (fogImpStrCurrent * factor);
+                        fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
+                        Debug.Log("Modifying visual strength by factor of " + factor.ToString() + " Strength is now " + fogImpStrCurrent);
+                        break;
+                    case Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY:
+                        speedImpStrCurrent = speedImpStrCurrent - (speedImpStrCurrent * factor);
+                        Debug.Log("Modifying speed penalty strength by factor of " + factor.ToString() + " Strength is now " + speedImpStrCurrent);
                         break;
                     case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
                         //Physics.gravity = new Vector3 (0.0f, PHYSICS_BASE_AMT - SOMETHING, 0.0f); ???
@@ -733,6 +741,11 @@ public class SimManager : MonoBehaviour {
                     break;
                 case Impairment.ImpairmentType.VISUAL_FOG:
                     fogImpairmentPanel.SetActive(false);
+                    fogImpStrCurrent = 0.0f;
+                    break;
+                case Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY:
+                    speedPenaltyFlag = false;
+                    speedImpStrCurrent = 0.0f;
                     break;
                 default:
                     Debug.Log("Unable to unapply unsupported impairment: " + i.getType().ToString());
@@ -958,6 +971,7 @@ public class SimManager : MonoBehaviour {
                 waitingForTreatment = false;
                 waitingForTreatmentDuration = 0.0f;
                 speedPenaltyFlag = false;
+                fogImpairmentPanel.SetActive(false);
                 Debug.Log ("New day: " + currentDay);
 
                 // Set up the next day here
@@ -980,6 +994,8 @@ public class SimManager : MonoBehaviour {
                     // Call out to necessary scripts to apply impairments for the current day (if any)
                     shakeImpStrCurrent = 0.0f;
                     shakeImpStrInitial = 0.0f;
+                    speedImpStrCurrent = 0.0f;
+                    fogImpStrCurrent   = 0.0f;
 
                     if ((currentDayImpairments = currentDayConfig.getImpairments()) != null && currentDayImpairments.Length > 0) {
                         foreach (Impairment imp in currentDayImpairments) {
@@ -994,13 +1010,15 @@ public class SimManager : MonoBehaviour {
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);
                                     Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
-                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str));
-                                    break;
-                                case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
-                                    Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
+                                    fogImpStrCurrent = fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str);
+                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
                                     break;
                                 case Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY:
                                     speedPenaltyFlag = true;
+                                    speedImpStrCurrent = str;
+                                    break;
+                                case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
+                                    //Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
                                     break;
                                 default:
                                     Debug.Log("Invalid impairment type");
@@ -1093,7 +1111,7 @@ public class SimManager : MonoBehaviour {
             *     when needed
             */
             if (currentDay > 0) {
-                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * Array.Find(this.currentDayImpairments, imp => imp.getType() == Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY).getStrength())
+                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * speedImpStrCurrent)
                 {
                     waterDropletCounterComponent.removeDropsFromContainer(1);
                 }
