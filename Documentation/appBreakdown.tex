@@ -68,7 +68,9 @@
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{unapplyImpairments ()}}}: Iterates over all active impairments for the current day (if any), and deactivates them accordingly. Depending on the impairment, the operations to deactive will vary. Functionally, this method is equivalent to calling \textit{modifyImpairmentFactors (1.0)}, that is, remove 100\% of the strength for each active impairment. 
 
 \subsubsection*{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
-\href{https://bit.ly/2TwrvAZ}{\textbf{Treatment.cs}}: TODO \newline \newline
+\href{https://bit.ly/2TwrvAZ}{\textbf{Treatment.cs}}: Encapsulates all components that make up a given day's treatment options. These components include private float members for C, a, b, c of both the day's pay cost function and its wait time cost function (wait\_C, wait\_a, wait\_b, wait\_c and cost\_C, cost\_a, cost\_b, and cost\_c, respectively). If a treatment day only offers the choice of paying, then the wait members are set to a static value of Treatment.\textit{NONE}, and vice versa. Other private members include the probability of effectiveness (float 0.0 to 1.0), and effectiveness (also float 0.0 to 1.0). If a treatment's probability of effectiveness is 0.5, and its effectiveness is 0.8, then there exists a 50\% chance that the treatment will alleviate 80\% of the active impairment(s); conversely, there exists a 50\% chance the treatment will have no effect.
+
+This script also offers an assortment of public methods to do things like retrieve the treatment's current cost or its current wait time cost, determine if the treatment is effective (determined only once and then cached), or to check if the treatment has been obtained already. \newline \newline
 \href{https://bit.ly/2JDPChz}{\textbf{PillManager.cs}}: TODO 
 
 \subsubsection*{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
