@@ -35,12 +35,13 @@
 \subsection*{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:
 \section*{Script Components}
 \subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
 \href{https://bit.ly/2Th9Ey3}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
 \href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
 \href{https://bit.ly/2TOMwMq}{\textbf{HandInput.cs}}: TODO - Vyome
+
 
 \subsection*{Immersion} % Audio, haptic feedback, etc
 \href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including water flowing, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, water could flow at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
@@ -51,11 +52,27 @@
 
 \subsection*{Task Design}
 \subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
+
+
 \subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
+
+
 \subsubsection*{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
+
+
 \subsubsection*{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
+
+
 \subsubsection*{Instructions} % Tutorial framework, how it's coded -> beginning + mid-way via limbo / treatments
+\href{https://bit.ly/2JFHEED}{\textbf{Instruction.cs}}: A simple class to encapsulate the two components of any instruction: a string \textit{message}, and a float \textit{displayDuration} (seconds). Instruction objects can be passed into later-described methods in order to display their respective messages for the desired amount of time. \newline \newline
+\href{https://bit.ly/2TzLE9i}{\textbf{InstructionManager.cs}}: Offers methods to display instructions on the participant's HUD. When these methods are called, a grey translucent panel is enabled in front of the participant's eyes, and the corresponding instruction text is placed on top. Once an instruction is set and is being displayed, this class is also responsible for disabling the instruction text and panel once the message's display duration has expired. This script is meant to be attached to an empty game object within the scene, and requires instruction text and panel game objects to be attached to it through the Unity editor. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs:\textit{limbo(Instruction [])}}}: This method is to be used when instructions are required in the midst of the simulation, rather than during the tutorial day, \'Day Zero\'. The programmer must first define an array of \texit{Instruction} objects, and then pass those into the \textit{limbo} method. Once the method is called, the simulation will enter the \textit{LIMBO} state. In this state, the user is not able to complete the task or interact with the environment in any way. Instead, the grey translucent instruction panel will be enabled, and each instruction in the array will be displayed sequentially. Once all instructions have been displayed for their respective durations, the simulation will resume in the \textit{RUNNING} state. \newline \newline
+\href{https://bit.ly/2Yooc2m}{\textbf{GoalMarker.cs}}: A script that defines the behaviour of a point of interest marker meant to accompany a given instruction. The marker will move smoothly up and down, keeping a constant X and Z position within the scene. It requires the programmer to set the upper and lower Y bounds, as well as how fast it should move (all public float variables). This script is designed to be attached to marker game objects within the scene - if the object is activated, it will always exhibit the behaviour defined in this script. \newline \newline
+\href{https://bit.ly/2uwAQ1u}{\textbf{InstructionTrigger.cs}}: There are different events that should trigger the next instruction set in a sequence; for example, a certain time duration having elapsed, some threshold being met, or the participant (or some other object) physically moving to a specified location within the scene. This script allows the latter, and is meant to be attached to an invisible game object within the scene (this object must have a collider that has \textit{isTrigger} enabled). In order for the script to work, the following public members must be assigned through the Unity editor: the SimManager, the next Tutorial Step to advance to (use TutorialStep.NULL unless multiple InstructionTrigger objects are being used for one instruction and could try to advance the tutorial step at the same time; in this case, it is advisable to explicitly define which step to advance to such that no duplicate advances are made) and the object to detect collisions with (such as the participant headset, or the container). Optionally, the programmer may also attach a game object to the \texit{destroyOnTrigger} member - this object will be destroyed whenever the aforementioned collision takes place. This is useful when a Goal Marker is being used in conjunction with an instruction. Once the instruction is no longer needed, such as when the participant moves to a certain location, the Goal Marker is also no longer needed and should be destroyed. \newline \newline
+
+
 \subsubsection*{User Interfaces}
+
 
 
 \subsection*{Custom Configuration} % Aaska's stuff -> using the config file/parsing
