@@ -38,9 +38,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:  \newline \newline
 \section*{Script Components}
 \subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
-\href{https://bit.ly/2Th9Ey3}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
+\href{https://bit.ly/2JH9ws0}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
 \href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
-\href{https://bit.ly/2TOMwMq}{\textbf{HandInput.cs}}: TODO - Vyome
+\href{}{\textbf{Hand.cs}}: TODO - Vyome
 
 
 \subsection*{Immersion} % Audio, haptic feedback, etc
@@ -56,10 +56,10 @@
 
 \subsection*{Task Design}
 \subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
-\href{https://bit.ly/2WrbyxT}{\textbf{FlowManager.cs}}: TODO \newline \newline
-\href{https://bit.ly/2YtMEjd}{\textbf{DrainageBehaviour.cs}}: TODO \newline \newline
-\href{https://bit.ly/2TUX1h4}{\textbf{FlowLimiter.cs}}: TODO \newline \newline
-\href{https://bit.ly/2JGhr8M}{\textbf{DestinationLimiter.cs}}: TODO 
+\href{https://bit.ly/2WrbyxT}{\textbf{FlowManager.cs}}: \newline \newline 
+\href{https://bit.ly/2YtMEjd}{\textbf{DrainageBehaviour.cs}}: TODO  \newline \newline 
+\href{https://bit.ly/2TUX1h4}{\textbf{FlowLimiter.cs}}: Prevents the tap from flowing except when the participant is standing close enough. The main idea behind this script's implementation was to prevent cheating in that players are forced to physically cross the room rather than reach from one side to the other while standing relatively still. The script is meant to be attached to an invisible game object with a collider enabled (the collider must have \textit{isTrigger} set to true). Collisions will then be detected between this invisible game object and the participant's headset; no collisions will be detected with the participant's virtual hands. The script is also designed to prevent the tap from flowing if the participant is waiting for treatment, or if the simulation is not in the \textit{RUNNING} state. \newline \newline
+\href{https://bit.ly/2JGhr8M}{\textbf{DestinationLimiter.cs}}: Similar to FlowLimiter, except instead of preventing water from flowing, this script prevents the participant from being payed unless they are standing close enough to the destination sink. This script is also meant to be used on an invisible game object with a collider attached (and \textit{isTrigger} = true). 
 
 \subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
 \href{https://bit.ly/2JFJ9mj}{\textbf{Impairment.cs}}: Encapsulates the two components of an impairment: the type (defined in the Treatment.\textit{ImpairmentType} enum), and strength (float, percentage expressed from 0.0 to 1.0). Offers public methods to retrieve and set each one of these components. \newline \newline
