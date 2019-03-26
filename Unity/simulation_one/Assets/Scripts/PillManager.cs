@@ -218,6 +218,12 @@ public class PillManager : MonoBehaviour {
     */
     public void disablePanels ()
     {
+        //Detach the pill from the hand holding it.
+        Valve.VR.InteractionSystem.Hand handHoldingPill = simManagerComponent.getHandScriptHoldingObj(payPill);
+        if (handHoldingPill != null)
+        {
+            handHoldingPill.DetachObject(payPill);
+        }
         treatmentDay = false;
         justWait = false;
         justPay = false;

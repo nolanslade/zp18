@@ -685,7 +685,6 @@ public class SimManager : MonoBehaviour {
 
         // If factor = 1.0f, then it means remove 100% of the current
         // impairment strengths.
-        factor = 0.9f;
 
         if (factor >= 1.0f) {
             unapplyImpairments();
