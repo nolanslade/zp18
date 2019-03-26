@@ -47,12 +47,18 @@
 \href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including water flowing, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, water could flow at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
 
 
-\subsection*{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc , participant data
-
+\subsection*{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc
+\href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each drop of delivered water (float) on the given day. In addition to two constructors, this script also offers accessors for each one of these key components. \newline \newline
+\href{}{\textbf{ConfigParser.cs : \textit{ ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO \newline \newline
 
 \subsection*{Task Design}
 \subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
-
+\href{}{\textbf{.cs}}:  \newline \newline
+\href{}{\textbf{.cs}}:  \newline \newline
+\href{}{\textbf{.cs}}:  \newline \newline
 
 \subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
 \href{https://bit.ly/2JFJ9mj}{\textbf{Impairment.cs}}: Encapsulates the two components of an impairment: the type (defined in the Treatment.\textit{ImpairmentType} enum), and strength (float, percentage expressed from 0.0 to 1.0). Offers public methods to retrieve and set each one of these components. \newline \newline
