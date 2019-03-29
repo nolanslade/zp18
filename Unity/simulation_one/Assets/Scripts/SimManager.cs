@@ -461,7 +461,7 @@ public class SimManager : MonoBehaviour {
                 break;
             case TutorialStep.POUR_BUCKET:
                 currentTutorialStep = TutorialStep.CONTINUE;
-                instructionManagerComponent.setTemporaryMessage("To start the experiment, repeat this\nprocess until you've earned $" + DAY_ZERO_REQ_SCORE.ToString(), 7.0f);
+                instructionManagerComponent.setTemporaryMessage("To start the experiment, repeat this\nprocess until you've earned $" + DAY_ZERO_REQ_SCORE.ToString("0.00"), 7.0f);
                 break;
             case TutorialStep.CONTINUE:
                 Debug.Log("All tutorial steps complete.");
