@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -430,8 +431,13 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            wait_a = float.Parse(split[1]);
+                            
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // wait_a = float.Parse(split[1]);
 
+                            DataTable dt_wait_a = new DataTable ();
+                            wait_a = (float) dt_wait_a.Compute (split[1], "");
+                            Debug.Log("Evaluated wait_a: " + wait_a.ToString());
                         }
 
                     }
@@ -445,8 +451,13 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            wait_b = float.Parse(split[1]);
 
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // wait_b = float.Parse(split[1]);
+
+                            DataTable dt_wait_b = new DataTable ();
+                            wait_b = (float) dt_wait_b.Compute (split[1], "");
+                            Debug.Log("Evaluated wait_b: " + wait_b.ToString());
                         }
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.c))
@@ -459,10 +470,14 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            wait_c = float.Parse(split[1]);
+                            
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // wait_c = float.Parse(split[1]);
 
+                            DataTable dt_wait_c = new DataTable ();
+                            wait_c = (float) dt_wait_c.Compute (split[1], "");
+                            Debug.Log("Evaluated wait_c: " + wait_c.ToString());
                         }
-
                     }
                 }
                 else if (isCost)
@@ -482,8 +497,13 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            cost_a = float.Parse(split[1]);
+                            
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // cost_a = float.Parse(split[1]);
 
+                            DataTable dt_cost_a = new DataTable ();
+                            cost_a = (float) dt_cost_a.Compute (split[1], "");
+                            Debug.Log("Evaluated cost_a: " + cost_a.ToString());
                         }
 
                     }
@@ -497,8 +517,13 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            cost_b = float.Parse(split[1]);
 
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // cost_b = float.Parse(split[1]);
+
+                            DataTable dt_cost_b = new DataTable ();
+                            cost_b = (float) dt_cost_b.Compute (split[1], "");
+                            Debug.Log("Evaluated cost_b: " + cost_b.ToString());
                         }
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.c) )
@@ -511,8 +536,13 @@ public class ConfigParser
                         else
                         {
                             string[] split = this.dayList[i].Split(delimiter[1]);
-                            cost_c = float.Parse(split[1]);
+                            
+                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            // cost_c = float.Parse(split[1]);
 
+                            DataTable dt_cost_c = new DataTable ();
+                            cost_c = (float) dt_cost_c.Compute (split[1], "");
+                            Debug.Log("Evaluated cost_c: " + cost_c.ToString());
                         }
 
                     }
