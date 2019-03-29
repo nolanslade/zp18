@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+//using System.Data;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -318,9 +318,10 @@ public class ConfigParser
             bool isTreat = false;
             bool isWait = false;
             bool isCost = false;
+            bool isEff = false;
             float dur = 0.00f, wait = 0.00f, certainty = 1.00f, strength = 0.00f;
             float cost_C = 0.00f, cost_a = 0.00f, cost_b = 0.00f, cost_c = 0.00f, wait_C = 0.00f, wait_a = 0.00f, wait_b = 0.00f, wait_c = 0.00f;
-            float watervalue = 1.00f;
+            float watervalue = 1.00f, probability = 1.00f, effect = 1.00f;
             char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' };
             List<Impairment> helperArray = new List<Impairment>();
 
@@ -352,6 +353,7 @@ public class ConfigParser
                     isTreat = false;
                     isWait = false;
                     isCost = false;
+                    isEff = false;
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.TREATMENT))
                 {
@@ -359,6 +361,7 @@ public class ConfigParser
                     isImp = false;
                     isWait = false;
                     isCost = false;
+                    isEff = false;
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.WAIT))
                 {
@@ -366,6 +369,7 @@ public class ConfigParser
                     isImp = false;
                     isTreat = false;
                     isCost = false;
+                    isEff = false;
                 }
                 else if (this.dayList[i].Contains(ConfigKeyword.COST))
                 {
@@ -373,6 +377,15 @@ public class ConfigParser
                     isTreat = false;
                     isImp = false;
                     isWait = false;
+                    isEff = false;
+                }
+                else if (this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS))
+                {            
+                    isEff = true;
+                    isTreat = false;
+                    isImp = false;
+                    isWait = false;
+                    isCost = false;
                 }
                 if (isImp)
                 {
@@ -539,7 +552,6 @@ public class ConfigParser
                             
                             // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
                             cost_c = float.Parse(split[1]);
-
                             //DataTable dt_cost_c = new DataTable ();
                             //cost_c = (float) dt_cost_c.Compute (split[1], "");
                             //Debug.Log("Evaluated cost_c: " + cost_c.ToString());
@@ -547,6 +559,23 @@ public class ConfigParser
 
                     }
 
+                }
+                else if (isEff)
+                {
+                    if (this.dayList[i].Contains(ConfigKeyword.PROBABILITY))
+                    {
+                        string[] split = this.dayList[i].Split(delimiter[1]);
+                        string[] splitPercent = split[1].Split(delimiter[5]);
+                        probability = float.Parse(splitPercent[0]) / 100;
+
+                    }
+                    else if (this.dayList[i].Contains(ConfigKeyword.EFFECT) && this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS) == false)
+                    {
+                        string[] split = this.dayList[i].Split(delimiter[1]);
+                        string[] splitPercent = split[1].Split(delimiter[5]);
+                        effect = float.Parse(splitPercent[0]) / 100;
+
+                    }
                 }
 
                 if ((i + 1) == this.dayList.Count || (trackDays >= 0 && this.dayList[i + 1].Contains(ConfigKeyword.DAY) == true))
@@ -579,8 +608,8 @@ public class ConfigParser
                           wait_a,
                           wait_b,
                           wait_c,
-                          1.0f,
-                          1.0f,
+                          probability,
+                          effect,
                           0.0f,
                           0.0f,
                           0.0f);
@@ -596,8 +625,8 @@ public class ConfigParser
                           wait_a,
                           wait_b,
                           wait_c,
-                          1.0f,
-                          1.0f,
+                          probability,
+                          effect,
                           0.0f,
                           0.0f,
                           0.0f);
@@ -614,8 +643,8 @@ public class ConfigParser
                           Treatment.NONE,
                           Treatment.NONE,
                           Treatment.NONE,
-                          1.0f,
-                          1.0f,
+                          probability,
+                          effect,
                           0.0f,
                           0.0f,
                           0.0f);
@@ -634,8 +663,9 @@ public class ConfigParser
                     isTreat = false;
                     isCost = false;
                     isWait = false;
+                    isEff = false;
                     impair = -1;
-                    dur = 0.00f; watervalue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f;
+                    dur = 0.00f; watervalue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f; probability = 1.00f; effect = 1.00f ;
                     cost_C = 0.00f; cost_a = 0.00f; cost_b = 0.00f; cost_c = 0.00f; wait_C = 0.00f; wait_a = 0.00f; wait_b = 0.00f; wait_c = 0.00f;
                 }
 

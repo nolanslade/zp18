@@ -47,12 +47,16 @@ public sealed class ConfigKeyword {
     public static readonly string WAIT          = "Wait";           // For a given treatment - 
     public static readonly string CERTAINTY     = "Certainty";      // For a given treatment -
     public static readonly string COST          = "Cost";           // For a given treatment - in dollars / reward units
+    public static readonly string EFFECTIVENESS = "Effectiveness";  // For a given treatment - 
 
     //Key-value, tier 5
     public static readonly string C             = "C";              //
     public static readonly string a             = "a";              //
     public static readonly string b             = "b";
     public static readonly string c             = "c";
+
+    public static readonly string PROBABILITY = "Probability";
+    public static readonly string EFFECT      = "Effect";
 }
 
 
