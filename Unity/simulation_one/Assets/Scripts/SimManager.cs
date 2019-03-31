@@ -28,7 +28,6 @@ public class SimManager : MonoBehaviour {
     public float fogImpairmentMaxAlpha;     // At 100% strength the fog will be this opaque
     public float fogImpairmentMinAlpha;     // At 0% strength the fog will be this opaque
 
-
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
     private float DAY_ZERO_REQ_SCORE                    = 150.0f;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150
@@ -40,6 +39,14 @@ public class SimManager : MonoBehaviour {
     private const float CONTAINER_PLATFORM_SPAWN_X      = 0.0f;      // When the bucket is moved to the wait platform for waiting for treatment
     private const float CONTAINER_PLATFORM_SPAWN_Y      = 22.93f;
     private const float CONTAINER_PLATFORM_SPAWN_Z      = -22.05f;
+
+    // All instructions for Day 0 are defined below
+    private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
+    private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
+    private Instruction fillInstr           = new Instruction ("Fill up the bucket by placing it\nunder the running water", 6.0f);
+    private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
+    private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
+    private Instruction continueInstr;
 
     // State management
     public enum GameState
@@ -226,7 +233,10 @@ public class SimManager : MonoBehaviour {
                 this.sourceUI.SetActive(true);
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
-                instructionManagerComponent.setTemporaryMessage("Objective: locate and walk to the bucket", 8.0f);
+
+                // Updating all instructions to use Instruction objects
+                // instructionManagerComponent.setTemporaryMessage("Objective: locate and walk to the bucket", 8.0f);
+                instructionManagerComponent.setTemporaryMessage(locateBucketInstr);
             }
         }
     }
@@ -438,35 +448,44 @@ public class SimManager : MonoBehaviour {
     * Instruction management
     */
     public void advanceTutorialStep () {
+
         switch (currentTutorialStep) {
+            
             case TutorialStep.BUCKET:
                 currentTutorialStep = TutorialStep.HOLD_CONTAINER;
-                instructionManagerComponent.setTemporaryMessage("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
+                instructionManagerComponent.setTemporaryMessage(holdContainerInstr);
                 bucketPickUpTrigger.SetActive(true);
                 bucketPickUpTriggerLower.SetActive(true);
                 break;
+            
             case TutorialStep.HOLD_CONTAINER:
                 currentTutorialStep = TutorialStep.FILL;
-                instructionManagerComponent.setTemporaryMessage("Fill up the bucket by placing it\nunder the running water", 6.0f);
+                instructionManagerComponent.setTemporaryMessage(fillInstr);
                 break;
+            
             case TutorialStep.FILL:
                 currentTutorialStep = TutorialStep.GO_TO_SINK;
-                instructionManagerComponent.setTemporaryMessage("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
+                instructionManagerComponent.setTemporaryMessage(goToSinkInstr);
                 farSinkMarker.SetActive(true);
                 farSinkTrigger.SetActive(true);
                 break;
+            
             case TutorialStep.GO_TO_SINK:
                 currentTutorialStep = TutorialStep.POUR_BUCKET;
-                instructionManagerComponent.setTemporaryMessage("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
+                instructionManagerComponent.setTemporaryMessage(pourBucketInstr);
                 break;
+            
             case TutorialStep.POUR_BUCKET:
                 currentTutorialStep = TutorialStep.CONTINUE;
-                instructionManagerComponent.setTemporaryMessage("To start the experiment, repeat this\nprocess until you've earned $" + DAY_ZERO_REQ_SCORE.ToString("0.00"), 7.0f);
+                continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + DAY_ZERO_REQ_SCORE.ToString("0.00"), 7.0f);
+                instructionManagerComponent.setTemporaryMessage(continueInstr);
                 break;
+            
             case TutorialStep.CONTINUE:
                 Debug.Log("All tutorial steps complete.");
                 currentTutorialStep = TutorialStep.DONE_TUTORIAL;
                 break;
+            
             default:
                 Debug.Log("Invalid tutorial step.");
                 break;
@@ -479,8 +498,7 @@ public class SimManager : MonoBehaviour {
     * Sometimes, where multiple triggers are used, we could advance the step
     * twice by accident.
     */
-    public void advanceTutorialStep (TutorialStep stepToAdvanceTo)
-    {
+    public void advanceTutorialStep (TutorialStep stepToAdvanceTo) {
         if (currentTutorialStep != stepToAdvanceTo) {
             advanceTutorialStep();
         }
@@ -581,11 +599,6 @@ public class SimManager : MonoBehaviour {
         }
 
         else if (obtainType == PillManager.TreatmentObtainType.WAIT) {
-
-            // TODO
-            // Make the panel actually count down second by second, 
-            // rather than get updated by the wait time cost function.
-            // TODO
 
             Debug.Log("Waiting for treatment started...");
             this.waitingForTreatment = true;
@@ -786,22 +799,6 @@ public class SimManager : MonoBehaviour {
             elapsedTotalTime += Time.deltaTime;
             persistTime      += Time.deltaTime;
 
-            // Pausing with thumb buttons
-            //if (SteamVR_Input._default.inActions.Teleport.GetStateDown(SteamVR_Input_Sources.Any))
-           // {
-            //    if (currentGameState == GameState.PAUSED)
-            //    {
-            //        currentGameState = GameState.RUNNING;
-            //        pauseOverlay.SetActive(false);
-            //        flowManagerComponent.startFlow();
-            //    }
-            //    else
-            //    {
-            //        currentGameState = GameState.PAUSED;
-            //        pauseOverlay.SetActive(true);
-            //        flowManagerComponent.stopFlow();
-            //    }
-            //}
 
             // Persist every X second(s)
             if (persistenceEnabled && persistTime > PERSIST_RATE && currentGameState != GameState.COMPLETE) {
@@ -920,21 +917,24 @@ public class SimManager : MonoBehaviour {
 
             limboElapsed += Time.deltaTime;
 
-            if (limboElapsed > limboInstrs[limboIndex].displayDuration)
-            {
+            if (limboElapsed > limboInstrs[limboIndex].displayDuration) {
                 limboIndex++;
                 limboElapsed = 0.0f;
 
-                if (limboIndex == limboInstrs.Length)
-                {
+                if (limboIndex == limboInstrs.Length) {
                     Debug.Log("Iterated through all limbo instructions.");
                     exitLimbo();
                     audioManagerComponent.playSound(AudioManager.SoundType.START_DAY);     
                     flowManagerComponent.startFlow();     
-                }
-                else
-                {
-                    this.instructionManagerComponent.setTemporaryMessage(limboInstrs[limboIndex].message, limboInstrs[limboIndex].displayDuration);
+                } 
+
+                else {
+                    this.instructionManagerComponent.setTemporaryMessage(limboInstrs[limboIndex]);
+
+                    // Adding the ability to play a sound for desired instructions (i.e. countdown)
+                    if (limboInstrs[limboIndex].playSoundAtStart) {
+                        this.audioManagerComponent.playSound(AudioManager.SoundType.CRITICAL_TICK);
+                    }
                 }
             }
         }
@@ -1042,13 +1042,20 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanels(); // Activates both sets of panels/pills, etc
                             Debug.Log("Initializing limbo for pay&wait treatment...");
-                            Instruction [] instrs = new Instruction [5];
-                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
-                            Instruction instrThree = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly by\ngrabbing the red pill bottle.", 7.0f);
-                            Instruction instrFour = new Instruction ("Option 2: grab the blue pill bottle to\nwait for a duration of time to\nremove the impairment for free.", 8.0f);
-                            Instruction instrFive = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);
+                            Instruction [] instrs   = new Instruction [8];
+                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo    = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
+                            Instruction instrThree  = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly by\ngrabbing the red pill bottle.", 7.0f);
+                            Instruction instrFour   = new Instruction ("Option 2: grab the blue pill bottle to\nwait for a duration of time to\nremove the impairment for free.", 8.0f);
+                            Instruction instrFive   = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);
+
+                            // Adding 3-second countdown to end of treatment instructions
+                            Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
+                            Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
+                            Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
+
                             instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree; instrs[3] = instrFour; instrs[4] = instrFive;
+                            instrs[5] = countDownInstrOne; instrs[6] = countDownInstrTwo; instrs[7] = countDownInstrThree;
                             limbo (instrs);
                         } 
 
@@ -1056,11 +1063,18 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.PAY);
                             Debug.Log("Initializing limbo for pay-only treatment...");
-                            Instruction[] instrs = new Instruction [3];
-                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo = new Instruction ("You can choose to either complete\nthis day impaired, or, pay a fee to remove\nthe impairment instantly.", 8.0f);
-                            Instruction instrThree = new Instruction ("If you wish to pay to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            Instruction[] instrs    = new Instruction [6];
+                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo    = new Instruction ("You can choose to either complete\nthis day impaired, or, pay a fee to remove\nthe impairment instantly.", 8.0f);
+                            Instruction instrThree  = new Instruction ("If you wish to pay to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            
+                            // Adding 3-second countdown to end of treatment instructions
+                            Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
+                            Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
+                            Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
+
                             instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            instrs[3] = countDownInstrOne; instrs[4] = countDownInstrTwo; instrs[5] = countDownInstrThree;
                             limbo (instrs);
                         }
 
@@ -1068,11 +1082,18 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.WAIT);
                             Debug.Log("Initializing limbo for wait-only treatment...");
-                            Instruction[] instrs = new Instruction [3];
-                            Instruction instrOne = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo = new Instruction ("You can choose to either complete\nthis day impaired, or, wait a duration of time\nto remove the impairment at no cost.", 9.0f);
-                            Instruction instrThree = new Instruction ("If you wish to wait to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            Instruction[] instrs    = new Instruction [6];
+                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+                            Instruction instrTwo    = new Instruction ("You can choose to either complete\nthis day impaired, or, wait a duration of time\nto remove the impairment at no cost.", 9.0f);
+                            Instruction instrThree  = new Instruction ("If you wish to wait to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            
+                            // Adding 3-second countdown to end of treatment instructions
+                            Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
+                            Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
+                            Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
+
                             instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            instrs[3] = countDownInstrOne; instrs[4] = countDownInstrTwo; instrs[5] = countDownInstrThree;
                             limbo (instrs);
                         }
 
