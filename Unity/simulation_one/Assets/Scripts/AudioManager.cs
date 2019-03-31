@@ -13,7 +13,7 @@ using UnityEngine;
 */
 public class AudioManager : MonoBehaviour {
 
-	public AudioClip 	waterFlowClip, takeMedicineClip, startDayClip, dayCompleteClip,
+	public AudioClip 	waterFlowClip, takeMedicineClip, startDayClip, dayCompleteClip, errorClip,
 						simCompleteClip, countNormalClip, countCriticalClip, destinationPourClip;
 
 	private AudioSource source;
@@ -28,7 +28,8 @@ public class AudioManager : MonoBehaviour {
 		NORMAL_TICK,
 		CRITICAL_TICK,
 		DAY_COMPLETE,
-        DESTINATION_POUR
+        DESTINATION_POUR,
+        ERROR
 	}
 
 	void Start () {
@@ -66,6 +67,8 @@ public class AudioManager : MonoBehaviour {
 					break;
                 case SoundType.DESTINATION_POUR:    source.clip = destinationPourClip;      source.Play();
                     break;
+                case SoundType.ERROR:				source.clip = errorClip;				source.Play();
+                	break;
 				default:
 					Debug.Log("Invalid sound type");
 					break;

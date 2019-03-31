@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PillManager : MonoBehaviour {
 
     public GameObject simManager;
+    public GameObject audioManager;
     public GameObject payPanel;
     public GameObject waitPanel;
     public GameObject payText;
@@ -35,6 +36,7 @@ public class PillManager : MonoBehaviour {
     public float waitBottleInitZPosition;
 
     private SimManager simManagerComponent;
+    private AudioManager audioManagerComponent;
     private UnityEngine.UI.Text payTextComp;
     private UnityEngine.UI.Text waitTextComp;
 
@@ -60,6 +62,7 @@ public class PillManager : MonoBehaviour {
     void Start()
     {
         this.simManagerComponent = simManager.GetComponent<SimManager>();
+        this.audioManagerComponent = audioManager.GetComponent<AudioManager>();
         this.payTextComp = payText.GetComponent<UnityEngine.UI.Text>();
         this.waitTextComp = waitText.GetComponent<UnityEngine.UI.Text>();
         treatmentDay = false;
@@ -103,6 +106,9 @@ public class PillManager : MonoBehaviour {
         }
 
         else {
+
+            // Play a quick error sound to make them realize it didn't work
+            audioManagerComponent.playSound(AudioManager.SoundType.ERROR);
 
             Debug.Log("Invalid treatment obtain attempt. Resetting " + t.ToString() + " bottle position.");
 
