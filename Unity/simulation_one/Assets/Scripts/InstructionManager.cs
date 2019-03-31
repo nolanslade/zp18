@@ -49,4 +49,14 @@ public class InstructionManager : MonoBehaviour {
         this.currentMsgTimeRemaining = displayDuration;
         instrPanel.SetActive(instructionsEnabled);
     }
+
+    /*
+    * As above, except captures the required parameters inside 
+    * a single Instruction object rather than individually
+    */
+    public void setTemporaryMessage (Instruction instruction) {
+        this.instrTextComponent.text = instruction.message;
+        this.currentMsgTimeRemaining = instruction.displayDuration;
+        instrPanel.SetActive(instructionsEnabled);
+    }
 }
