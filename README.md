@@ -2,15 +2,19 @@
 
 ## Developers
 Aaska Shah
+
 Kerala Brendon
+
 Nolan Slade
+
 Vyome Kishore
 
-## Supervisors
+### Supervisors
 Dr Jacques Carette, McMaster University
+
 Dr Stephanie Thomas, Curtin University
 
-## Capstone Coordinator
+### Capstone Coordinator
 Dr Christopher Anand, McMaster University
 
 
