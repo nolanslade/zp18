@@ -1,6 +1,6 @@
 # 4ZP6A/B Capstone - Customizable VR Simulation Framework for Experimental Economics Research
 
-## Developers
+### Developers
 Aaska Shah
 
 Kerala Brendon
