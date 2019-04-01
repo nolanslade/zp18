@@ -265,7 +265,7 @@ public class ConfigParser
             else if (i.Contains(ConfigKeyword.INSTRUCTIONS))
             {
                 string[] split = i.Split(delimiter[1]);
-                this.instructions = split[1];
+                this.instructions = split[1].ToLower();
                 if (this.instructions.Contains("disabled"))
                 {
                     this.instructionsEnabled = false;
@@ -278,7 +278,7 @@ public class ConfigParser
             else if (i.Contains(ConfigKeyword.SOUND))
             {
                 string[] split = i.Split(delimiter[1]);
-                this.sound = split[1];
+                this.sound = split[1].ToLower();
                 if (this.sound.Contains("disabled"))
                 {
                     this.soundEnabled = false;
@@ -389,19 +389,19 @@ public class ConfigParser
                 }
                 if (isImp)
                 {
-                    if (this.dayList[i].Contains("Fog"))
+                    if ((this.dayList[i].ToLower()).Contains("fog"))
                     {
                         impair = 0;
                     }
-                    else if (this.dayList[i].Contains("Gravity"))
+                    else if ((this.dayList[i].ToLower()).Contains("gravity"))
                     {
                         impair = 1;
                     }
-                    else if (this.dayList[i].Contains("Shake"))
+                    else if ((this.dayList[i].ToLower()).Contains("shake"))
                     {
                         impair = 2;
                     }
-                    else if (this.dayList[i].Contains("Speed"))
+                    else if ((this.dayList[i].ToLower()).Contains("speed"))
                     {
                         impair = 3;
                     }
@@ -436,9 +436,9 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.WAIT) == false && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
-                            wait_a = (float)1 / (float)dur;
+                            wait_a = 1.00f /(dur / 60.0f);
 
                         }
                         else
@@ -456,7 +456,7 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
                             wait_b = 2;
 
@@ -475,9 +475,9 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.c))
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
-                            wait_c = dur;
+                            wait_c = dur / 60.0f;
 
                         }
                         else
@@ -503,9 +503,9 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
-                            cost_a = (float)1 / (float)dur;
+                            cost_a = 1.00f / (dur / 60.0f);
                         }
                         else
                         {
@@ -522,7 +522,7 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
                             cost_b = 2;
 
@@ -541,9 +541,9 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.c) )
                     {
-                        if (this.dayList[i].Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains("default"))
                         {
-                            cost_c = dur;
+                            cost_c = dur/60.0f;
 
                         }
                         else
@@ -583,6 +583,7 @@ public class ConfigParser
                     Impairment impairObj;
                     Impairment[] dayImpairs;
                     Treatment dayTreats;
+
 
                     if (impair == -1)
                     {
@@ -665,6 +666,7 @@ public class ConfigParser
                     isWait = false;
                     isEff = false;
                     impair = -1;
+                    helperArray.Clear();
                     dur = 0.00f; watervalue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f; probability = 1.00f; effect = 1.00f ;
                     cost_C = 0.00f; cost_a = 0.00f; cost_b = 0.00f; cost_c = 0.00f; wait_C = 0.00f; wait_a = 0.00f; wait_b = 0.00f; wait_c = 0.00f;
                 }
