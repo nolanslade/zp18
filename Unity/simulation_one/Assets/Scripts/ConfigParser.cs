@@ -409,7 +409,15 @@ public class ConfigParser
                     {
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
-                        strength = float.Parse(splitPercent[0]) / 100;
+                        if((float.Parse(splitPercent[0])) != 0)
+                        {
+                            strength = float.Parse(splitPercent[0]) / 100;
+                        }         
+                        else
+                        {
+                            strength = 0.00f;
+                        }
+                        
 
                     }
 
@@ -420,7 +428,14 @@ public class ConfigParser
                     {
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
-                        certainty = float.Parse(splitPercent[0]) / 100;
+                        if((float.Parse(splitPercent[0])) != 0)
+                        {
+                            certainty = float.Parse(splitPercent[0]) / 100;
+                        }         
+                        else
+                        {
+                            certainty = 0.00f;
+                        }
 
                     }
 
@@ -566,15 +581,31 @@ public class ConfigParser
                     {
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
-                        probability = float.Parse(splitPercent[0]) / 100;
+                        if((float.Parse(splitPercent[0])) != 0)
+                        {
+                            probability = float.Parse(splitPercent[0]) / 100;
+                        }         
+                        else
+                        {
+                            probability = 0.00f;
+                        }
+}                                                 
+                        
 
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.EFFECT) && this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS) == false)
                     {
                         string[] split = this.dayList[i].Split(delimiter[1]);
                         string[] splitPercent = split[1].Split(delimiter[5]);
-                        effect = float.Parse(splitPercent[0]) / 100;
-
+                        if((float.Parse(splitPercent[0])) != 0)
+                        {
+                            effect = float.Parse(splitPercent[0]) / 100;
+                        }         
+                        else
+                        {
+                            effect = 0.00f;
+                        }
+                        
                     }
                 }
 
