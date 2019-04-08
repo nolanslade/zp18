@@ -155,6 +155,8 @@ public class SimManager : MonoBehaviour {
     private Treatment currentDayTreatment;
 
     //Variables for tracking speed during Day 0 for speed impairment
+    private const float WALK_SPEED_FREQ = 0.2f;
+    private float speedPenaltyElapsed   = 0.0f;
     private float avgWalkingSpeedDay0   = 0.0f;
     private float secondsInDay1         = 0.0f;
     private bool speedPenaltyFlag       = false;
@@ -801,6 +803,16 @@ public class SimManager : MonoBehaviour {
         );
     }
 
+    /* Same as above, except only measure lateral distance */
+    private float lateralDistanceBetween(Vector3 a, Vector3 b)
+    {
+        return ( 
+            (float) System.Math.Sqrt (
+                System.Math.Pow(b.x - a.x, 2.0) +
+                System.Math.Pow(b.z - a.z, 2.0)
+            )
+        );
+    }
 
     /*
     * Main loop
@@ -873,7 +885,7 @@ public class SimManager : MonoBehaviour {
 
                 // Get user speed over last second (in meters)
                 posB = physicalCamera.transform.position;
-                avgSpeedLastSecond = distanceBetween(posA, posB) / UNITY_VIVE_SCALE;
+                avgSpeedLastSecond = lateralDistanceBetween (posA, posB) / UNITY_VIVE_SCALE;
 
                 simPersister.persist (
                     elapsedTotalTime,
@@ -992,6 +1004,7 @@ public class SimManager : MonoBehaviour {
                 todaySpilled = 0;
                 waitingForTreatment = false;
                 waitingForTreatmentDuration = 0.0f;
+                speedPenaltyElapsed = 0.0f;
                 speedPenaltyFlag = false;
                 fogImpairmentPanel.SetActive(false);
                 Debug.Log ("New day: " + currentDay);
@@ -1154,12 +1167,26 @@ public class SimManager : MonoBehaviour {
             *     when needed
             */
             if (currentDay > 0) {
-                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * (1.0f - speedImpStrCurrent))
-                {
-                    waterDropletCounterComponent.removeDropsFromContainer(1);
+                
+                if (speedPenaltyFlag && currentPayload > 0 && speedPenaltyElapsed > WALK_SPEED_FREQ) {
+
+                    // Speed tracking
+                    day0PosB = physicalCamera.transform.position;
+                    float walkSpd = lateralDistanceBetween (day0PosA, day0PosB) / WALK_SPEED_FREQ;
+
+                    // Penalizing, if speed limit breached
+                    if ((walkSpd > ((avgWalkingSpeedDay0) * (1.0f - speedImpStrCurrent)))) {
+                        //Debug.Log("#");
+                        waterDropletCounterComponent.removeDropsFromContainer(1);
+                        //Debug.Log(String.Format("{0} | {1} | {2} | Removing 1 drop", walkSpd, avgWalkingSpeedDay0, (avgWalkingSpeedDay0 * (1.0f - speedImpStrCurrent))));
+                    }
+
+                    speedPenaltyElapsed = 0.0f;
+                    day0PosA = physicalCamera.transform.position;
                 }
 
                 elapsedDayTime += Time.deltaTime;
+                speedPenaltyElapsed += Time.deltaTime;
 
                 // Track how long the participant has been waiting for treatment
                 // since the end of the limbo after they grabbed the pill bottle
@@ -1262,15 +1289,17 @@ public class SimManager : MonoBehaviour {
 
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
-                avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1 / UNITY_VIVE_SCALE;
+                avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
                 Debug.Log ("Day 0 passed.");
-                Debug.Log ("Determined average moving speed = " + avgWalkingSpeedDay0.ToString("0.000") + "m/s");
+                Debug.Log ("Determined average moving speed = " + (avgWalkingSpeedDay0 / UNITY_VIVE_SCALE).ToString("0.000") + "m/s");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
                 resetMetricsForDayOne();
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
                 Destroy(DayZeroSpeedCounter);
+                day0PosA = physicalCamera.transform.position;
+                day0PosB = physicalCamera.transform.position;
                 Debug.Log("Day 0 over " + currentGameState);
             }
 
@@ -1289,7 +1318,7 @@ public class SimManager : MonoBehaviour {
                         // Exclude (literal) edge cases where the participant has just entered the zone
                         if (dayZeroMovingCount > 1) {
                             day0PosB = physicalCamera.transform.position;
-                            avgWalkingSpeedDay0 += distanceBetween (day0PosA, day0PosB);  // Distance since last count
+                            avgWalkingSpeedDay0 += lateralDistanceBetween (day0PosA, day0PosB);  // Distance since last count
                             secondsInDay1 += DAY_ZERO_MOV_FREQ;
                         }
 
