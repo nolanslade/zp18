@@ -31,6 +31,7 @@ public class ConfigParser
     // Simulation parameters
     private DayConfiguration[] dayConfigs = null;
     private bool lowNauseaMode;
+    private bool claustrophobicMode;
     private bool instructionsEnabled;
     private bool soundEnabled;
 
@@ -62,6 +63,7 @@ public class ConfigParser
 
         // Data comes from static class, set by the main menu
         lowNauseaMode = ParticipantData.nauseaSensitive;
+        claustrophobicMode = ParticipantData.claustrophicSensitive;
         instructionsEnabled = true;
 
         /*
@@ -141,6 +143,7 @@ public class ConfigParser
     public ConfigParser(string path)
     {
         lowNauseaMode = ParticipantData.nauseaSensitive;
+        claustrophobicMode = ParticipantData.claustrophicSensitive;
 
         this.configFilePath = path;
         dbConnection = null;
@@ -589,10 +592,7 @@ public class ConfigParser
                         {
                             probability = 0.00f;
                         }
-}                                                 
-                        
-
-                    }
+                    } 
                     else if (this.dayList[i].Contains(ConfigKeyword.EFFECT) && this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS) == false)
                     {
                         string[] split = this.dayList[i].Split(delimiter[1]);
@@ -739,6 +739,10 @@ public class ConfigParser
     public bool lowNauseaModeEnabled()
     {
         return this.lowNauseaMode;
+    }
+
+    public bool claustrophobicModeEnabled()  {
+        return this.claustrophobicMode;
     }
 
     /*

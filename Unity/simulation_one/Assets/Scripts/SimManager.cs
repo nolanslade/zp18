@@ -120,6 +120,8 @@ public class SimManager : MonoBehaviour {
     public GameObject sourceUI;
     public GameObject destUI;
     public GameObject WaterDropletCounter;
+    public GameObject claustroAssets;           // Enable these if claustrophobic and nausea-sensitive
+    public GameObject disableOnClaustro;        // Disable these if claustrophobic and nausea-sensitive
 
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
@@ -199,8 +201,19 @@ public class SimManager : MonoBehaviour {
                 // in order to improve performance if the curtains are drawn. No
                 // point in having trees or grass if they can't see out the window.
                 if (this.configParser.lowNauseaModeEnabled()) {
-                    this.curtainRight.SetActive(true);
-                    this.curtainLeft.SetActive(true);
+
+                    if (this.configParser.claustrophobicModeEnabled())
+                    {
+                        this.claustroAssets.SetActive(true);
+                        this.disableOnClaustro.SetActive(false);
+                    }
+
+                    else
+                    {
+                        this.curtainRight.SetActive(true);
+                        this.curtainLeft.SetActive(true);
+                    }
+
                     foreach (GameObject tree in GameObject.FindGameObjectsWithTag ("Trees")) { Destroy (tree); }
                     foreach (GameObject extTerr in GameObject.FindGameObjectsWithTag ("ExteriorTerrain")) { Destroy (extTerr); }
                 }
@@ -1131,7 +1144,7 @@ public class SimManager : MonoBehaviour {
             *     when needed
             */
             if (currentDay > 0) {
-                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * speedImpStrCurrent)
+                if (speedPenaltyFlag && avgSpeedLastSecond > (avgWalkingSpeedDay0/secondsInDay1) * (1.0f - speedImpStrCurrent))
                 {
                     waterDropletCounterComponent.removeDropsFromContainer(1);
                 }
