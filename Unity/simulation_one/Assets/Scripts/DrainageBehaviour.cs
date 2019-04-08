@@ -36,7 +36,6 @@ public class DrainageBehaviour : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision col) {
-        Debug.Log("collides");
         if (col.collider.gameObject.tag == "Water") {
             if (this.isTargetDrain) {
                 elapsed = 0.0f;

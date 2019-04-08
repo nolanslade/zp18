@@ -31,6 +31,7 @@ public class SimManager : MonoBehaviour {
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
     private float DAY_ZERO_REQ_SCORE                    = 150.0f;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150
+    private const float DAY_ZERO_MOV_FREQ               = 0.125f;     // Calculate the participant's moving speed in day 0 on this interval for performance
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
@@ -122,6 +123,7 @@ public class SimManager : MonoBehaviour {
     public GameObject WaterDropletCounter;
     public GameObject claustroAssets;           // Enable these if claustrophobic and nausea-sensitive
     public GameObject disableOnClaustro;        // Disable these if claustrophobic and nausea-sensitive
+    public GameObject DayZeroSpeedCounter;      // Used to determine when the participant is carrying water to the sink
 
     // Instruction Markers and tutorial booleans
     public GameObject bucketMarker;
@@ -153,9 +155,15 @@ public class SimManager : MonoBehaviour {
     private Treatment currentDayTreatment;
 
     //Variables for tracking speed during Day 0 for speed impairment
-    private float avgWalkingSpeedDay0;
-    private float secondsInDay1;
-    private bool speedPenaltyFlag = false;
+    private float avgWalkingSpeedDay0   = 0.0f;
+    private float secondsInDay1         = 0.0f;
+    private bool speedPenaltyFlag       = false;
+    public bool inDay0SpeedCaptureZone  = false;
+    private Vector3 day0PosA            = new Vector3 ();
+    private Vector3 day0PosB            = new Vector3 ();
+    private float dayZeroMovingElapsed  = 0.0f;
+    public int dayZeroMovingCount       = 0;            // We only want to track position changes inside the 
+                                                        // zone, not the edge cases where have just entered or just left
 
     /*
     * Initialization method
@@ -205,13 +213,14 @@ public class SimManager : MonoBehaviour {
                     if (this.configParser.claustrophobicModeEnabled())
                     {
                         this.claustroAssets.SetActive(true);
-                        this.disableOnClaustro.SetActive(false);
+                        Destroy(disableOnClaustro);
                     }
 
                     else
                     {
                         this.curtainRight.SetActive(true);
                         this.curtainLeft.SetActive(true);
+                        Destroy(claustroAssets);
                     }
 
                     foreach (GameObject tree in GameObject.FindGameObjectsWithTag ("Trees")) { Destroy (tree); }
@@ -219,8 +228,9 @@ public class SimManager : MonoBehaviour {
                 }
 
                 else {
-                    this.curtainRight.SetActive(false);
-                    this.curtainLeft.SetActive(false);
+                    Destroy(claustroAssets);
+                    Destroy(curtainLeft);
+                    Destroy(curtainRight);
                 }
 
                 totalSpilled                = 0;
@@ -1252,21 +1262,43 @@ public class SimManager : MonoBehaviour {
 
             else if (currentScore >= DAY_ZERO_REQ_SCORE) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
-                avgWalkingSpeedDay0 = avgWalkingSpeedDay0/Time.realtimeSinceStartup;
+                avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1 / UNITY_VIVE_SCALE;
                 Debug.Log ("Day 0 passed.");
+                Debug.Log ("Determined average moving speed = " + avgWalkingSpeedDay0.ToString("0.000") + "m/s");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
                 resetMetricsForDayOne();
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
+                Destroy(DayZeroSpeedCounter);
                 Debug.Log("Day 0 over " + currentGameState);
             }
 
-            else
-            {
-                avgWalkingSpeedDay0 += avgSpeedLastSecond;
-                secondsInDay1 += Time.deltaTime;
-            }
+            else {
+                // Only track the participant's speed if they're carrying water,
+                // and if they've completed the tutorial / standing in the correct. 
+                // place. This gives us a more accurate measurement of their delivery speed.
+                if (inDay0SpeedCaptureZone && currentPayload > 0 && (currentTutorialStep == TutorialStep.CONTINUE || !this.configParser.getSimInstruction())) {
+
+                    dayZeroMovingElapsed += Time.deltaTime;
+
+                    // We only want to calculate speed once every quarter-second
+                    // For performance reasons
+                    if (dayZeroMovingElapsed > DAY_ZERO_MOV_FREQ) {
+                        
+                        // Exclude (literal) edge cases where the participant has just entered the zone
+                        if (dayZeroMovingCount > 1) {
+                            day0PosB = physicalCamera.transform.position;
+                            avgWalkingSpeedDay0 += distanceBetween (day0PosA, day0PosB);  // Distance since last count
+                            secondsInDay1 += DAY_ZERO_MOV_FREQ;
+                        }
+
+                        dayZeroMovingCount++;
+                        dayZeroMovingElapsed = 0.0f;
+                        day0PosA = physicalCamera.transform.position;
+                    }
+                }
+            }  
         }
     }
 }
