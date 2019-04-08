@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\title{User Manual}
+\author{Aaska Shah}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Purpose}
+The purpose of this document is to ensure the user has a reference and full understanding on how the Input File works. By having this document as a guide, experimenters will be able to configure the simulation to fulfill the needs of the experiment. Additionally, any future changes to the customization abilities of the experiment will be documented in the manual. This document includes the current supported values and constraints that exist in the format of the file. 
+
+\section{Keywords}
+\subsection{Simulation}
+This section includes all information pertaining to the configurable parts of the simulation. The keyword is not tabbed. Each keyword under this is tabbed once.\newline
+
+\noindent \textbf{Name}: The name of the simulation, no constraints \newline
+
+\noindent \textbf{Output}: How the experimenter wants the data from the simulation to be produce\newline
+\indent -Possible Values: (both can be used, separated by a comma)\newline
+\indent\indent .txt \newline
+\indent\indent database \newline
+
+\noindent Example:
+\begin{lstlisting}
+Output:.txt,database
+\end{lstlisting}
+
+\noindent \textbf{Description}: description of the simulation, no constraints 
+
+\noindent \textbf{Instructions}: \newline
+\indent -Possible Values:\newline
+\indent\indent enabled\newline
+\indent\indent disabled\newline
+
+\noindent \textbf{Sound} \newline
+\indent -Possible Values: \newline
+\indent\indent enabled \newline
+\indent\indent disabled \newline
+
+\subsection{Tutorial}
+This keyword refers to the Tutorial (Day 0) that takes place at the beginning of every simulation. The user will be required to achieve a certain amount of money - \textbf{Score} - that the experimenter can configure to their preference. If one has not be set, the default value will be at \textbf{\$150} The \textit{Tutorial} keyword is not tabbed, \textit{Score} is tabbed once\newline
+
+\noindent \textbf{Score}
+
+\indent Constraints: Whole Number or Decimal Number.\newline
+
+\noindent Example:
+\begin{lstlisting}
+    Score:120
+\end{lstlisting}
+
+
+\subsection{Day}
+Each simulation is divided into its respective days. Each day comprises of the following sub-keywords: Duration, Impairment, and Treatment. This keyword is not tabbed.
+
+\subsubsection{Duration}
+This keyword refers to how long each day will last. This field is \textbf{mandatory}. The field is formatted in the form "Minutes:Seconds". \textit{Duration} is tabbed once. \newline
+
+\noindent \textbf{Duration}
+
+\indent Constraints: Input is in the form Minutes:Seconds, where Minutes and Seconds must be whole numbers. The following example translates to 1 minute and 50 seconds = 110 seconds total.\newline
+
+\noindent Example:
+\begin{lstlisting}
+    Duration:1:50
+\end{lstlisting}
+
+
+
+\subsubsection{Impairment}
+This keyword will determine which impairment is implemented during the specified day. There can be multiple impairments imposed on a single day. \textit{Impairment} is tabbed once. \textit{Type} and \textit{Strength} are tabbed twice. \newline\newline
+\textbf{Type} - currently limited to these impairments.\newline
+\indent-Possible values:\newline
+\indent\indent Physical/Shake\newline
+\indent\indent Physical/Speed\newline
+\indent\indent Physical/Gravity\newline
+\indent\indent Visual/Fog\newline
+
+
+\noindent\textbf{Strength}\newline
+\indent-Possible values:\newline
+\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+    
+\noindent Example:
+\begin{lstlisting}
+    Impairment
+        Type:Physical/Speed
+        Strength:75%
+    Impairment
+        Type:Visual/Fog
+        Strength:5%
+\end{lstlisting}
+
+\subsubsection{Treatment}
+This keyword will determine the amount of wait time and the amount of cost the treatment will have on the specified day. When \textbf{Wait} or \textbf{Cost} is included, the \textbf{C} is a \textbf{mandatory} value. The keywords \textbf{a}, \textbf{b}, \textbf{c} can either all be included or not included at all. There is also the option to include Wait, or Cost, or both.
+\newline \textit{Treatment} is tabbed once while \textit{Wait}, \textit{Cost}, \textit{Certainty} and \textit{Effectiveness} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c}, \textit{Probability}, and \textit{Effect} are tabbed three times.\newline
+
+
+\noindent \textbf{Certainty} \newline
+\indent-Possible values:\newline
+\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+
+\noindent Example: 
+\begin{lstlisting}
+    Treatment
+        Certainty:80%
+\end{lstlisting}
+
+
+\noindent \textbf{Wait / Cost} \newline
+\noindent C \newline
+\indent -Possible Values:\newline
+\indent\indent Any whole/decimal number\newline
+\noindent a, b, and c\newline
+\indent -Possible Values:\newline
+\indent\indent Any whole/decimal numbers\newline
+\indent\indent default\newline
+
+\noindent \textbf{Wait/Cost} \newline
+\noindent Example: Not a valid input
+\begin{lstlisting}
+    C:100
+    b:100
+    c:default
+\end{lstlisting}
+- "a" must be included, no option to omit only one of a, b, or c\newline
+
+
+\noindent \textbf{a, b, and c Included} \newline
+\noindent Example:
+\begin{lstlisting}
+    Treatment
+        Wait
+            C:100
+            a:default
+            b:default
+            c:10
+        Cost
+            C:56
+            a:34
+            b:54
+            c:default
+ \end{lstlisting}   
+ \noindent \textbf{a, b, and c Not Included} \newline
+ \noindent Example:
+ \begin{lstlisting}
+    Treatment
+        Wait
+            C:100
+        Cost
+            C:56
+ \end{lstlisting} 
+ 
+\noindent \textbf{Effectiveness} 
+    
+\noindent Probability\newline
+\indent-Possible values:\newline
+\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+\noindent Effect\newline
+\indent-Possible values:\newline
+\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+    
+\noindent Example: 
+\begin{lstlisting}
+    Treatment
+        Wait
+            C:100
+        Cost
+            C:56
+        Effectiveness
+            Probability:75%
+            Effect:50%
+\end{lstlisting}
+    
+    
+\section{Sample File}
+\begin{lstlisting}
+Simulation
+    Name:Sample Configuration
+    Output:.txt
+    Description:Sample 3-day (plus intro) configuration file  
+    Instructions:enabled
+    Sound:enabled
+Tutorial
+    Score:100
+Day
+    Duration:1:30
+Day
+    Duration:0:50
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
+    Impairment
+        Type:Physical/Speed
+        Strength:10%
+Day
+    Duration:2:20
+    Impairment
+        Type:Visual/Fog
+        Strength:75%
+    Treatment
+        Certainty:80%
+        Wait
+            C:80
+            a:5
+            b:6
+            c:7
+        Cost
+            C:98
+            a:7
+            b:6
+            c:5
+        Effectiveness
+            Probability:50%
+            Effect:90%
+\end{lstlisting}    
+    
+
+
+
+
+
+\end{document}
