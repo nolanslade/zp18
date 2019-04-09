@@ -57,7 +57,7 @@ This keyword refers to the \textit{Day Zero} tutorial preceding the main experim
 
 \subsubsection*{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
 \indent Possible values: \newline
-\indent\indent Any decimal number \newline
+\indent\indent Any decimal number
 
 \subsubsection*{Sample tutorial configuration:}
 \begin{lstlisting}
@@ -86,7 +86,7 @@ This keyword will determine which impairments will be in effect during the day. 
 
 \subsubsubsection{\textbf{Strength}} \newline
 \indent Possible values: \newline
-\indent\indent Any integer between 1-100 followed by a \% sign \newline
+\indent\indent Any integer between 0-100 followed by a \% sign \newline
     
 %\noindent Example:
 %\begin{lstlisting}
@@ -98,125 +98,108 @@ This keyword will determine which impairments will be in effect during the day. 
 %        Strength:5%
 %\end{lstlisting}
 
-\subsubsection{Treatment}
-This keyword will determine the amount of wait time and the amount of cost the treatment will have on the specified day. When \textbf{Wait} or \textbf{Cost} is included, the \textbf{C} is a \textbf{mandatory} value. The keywords \textbf{a}, \textbf{b}, \textbf{c} can either all be included or not included at all. There is also the option to include Wait, or Cost, or both.
-\newline \textit{Treatment} is tabbed once while \textit{Wait}, \textit{Cost}, \textit{Certainty} and \textit{Effectiveness} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c}, \textit{Probability}, and \textit{Effect} are tabbed three times.\newline
+\subsubsection*{Treatment}
+This keyword is used to specify which treatment options will be available to the participant on the given day. When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory}.  \textit{Treatment} is tabbed once while sub-keywords \textit{Wait}, and \textit{Cost} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c} are tabbed three times, as they are specific to exactly one treatment. \newline
 
+%\subsubsection*{Treatment}
+%This keyword is used to specify which treatment options will be available to the participant on the given day. When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory} values.  \textit{Treatment} is tabbed once while sub-keywords \textit{Wait}, \textit{Cost}, \textit{Certainty} and \textit{Effectiveness} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c} are tabbed three times, as they are specific to exactly one treatment.
 
-\noindent \textbf{Certainty} \newline
-\indent-Possible values:\newline
-\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+%\subsubsubsection{\textbf{Certainty}} \newline
+%\indent Possible values:\newline
+%\indent\indent Any integer between 0-100 followed by a \% sign \newline
 
-\noindent Example: 
-\begin{lstlisting}
-    Treatment
-        Certainty:80%
-\end{lstlisting}
+%\noindent Example: 
+%\begin{lstlisting}
+%    Treatment
+%        Certainty:80%
+%\end{lstlisting}
 
+\subsubsubsection{\textbf{C}} \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number \newline\newline
+\subsubsubsection{\indent\textbf{a, b, c}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number \newline
+\indent\indent  default \newline
 
-\noindent \textbf{Wait / Cost} \newline
-\noindent C \newline
-\indent -Possible Values:\newline
-\indent\indent Any whole/decimal number\newline
-\noindent a, b, and c\newline
-\indent -Possible Values:\newline
-\indent\indent Any whole/decimal numbers\newline
-\indent\indent default\newline
+%\noindent \textbf{Wait/Cost} \newline
+%\noindent Example: Not a valid input
+%\begin{lstlisting}
+%    C:100
+%    b:100
+%    c:default
+%\end{lstlisting}
+%- "a" must be included, no option to omit only one of a, b, or c\newline
 
-\noindent \textbf{Wait/Cost} \newline
-\noindent Example: Not a valid input
-\begin{lstlisting}
-    C:100
-    b:100
-    c:default
-\end{lstlisting}
-- "a" must be included, no option to omit only one of a, b, or c\newline
-
-
-\noindent \textbf{a, b, and c Included} \newline
-\noindent Example:
-\begin{lstlisting}
-    Treatment
-        Wait
-            C:100
-            a:default
-            b:default
-            c:10
-        Cost
-            C:56
-            a:34
-            b:54
-            c:default
- \end{lstlisting}   
- \noindent \textbf{a, b, and c Not Included} \newline
- \noindent Example:
- \begin{lstlisting}
-    Treatment
-        Wait
-            C:100
-        Cost
-            C:56
- \end{lstlisting} 
+%\noindent \textbf{a, b, and c Included} \newline
+%\noindent Example:
+%\begin{lstlisting}
+%    Treatment
+%        Wait
+%            C:100
+%            a:default
+%            b:default
+%            c:10
+%        Cost
+%            C:56
+%            a:34
+%            b:54
+%            c:default
+% \end{lstlisting}   
+% \noindent \textbf{a, b, and c Not Included} \newline
+% \noindent Example:
+% \begin{lstlisting}
+%    Treatment
+%        Wait
+%            C:100
+%        Cost
+%            C:56
+% \end{lstlisting} 
  
-\noindent \textbf{Effectiveness} 
+%\noindent \textbf{Effectiveness} 
+%    
+%\noindent Probability\newline
+%\indent-Possible values:\newline
+%\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+%\noindent Effect\newline
+%\indent-Possible values:\newline
+%\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline    
     
-\noindent Probability\newline
-\indent-Possible values:\newline
-\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
-\noindent Effect\newline
-\indent-Possible values:\newline
-\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
-    
-\noindent Example: 
-\begin{lstlisting}
-    Treatment
-        Wait
-            C:100
-        Cost
-            C:56
-        Effectiveness
-            Probability:75%
-            Effect:50%
-\end{lstlisting}
-    
-    
-\section{Sample File}
+\pagebreak\section*{Sample Configuration File}
 \begin{lstlisting}
 Simulation
-    Name:Sample Configuration
-    Output:.txt
+    Name:Full sample configuration file
     Description:Sample 3-day (plus intro) configuration file  
     Instructions:enabled
     Sound:enabled
 Tutorial
-    Score:100
+    Score:180
 Day
     Duration:1:30
 Day
-    Duration:0:50
+    Duration:1:30
     Impairment
         Type:Physical/Shake
         Strength:50%
-    Impairment
-        Type:Physical/Speed
-        Strength:10%
 Day
-    Duration:2:20
+    Duration:1:30
     Impairment
         Type:Visual/Fog
         Strength:75%
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
     Treatment
-        Certainty:80%
         Wait
-            C:80
-            a:5
-            b:6
-            c:7
+            C:0.5
+            a:0.1111
+            b:3
+            c:1.5
         Cost
-            C:98
-            a:7
-            b:6
-            c:5
+            C:80
+            a:default
+            b:default
+            c:default
         Effectiveness
             Probability:50%
             Effect:90%
