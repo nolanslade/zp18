@@ -2,7 +2,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \title{User Manual: Configuration File}
-\author{Aaska Shah}
+\author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
+\date{April 2019}
 
 \usepackage{natbib}
 \usepackage{graphicx}
@@ -16,11 +17,10 @@ This document outlines how to modify the simulation configuration file in order 
 
 \section*{Keywords}
 \subsection*{Simulation}
-This section includes information pertaining to high-level details of the simulation. This keyword is not tabbed; each keyword under this is tabbed once.
+This section includes information pertaining to high-level details of the simulation. This keyword is not tabbed; each of the following four keywords are tabbed once.
 
 \subsubsection*{Name} For user convenience - offers a simple way of differentiating multiple configuration file setups. No restrictions on value. 
 
-%
 %\noindent \textbf{Output}: How the experimenter wants the data from the simulation to be produce\newline
 %\indent -Possible Values: (both can be used, separated by a comma)\newline
 %\indent\indent .txt \newline
@@ -31,9 +31,8 @@ This section includes information pertaining to high-level details of the simula
 %Output:.txt,database
 %\end{lstlisting}
 
-\subsubsection*{Description} Similar to the above; offers a way to describe a given simulation configuration for documentation purposes. No restrictions on value. 
-
-\subsubsection*{Instructions} Toggles whether or not instructions will appear throughout the experiment. These include both the \textit{Day Zero} tutorial and pre-treatment instruction sets.
+\subsubsection*{Description} Similar to the above: offers a way to describe a given simulation configuration for documentation purposes. No restrictions on value. 
+\pagebreak\subsubsection*{Instructions} Toggles whether or not instructions will appear throughout the experiment. These include both the \textit{Day Zero} tutorial and pre-treatment instruction sets.
 \newline \indent Possible values: \newline
 \indent\indent enabled \newline
 \indent\indent disabled
@@ -53,7 +52,7 @@ Simulation
 \end{lstlisting} 
 
 \subsection*{Tutorial}
-This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this portion of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the rest of the days. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score} keyword is tabbed once.
+This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this portion of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the first paid day. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score} keyword is tabbed once.
 
 \subsubsection*{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
 \indent Possible values: \newline
@@ -65,7 +64,7 @@ Tutorial
     Score:120
 \end{lstlisting}
 
-\subsection*{Day}
+\pagebreak\subsection*{Day}
 Signifies a new day to be included in the experiment. Each day may include the following sub-keywords: \textit{Duration}, \textit{Impairment}, and \textit{Treatment}. The \textit{Day} keyword is not tabbed, and each associated sub-keyword is tabbed once.
 
 \subsubsection*{Duration}
@@ -74,7 +73,7 @@ This keyword refers to how long each day will last. This field is \textbf{mandat
 \indent\indent minutes:seconds, where both components must be positive integers \newline
 
 \subsubsection*{Impairment}
-This keyword will determine which impairments will be in effect during the day. There can be one or more impairments imposed on a single day; each one requires its own \textit{Impairment} keyword. \textit{Impairment} is tabbed once. Associated sub-keywords, \textit{Type} and \textit{Strength}, are tabbed twice. \newline
+This keyword will determine which impairments will be in effect during the day. There can be one or more impairments imposed on a single day, and each one requires its own \textit{Impairment} keyword. \textit{Impairment} is tabbed once. Associated sub-keywords, \textit{Type} and \textit{Strength}, are tabbed twice. \newline
 
 \subsubsubsection{\textbf{Type}} \newline
 \indent Possible values: \newline
@@ -99,7 +98,11 @@ This keyword will determine which impairments will be in effect during the day. 
 %\end{lstlisting}
 
 \subsubsection*{Treatment}
-This keyword is used to specify which treatment options will be available to the participant on the given day. When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory}.  \textit{Treatment} is tabbed once while sub-keywords \textit{Wait}, and \textit{Cost} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c} are tabbed three times, as they are specific to exactly one treatment. \newline
+This keyword is used to specify which treatment options will be available to the participant on the given day. The cost of obtaining a treatment follows the functional form of $C(c - bT + aT^2)$, where by default, the values of a, b, and c are 1\slash day length in minutes, 2, and day length in minutes, respectively. The functional form is consistent across both pay-style treatments (where cost is in dollars), and wait-style treatments (where cost is in seconds). When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory}; and, if all three of their respective a, b, and c values are excluded entirely, they will be set to default. 
+
+Typically, a treatment alleviates 100\% of all active impairments, with 100\% certainty. If desired, these two values can be modified using the \textit{Effectiveness} keyword, with sub-keywords \textit{Effect}, and \textit{Probability}, respectively.
+
+\textit{Treatment} is tabbed once while sub-keywords \textit{Effectiveness}, \textit{Wait}, and \textit{Cost} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c}, \textit{Effect}, and \textit{Probability} are tabbed three times. \newline
 
 %\subsubsection*{Treatment}
 %This keyword is used to specify which treatment options will be available to the participant on the given day. When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory} values.  \textit{Treatment} is tabbed once while sub-keywords \textit{Wait}, \textit{Cost}, \textit{Certainty} and \textit{Effectiveness} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c} are tabbed three times, as they are specific to exactly one treatment.
@@ -120,7 +123,13 @@ This keyword is used to specify which treatment options will be available to the
 \subsubsubsection{\indent\textbf{a, b, c}} \newline
 \indent  Possible values: \newline
 \indent\indent  Any decimal number \newline
-\indent\indent  default \newline
+\indent\indent  default \newline\newline
+\subsubsubsection{\indent\textbf{Effect}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number, followed by a \% sign \newline\newline
+\subsubsubsection{\indent\textbf{Probability}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number, followed by a \% sign \newline
 
 %\noindent \textbf{Wait/Cost} \newline
 %\noindent Example: Not a valid input
@@ -180,9 +189,9 @@ Day
     Duration:1:30
     Impairment
         Type:Physical/Shake
-        Strength:50%
+        Strength:70%
 Day
-    Duration:1:30
+    Duration:2:00
     Impairment
         Type:Visual/Fog
         Strength:75%
@@ -190,6 +199,9 @@ Day
         Type:Physical/Shake
         Strength:50%
     Treatment
+        Effectiveness
+            Probability:50%
+            Effect:90%
         Wait
             C:0.5
             a:0.1111
@@ -200,9 +212,6 @@ Day
             a:default
             b:default
             c:default
-        Effectiveness
-            Probability:50%
-            Effect:90%
 \end{lstlisting}    
 
 \end{document}
