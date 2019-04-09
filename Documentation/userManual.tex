@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
-\title{User Manual}
+\title{User Manual: Configuration File}
 \author{Aaska Shah}
 
 \usepackage{natbib}
@@ -11,90 +11,92 @@
 
 \maketitle
 
-\section{Purpose}
-The purpose of this document is to ensure the user has a reference and full understanding on how the Input File works. By having this document as a guide, experimenters will be able to configure the simulation to fulfill the needs of the experiment. Additionally, any future changes to the customization abilities of the experiment will be documented in the manual. This document includes the current supported values and constraints that exist in the format of the file. 
+\section*{Overview}
+This document outlines how to modify the simulation configuration file in order to achieve the desired experiment format. The application expects such a file to be named \textit{sim\_config.txt}, and for it to be located in the \textit{Water\_Sim\_x.x\slash simulation\_one\_Data\slash InputData} directory. Failing to follow this naming convention or moving the file out of this location will result in the application being unable to start up properly. The configuration file supports a number of keyword-value pairs that can be easily combined to define the temporal structure of the simulation as well as auxiliary parameters. 
 
-\section{Keywords}
-\subsection{Simulation}
-This section includes all information pertaining to the configurable parts of the simulation. The keyword is not tabbed. Each keyword under this is tabbed once.\newline
+\section*{Keywords}
+\subsection*{Simulation}
+This section includes information pertaining to high-level details of the simulation. This keyword is not tabbed; each keyword under this is tabbed once.
 
-\noindent \textbf{Name}: The name of the simulation, no constraints \newline
+\subsubsection*{Name} For user convenience - offers a simple way of differentiating multiple configuration file setups. No restrictions on value. 
 
-\noindent \textbf{Output}: How the experimenter wants the data from the simulation to be produce\newline
-\indent -Possible Values: (both can be used, separated by a comma)\newline
-\indent\indent .txt \newline
-\indent\indent database \newline
+%
+%\noindent \textbf{Output}: How the experimenter wants the data from the simulation to be produce\newline
+%\indent -Possible Values: (both can be used, separated by a comma)\newline
+%\indent\indent .txt \newline
+%\indent\indent database \newline
+%
+%\noindent Example:
+%\begin{lstlisting}
+%Output:.txt,database
+%\end{lstlisting}
 
-\noindent Example:
-\begin{lstlisting}
-Output:.txt,database
-\end{lstlisting}
+\subsubsection*{Description} Similar to the above; offers a way to describe a given simulation configuration for documentation purposes. No restrictions on value. 
 
-\noindent \textbf{Description}: description of the simulation, no constraints 
-
-\noindent \textbf{Instructions}: \newline
-\indent -Possible Values:\newline
-\indent\indent enabled\newline
-\indent\indent disabled\newline
-
-\noindent \textbf{Sound} \newline
-\indent -Possible Values: \newline
+\subsubsection*{Instructions} Toggles whether or not instructions will appear throughout the experiment. These include both the \textit{Day Zero} tutorial and pre-treatment instruction sets.
+\newline \indent Possible values: \newline
 \indent\indent enabled \newline
-\indent\indent disabled \newline
+\indent\indent disabled
 
-\subsection{Tutorial}
-This keyword refers to the Tutorial (Day 0) that takes place at the beginning of every simulation. The user will be required to achieve a certain amount of money - \textbf{Score} - that the experimenter can configure to their preference. If one has not be set, the default value will be at \textbf{\$150} The \textit{Tutorial} keyword is not tabbed, \textit{Score} is tabbed once\newline
+\subsubsection*{Sound} Disables or enables all sound effects within the scene, including water flow and countdowns, among others.
+\newline \indent Possible values: \newline
+\indent\indent enabled \newline
+\indent\indent disabled
 
-\noindent \textbf{Score}
-
-\indent Constraints: Whole Number or Decimal Number.\newline
-
-\noindent Example:
+\subsubsection*{Sample Simulation Configuration:}
 \begin{lstlisting}
+Simulation
+    Name:April 2019 configuration.
+    Description:Stronger impairments.
+    Instructions:enabled
+    Sound:enabled
+\end{lstlisting} 
+
+\subsection*{Tutorial}
+This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this portion of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the rest of the days. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score} keyword is tabbed once.
+
+\subsubsection*{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number \newline
+
+\subsubsection*{Sample tutorial configuration:}
+\begin{lstlisting}
+Tutorial
     Score:120
 \end{lstlisting}
 
+\subsection*{Day}
+Signifies a new day to be included in the experiment. Each day may include the following sub-keywords: \textit{Duration}, \textit{Impairment}, and \textit{Treatment}. The \textit{Day} keyword is not tabbed, and each associated sub-keyword is tabbed once.
 
-\subsection{Day}
-Each simulation is divided into its respective days. Each day comprises of the following sub-keywords: Duration, Impairment, and Treatment. This keyword is not tabbed.
+\subsubsection*{Duration}
+This keyword refers to how long each day will last. This field is \textbf{mandatory}. \newline
+\indent Possible Values: \newline
+\indent\indent minutes:seconds, where both components must be positive integers \newline
 
-\subsubsection{Duration}
-This keyword refers to how long each day will last. This field is \textbf{mandatory}. The field is formatted in the form "Minutes:Seconds". \textit{Duration} is tabbed once. \newline
+\subsubsection*{Impairment}
+This keyword will determine which impairments will be in effect during the day. There can be one or more impairments imposed on a single day; each one requires its own \textit{Impairment} keyword. \textit{Impairment} is tabbed once. Associated sub-keywords, \textit{Type} and \textit{Strength}, are tabbed twice. \newline
 
-\noindent \textbf{Duration}
-
-\indent Constraints: Input is in the form Minutes:Seconds, where Minutes and Seconds must be whole numbers. The following example translates to 1 minute and 50 seconds = 110 seconds total.\newline
-
-\noindent Example:
-\begin{lstlisting}
-    Duration:1:50
-\end{lstlisting}
-
-
-
-\subsubsection{Impairment}
-This keyword will determine which impairment is implemented during the specified day. There can be multiple impairments imposed on a single day. \textit{Impairment} is tabbed once. \textit{Type} and \textit{Strength} are tabbed twice. \newline\newline
-\textbf{Type} - currently limited to these impairments.\newline
-\indent-Possible values:\newline
-\indent\indent Physical/Shake\newline
-\indent\indent Physical/Speed\newline
-\indent\indent Physical/Gravity\newline
-\indent\indent Visual/Fog\newline
+\subsubsubsection{\textbf{Type}} \newline
+\indent Possible values: \newline
+\indent\indent Physical/Shake \newline
+\indent\indent Visual/Fog \newline
+%\indent\indent Physical/Speed\newline
+%\indent\indent Physical/Gravity\newline
 
 
-\noindent\textbf{Strength}\newline
-\indent-Possible values:\newline
-\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+\subsubsubsection{\textbf{Strength}} \newline
+\indent Possible values: \newline
+\indent\indent Any integer between 1-100 followed by a \% sign \newline
     
-\noindent Example:
-\begin{lstlisting}
-    Impairment
-        Type:Physical/Speed
-        Strength:75%
-    Impairment
-        Type:Visual/Fog
-        Strength:5%
-\end{lstlisting}
+%\noindent Example:
+%\begin{lstlisting}
+%    Impairment
+%        Type:Physical/Speed
+%        Strength:75%
+%    Impairment
+%        Type:Visual/Fog
+%        Strength:5%
+%\end{lstlisting}
 
 \subsubsection{Treatment}
 This keyword will determine the amount of wait time and the amount of cost the treatment will have on the specified day. When \textbf{Wait} or \textbf{Cost} is included, the \textbf{C} is a \textbf{mandatory} value. The keywords \textbf{a}, \textbf{b}, \textbf{c} can either all be included or not included at all. There is also the option to include Wait, or Cost, or both.
@@ -219,10 +221,5 @@ Day
             Probability:50%
             Effect:90%
 \end{lstlisting}    
-    
-
-
-
-
 
 \end{document}
