@@ -70,7 +70,12 @@ Signifies a new day to be included in the experiment. Each day may include the f
 \subsubsection*{Duration}
 This keyword refers to how long each day will last. This field is \textbf{mandatory}. \newline
 \indent Possible Values: \newline
-\indent\indent minutes:seconds, where both components must be positive integers \newline
+\indent\indent minutes:seconds, where both components must be positive integers
+
+\subsubsection*{WaterValue}
+This keyword allows for the payout per droplet to be adjusted. This is not a required field, and by default it is set to 1. \newline
+\indent Possible Values: \newline
+\indent\indent Any decimal number
 
 \subsubsection*{Impairment}
 This keyword will determine which impairments will be in effect during the day. There can be one or more impairments imposed on a single day, and each one requires its own \textit{Impairment} keyword. \textit{Impairment} is tabbed once. Associated sub-keywords, \textit{Type} and \textit{Strength}, are tabbed twice. \newline
@@ -100,7 +105,7 @@ This keyword will determine which impairments will be in effect during the day. 
 \subsubsection*{Treatment}
 This keyword is used to specify which treatment options will be available to the participant on the given day. The cost of obtaining a treatment follows the functional form of $C(c - bT + aT^2)$, where by default, the values of a, b, and c are 1\slash day length in minutes, 2, and day length in minutes, respectively. The functional form is consistent across both pay-style treatments (where cost is in dollars), and wait-style treatments (where cost is in seconds). When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory}; and, if all three of their respective a, b, and c values are excluded entirely, they will be set to default. 
 
-Typically, a treatment alleviates 100\% of all active impairments, with 100\% certainty. If desired, these two values can be modified using the \textit{Effectiveness} keyword, with sub-keywords \textit{Effect}, and \textit{Probability}, respectively.
+Typically, a treatment alleviates 100\% of all active impairments, with 100\% certainty. If desired, these two values can be modified using the \textit{Effectiveness} keyword, with sub-keywords \textit{Effect}, and \textit{Probability}, respectively. These two fields are not mandatory and will default to 100\% each if excluded.
 
 \textit{Treatment} is tabbed once while sub-keywords \textit{Effectiveness}, \textit{Wait}, and \textit{Cost} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c}, \textit{Effect}, and \textit{Probability} are tabbed three times. \newline
 
@@ -186,11 +191,13 @@ Tutorial
 Day
     Duration:1:30
 Day
+    WaterValue:1.50
     Duration:1:30
     Impairment
         Type:Physical/Shake
         Strength:70%
 Day
+    WaterValue:1.25
     Duration:2:00
     Impairment
         Type:Visual/Fog
