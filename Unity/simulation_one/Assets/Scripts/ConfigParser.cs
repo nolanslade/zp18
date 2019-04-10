@@ -267,6 +267,7 @@ public class ConfigParser
                                     }
 
                                     else {
+                                        dayZeroImpairments.Add(newDayZeroImp);
                                         Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
                                     }
 
@@ -292,6 +293,7 @@ public class ConfigParser
                                     }
 
                                     else {
+                                        dayZeroImpairments.Add(newDayZeroImp);
                                         Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
                                     }
 
@@ -824,9 +826,11 @@ public class ConfigParser
         return this.lowNauseaMode;
     }
 
+
     public bool claustrophobicModeEnabled()  {
         return this.claustrophobicMode;
     }
+
 
     /*
     * Returns all configurations; either parsed from file or default
@@ -836,39 +840,48 @@ public class ConfigParser
         return this.dayConfigs;
     }
 
+
     public string getSimName()
     {
         return this.name;
     }
 
+
     public string[] getSimOutput()
     {
         return this.output;
     }
+
+
     public string getSimDescription()
     {
         return this.description;
     }
+
 
     public bool getSimInstruction()
     {
         return instructionsEnabled;
     }
 
+
     public bool getSimSound()
     {
         return soundEnabled;
     }
+
 
     public string getSimScene()
     {
         return this.scene;
     }
 
+
     public float getWaterValue()
     {
         return this.watervalue;
     }
+
 
     /*
     * Nolan April 2019
@@ -891,10 +904,21 @@ public class ConfigParser
         return r;
     }
 
+
+    /*
+    * Fetches list of all impairments active during the second round
+    * of day 0 (impaired training)
+    */
+    public List<Impairment> getDayZeroImpairments () {
+        return this.dayZeroImpairments;
+    }
+
+
     public string dbConn()
     {
         return this.dbConnection;
     }
+
 
     public int numDays()
     {

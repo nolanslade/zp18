@@ -43,7 +43,6 @@ public class SimManager : MonoBehaviour {
     private int dayZeroCurrentSection                   = ConfigParser.UNIMPAIRED;             // UNIMPAIRED = 0, IMPAIRED = 1 -> the two possible states to be in during the tutorial
     private float unimpairedDayZeroThreshold            = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (unimpaired)
     private float impairedDayZeroThreshold              = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (impaired)
-    private Impairment [] dayZeroImpairments            = null;                                // Optionally, there can be a second round of training with an impairment
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;                               // The participant needs to fill their bucket past this level to advance in the tutorial
     private Vector3 posADay0, posBDay0;                                                        // Position tracking for Day 0 average speed tracking
     private const float WALK_SPEED_FREQ                 = 0.2f;
@@ -171,7 +170,7 @@ public class SimManager : MonoBehaviour {
     private GameState currentGameState;
     private TutorialStep currentTutorialStep;
     private DayConfiguration currentDayConfig;
-    private Impairment [] currentDayImpairments;
+    private Impairment [] currentDayImpairments = null;
     private Treatment currentDayTreatment;
     
 
@@ -1311,7 +1310,30 @@ public class SimManager : MonoBehaviour {
                     dayScore = 0.0f;
                     dayZeroCurrentSection = ConfigParser.IMPAIRED;
 
-                    // Apply the second-round day 0 impairment
+                    // Apply the second-round day 0 impairments
+                    Debug.Log("Applying day zero impairments...");
+                    currentDayImpairments = this.configParser.getDayZeroImpairments().ToArray();
+
+                    foreach (Impairment imp in currentDayImpairments) {
+                            float str = imp.getStrength();
+                            switch (imp.getType()) {
+                                case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                                    rightHandTracker.applyImpairment(str);
+                                    leftHandTracker.applyImpairment(str);
+                                    shakeImpStrCurrent = str;
+                                    shakeImpStrInitial = str;
+                                    break;
+                                case Impairment.ImpairmentType.VISUAL_FOG:
+                                    fogImpairmentPanel.SetActive(true);
+                                    Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
+                                    fogImpStrCurrent = fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str);
+                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
+                                    break;
+                                default:
+                                    Debug.Log("Invalid impairment type");
+                                    break;
+                            }
+                        }
 
 
                     // Display the new instructions
@@ -1339,6 +1361,7 @@ public class SimManager : MonoBehaviour {
             }
 
             else if (dayScore >= impairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.IMPAIRED) {
+                unapplyImpairments();
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
                 Debug.Log("Day 0 passed.");
