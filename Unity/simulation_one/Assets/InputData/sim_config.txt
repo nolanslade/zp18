@@ -5,7 +5,11 @@ Simulation
 	Instructions:enabled  	# If not specified, enabled by default	
 	Sound:enabled        	# If not specified, enabled by default
 Tutorial
-	Score:150		# If not specified, $150 by default
+	Score:150			# If not specified, $150 by default
+	ImpairedScore:125	# 150 by default, as well
+	Impairment
+		Type:Physical/Shake
+		Strength:50%
 Day
 	Duration:1:30
 Day

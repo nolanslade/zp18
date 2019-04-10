@@ -1321,7 +1321,6 @@ public class SimManager : MonoBehaviour {
                                     rightHandTracker.applyImpairment(str);
                                     leftHandTracker.applyImpairment(str);
                                     shakeImpStrCurrent = str;
-                                    shakeImpStrInitial = str;
                                     break;
                                 case Impairment.ImpairmentType.VISUAL_FOG:
                                     fogImpairmentPanel.SetActive(true);
