@@ -30,11 +30,8 @@ public class SimManager : MonoBehaviour {
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
-    private float unimpairedDayZeroThreshold            = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (unimpaired)
-    private float impairedDayZeroThreshold              = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (impaired)
-    private const float DAY_ZERO_MOV_FREQ               = 0.125f;     // Calculate the participant's moving speed in day 0 on this interval for performance
+    private const float DAY_ZERO_MOV_FREQ               = 0.125f;    // Calculate the participant's moving speed in day 0 on this interval for performance
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
-    private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
     private const float PERSIST_RATE                    = 1.0f;      // Persist to csv or database every this many seconds
     private const float PHYSICS_BASE_AMT                = -30.0f;    // Default gravity strength
@@ -42,6 +39,24 @@ public class SimManager : MonoBehaviour {
     private const float CONTAINER_PLATFORM_SPAWN_Y      = 22.93f;
     private const float CONTAINER_PLATFORM_SPAWN_Z      = -22.05f;
 
+    // Day Zero-Specific Trackers, etc
+    private int dayZeroCurrentSection                   = ConfigParser.UNIMPAIRED;             // UNIMPAIRED = 0, IMPAIRED = 1 -> the two possible states to be in during the tutorial
+    private float unimpairedDayZeroThreshold            = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (unimpaired)
+    private float impairedDayZeroThreshold              = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (impaired)
+    private Impairment [] dayZeroImpairments            = null;                                // Optionally, there can be a second round of training with an impairment
+    private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;                               // The participant needs to fill their bucket past this level to advance in the tutorial
+    private Vector3 posADay0, posBDay0;                                                        // Position tracking for Day 0 average speed tracking
+    private const float WALK_SPEED_FREQ                 = 0.2f;
+    private float speedPenaltyElapsed                   = 0.0f;
+    private float avgWalkingSpeedDay0                   = 0.0f;
+    private float secondsInDay1                         = 0.0f;
+    private bool speedPenaltyFlag                       = false;
+    public bool inDay0SpeedCaptureZone                  = false;
+    private Vector3 day0PosA                            = new Vector3();
+    private Vector3 day0PosB                            = new Vector3();
+    private float dayZeroMovingElapsed                  = 0.0f;
+    public int dayZeroMovingCount                       = 0;                                   // We only want to track position changes inside the 
+                                                                                               // zone, not the edge cases where have just entered or just left
     // All instructions for Day 0 are defined below
     private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
     private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
@@ -49,6 +64,11 @@ public class SimManager : MonoBehaviour {
     private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
     private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
     private Instruction continueInstr;
+
+    // Second (impaired) round of day 0 has an additional instruction set
+    private Instruction impairedRoundStart      = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
+    private Instruction impairedRoundExplain    = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
+    private Instruction impairedRoundObjective;     // It will look like this: ("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
 
     // State management
     public enum GameState
@@ -95,7 +115,6 @@ public class SimManager : MonoBehaviour {
     private float waitingForTreatmentDuration = 0.0f;
 
     private Vector3 posA, posB;                         // Speed tracking every second using delta distance in scene
-    private Vector3 posADay0, posBDay0;                 // Position tracking for Day 0 average speed tracking
     private int currentDay, totalDays, currentPayload, cumulativePayload, dailyCumulativePayload, cumulativeDelivered, 
                     dailyCumulativeDelivered, totalSpilled, todaySpilled;
     private float persistTime = 0.0f;
@@ -154,19 +173,7 @@ public class SimManager : MonoBehaviour {
     private DayConfiguration currentDayConfig;
     private Impairment [] currentDayImpairments;
     private Treatment currentDayTreatment;
-
-    //Variables for tracking speed during Day 0 for speed impairment
-    private const float WALK_SPEED_FREQ = 0.2f;
-    private float speedPenaltyElapsed   = 0.0f;
-    private float avgWalkingSpeedDay0   = 0.0f;
-    private float secondsInDay1         = 0.0f;
-    private bool speedPenaltyFlag       = false;
-    public bool inDay0SpeedCaptureZone  = false;
-    private Vector3 day0PosA            = new Vector3 ();
-    private Vector3 day0PosB            = new Vector3 ();
-    private float dayZeroMovingElapsed  = 0.0f;
-    public int dayZeroMovingCount       = 0;            // We only want to track position changes inside the 
-                                                        // zone, not the edge cases where have just entered or just left
+    
 
     /*
     * Initialization method
@@ -298,8 +305,10 @@ public class SimManager : MonoBehaviour {
             float[] dayZeroThresholds = this.configParser.getDayZeroScore();
             unimpairedDayZeroThreshold = dayZeroThresholds[ConfigParser.UNIMPAIRED];
             impairedDayZeroThreshold = dayZeroThresholds[ConfigParser.IMPAIRED];
+
             Debug.Log("Day 0 unimpaired threshold: " + unimpairedDayZeroThreshold.ToString());
             Debug.Log("Day 0 impaired threshold: " + impairedDayZeroThreshold.ToString());
+
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
 
@@ -1289,17 +1298,52 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
 
-            else if (currentScore >= unimpairedDayZeroThreshold) {
+            else if (currentScore >= unimpairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.UNIMPAIRED) {
+
+                // There could be a second portion to day 0 now - check if there is
+                if (impairedDayZeroThreshold > 0.0f) {
+
+                    // We don't want to trak speed in the impaired part of day 0
+                    // Resetting score for new threshold, as well.
+                    Destroy(DayZeroSpeedCounter);
+                    inDay0SpeedCaptureZone = false;
+                    flowManagerComponent.cleanScene();
+                    currentScore = 0.0f;
+
+                    // Display the new instructions
+                    Instruction [] dayZeroInstrs = new Instruction [3];
+                    impairedRoundObjective = new Instruction("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
+                    dayZeroInstrs [0] = impairedRoundStart; dayZeroInstrs[1] = impairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                    limbo(dayZeroInstrs);
+                }
+
+                else {
+                    audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
+                    avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
+                    Debug.Log("Day 0 passed.");
+                    Debug.Log("Determined average moving speed = " + (avgWalkingSpeedDay0 / UNITY_VIVE_SCALE).ToString("0.000") + "m/s");
+                    currentGameState = GameState.TRANSITION;
+                    transitionOverlay.SetActive(true);
+                    resetMetricsForDayOne();
+                    flowManagerComponent.cleanScene();
+                    pillManagerComponent.disablePanels();
+                    Destroy(DayZeroSpeedCounter);
+                    day0PosA = physicalCamera.transform.position;
+                    day0PosB = physicalCamera.transform.position;
+                    Debug.Log("Day 0 over " + currentGameState);
+                }
+            }
+
+            else if (currentScore >= impairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.IMPAIRED) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
-                Debug.Log ("Day 0 passed.");
-                Debug.Log ("Determined average moving speed = " + (avgWalkingSpeedDay0 / UNITY_VIVE_SCALE).ToString("0.000") + "m/s");
+                Debug.Log("Day 0 passed.");
+                Debug.Log("Determined average moving speed = " + (avgWalkingSpeedDay0 / UNITY_VIVE_SCALE).ToString("0.000") + "m/s");
                 currentGameState = GameState.TRANSITION;
                 transitionOverlay.SetActive(true);
                 resetMetricsForDayOne();
                 flowManagerComponent.cleanScene();
                 pillManagerComponent.disablePanels();
-                Destroy(DayZeroSpeedCounter);
                 day0PosA = physicalCamera.transform.position;
                 day0PosB = physicalCamera.transform.position;
                 Debug.Log("Day 0 over " + currentGameState);
@@ -1309,7 +1353,7 @@ public class SimManager : MonoBehaviour {
                 // Only track the participant's speed if they're carrying water,
                 // and if they've completed the tutorial / standing in the correct. 
                 // place. This gives us a more accurate measurement of their delivery speed.
-                if (inDay0SpeedCaptureZone && currentPayload > 0 && (currentTutorialStep == TutorialStep.CONTINUE || !this.configParser.getSimInstruction())) {
+                if (inDay0SpeedCaptureZone && dayZeroCurrentSection == ConfigParser.UNIMPAIRED && currentPayload > 0 && (currentTutorialStep == TutorialStep.CONTINUE || !this.configParser.getSimInstruction())) {
 
                     dayZeroMovingElapsed += Time.deltaTime;
 
