@@ -30,7 +30,8 @@ public class SimManager : MonoBehaviour {
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
     private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
-    private float DAY_ZERO_REQ_SCORE                    = 150.0f;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150
+    private float unimpairedDayZeroThreshold            = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (unimpaired)
+    private float impairedDayZeroThreshold              = ConfigParser.DAY_0_DEFAULT_SCORE;    // Score needed to 'pass' day zero - configured through the file otherwise defaulted to 150 (impaired)
     private const float DAY_ZERO_MOV_FREQ               = 0.125f;     // Calculate the participant's moving speed in day 0 on this interval for performance
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float FILL_BUCKET_TRIGGER_THRESHOLD   = 40.0f;     // The participant needs to fill their bucket past this level to advance in the tutorial
@@ -293,11 +294,12 @@ public class SimManager : MonoBehaviour {
                 instructionManagerComponent.setInstructionsDisable();
             }
 
-            DAY_ZERO_REQ_SCORE = this.configParser.getDayZeroScore();
-
-
-
-
+            // Nolan April 2019 - changing to support two different stages in day 0
+            float[] dayZeroThresholds = this.configParser.getDayZeroScore();
+            unimpairedDayZeroThreshold = dayZeroThresholds[ConfigParser.UNIMPAIRED];
+            impairedDayZeroThreshold = dayZeroThresholds[ConfigParser.IMPAIRED];
+            Debug.Log("Day 0 unimpaired threshold: " + unimpairedDayZeroThreshold.ToString());
+            Debug.Log("Day 0 impaired threshold: " + impairedDayZeroThreshold.ToString());
             return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
         }
 
@@ -502,7 +504,7 @@ public class SimManager : MonoBehaviour {
             
             case TutorialStep.POUR_BUCKET:
                 currentTutorialStep = TutorialStep.CONTINUE;
-                continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + DAY_ZERO_REQ_SCORE.ToString("0.00"), 7.0f);
+                continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + unimpairedDayZeroThreshold.ToString("0.00"), 7.0f);
                 instructionManagerComponent.setTemporaryMessage(continueInstr);
                 break;
             
@@ -1287,7 +1289,7 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
 
-            else if (currentScore >= DAY_ZERO_REQ_SCORE) {
+            else if (currentScore >= unimpairedDayZeroThreshold) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
                 Debug.Log ("Day 0 passed.");

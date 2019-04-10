@@ -1,5 +1,4 @@
 ﻿using System;
-//using System.Data;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 
 /**
  * McDSL: VR Simulation One
- * Nolan Slade
+ * Aaska Shah
  * Dec 22 2018
  *
  * Configuration file parser. Config
@@ -35,7 +34,12 @@ public class ConfigParser
     private bool instructionsEnabled;
     private bool soundEnabled;
 
-    private float dayZeroScore;
+    // Day 0 Scoring
+    public static float DAY_0_DEFAULT_SCORE = 150.0f;   // Nolan April 2019
+    private float dayZeroScoreUnimpaired = 0.0f;        // How much the participant is required to earn before moving on to either the first paid day, or the impaired training period
+    private float dayZeroScoreImpaired = 0.0f;          // Same, but in the impaired training period (if one is requested)
+    public static int UNIMPAIRED = 0;   // For fetching day 0 score threshold (unimpaired)
+    public static int IMPAIRED = 1;     // Same, but for the impaired threshold
 
     private float watervalue;
     private string name;
@@ -202,12 +206,29 @@ public class ConfigParser
                     string simParam = fields[i].Replace(ConfigKeyword.INDENT, "");
                     this.sim.Add(simParam);
                 }
+
+                // Nolan April 2019
+                // Fixing because this is really hacky. They could write any keyword instead of score and it would still work.
                 else if((fields[i].Contains(ConfigKeyword.INDENT)) && isTut)
                 {
-                    string score = fields[i].Replace(ConfigKeyword.INDENT, "");
-                    string[] split = score.Split(delimiter[1]);
-                    this.dayZeroScore = float.Parse(split[1]);
+                    // Unimpaired portion of day 0 (standard tutorial round)
+                    if (fields[i].ToUpper().Contains(ConfigKeyword.SCORE.ToUpper()) && !(fields[i].ToUpper().Contains(ConfigKeyword.IMP_SCORE.ToUpper()))) {
+
+                        string score = fields[i].Replace(ConfigKeyword.INDENT, "");
+                        this.dayZeroScoreUnimpaired = float.Parse(score.Split(delimiter[1])[1]);
+                    }
+
+                    // Impaired tutorial stage of day 0
+                    else if (fields[i].ToUpper().Contains(ConfigKeyword.IMP_SCORE.ToUpper())) {
+                        string score = fields[i].Replace(ConfigKeyword.INDENT, "");
+                        this.dayZeroScoreImpaired = float.Parse(score.Split(delimiter[1])[1]);
+                    }
+
+                    else {
+                        Debug.Log ("Unexpected line during tutorial parsing: \"" + fields[i] + "\"");
+                    }
                 }
+
                 else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isDay)
                 {
                     dayList.Add(fields[i].Replace(ConfigKeyword.INDENT, ""));
@@ -219,29 +240,9 @@ public class ConfigParser
             line = reader.ReadLine();
         }
 
-        /* foreach(string i in this.sim)
-         {
-             Debug.Log("SIM" + i);
-         }*/
-
-
-        //gets rid of the comments (#)
-      /*  foreach (string i in dayByLine)
-        {
-            string[] split = i.Split(delimiter[3]);
-            dayList.Add(split[0]);
-
-        }*/
-
-
-    //    Debug.Log("DAYS " + dayCount);
-     /*     foreach(string i in dayList){
-            Debug.Log(i);
-          }*/
-
         parseSim();
         parseConfig();
-        // TODO - parse the file (if it exists) and load in day configurations
+
     }
 
     private bool parseSim()
@@ -306,9 +307,6 @@ public class ConfigParser
 
     /*
 	* Parse the file and create objects for each parsed item
-    *
-    * *** TODO ***
-    *
     */
     private bool parseConfig()
     {
@@ -711,21 +709,25 @@ public class ConfigParser
 
         catch (UnauthorizedAccessException uae)
         {
+            Debug.Log("Parsing exception: UnauthorizedAccessException");
             return false;
         }
 
         catch (System.IO.DirectoryNotFoundException dnfe)
         {
+            Debug.Log("Parsing exception: DirectoryNotFoundException");
             return false;
         }
 
         catch (System.IO.IOException ioe)
         {
+            Debug.Log("Parsing exception: IOException");
             return false;
         }
 
         catch (Exception e)
         {
+            Debug.Log("Parsing exception: Exception");
             return false;
         }
 
@@ -787,13 +789,25 @@ public class ConfigParser
         return this.watervalue;
     }
 
-    public float getDayZeroScore()
+    /*
+    * Nolan April 2019
+    * Updating this method to return an array instead of a single score
+    * The array is indexed for impaired and unimpaired day 0 thresholds
+    * so that a second round of training can be used if desired.
+    */
+    public float [] getDayZeroScore()
     {
-        if(this.dayZeroScore == 0)
-        {
-            this.dayZeroScore = 150f;
-        }
-        return this.dayZeroScore;
+        if(this.dayZeroScoreUnimpaired == 0)
+            this.dayZeroScoreUnimpaired = DAY_0_DEFAULT_SCORE;
+
+        if (this.dayZeroScoreImpaired == 0) 
+            this.dayZeroScoreImpaired = DAY_0_DEFAULT_SCORE;
+
+        float [] r      = new float[2];
+        r[IMPAIRED]     = dayZeroScoreImpaired;
+        r[UNIMPAIRED]   = dayZeroScoreUnimpaired;
+
+        return r;
     }
 
     public string dbConn()

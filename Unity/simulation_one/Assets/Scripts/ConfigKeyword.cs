@@ -31,7 +31,8 @@ public sealed class ConfigKeyword {
     public static readonly string SOUND         = "Sound";          // For simulation sound
     public static readonly string SCENE         = "Scene";          // For simulation scene
 
-    public static readonly string SCORE         = "Score";          // For day 0 score
+    public static readonly string SCORE         = "Score";          // For day 0 score (unimpaired)
+    public static readonly string IMP_SCORE     = "ImpairedScore";  // For second stage of day 0 (optional) - impaired threshold
 
     public static readonly string DURATION      = "Duration";       // For a given day
     public static readonly string IMPAIRMENT    = "Impairment";     // For a given day
