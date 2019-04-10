@@ -50207,6 +50207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1921596101}
   - component: {fileID: 1921596100}
+  - component: {fileID: 1921596099}
   m_Layer: 0
   m_Name: Terrain_Exterior
   m_TagString: ExteriorTerrain
@@ -50214,6 +50215,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
   m_IsActive: 1
+--- !u!154 &1921596099
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1921596098}
+  m_Material: {fileID: 0}
+  m_Enabled: 1
+  m_TerrainData: {fileID: 15600000, guid: 2eaa06e70c679495da712c84063f67a6, type: 2}
+  m_EnableTreeColliders: 1
 --- !u!218 &1921596100
 Terrain:
   m_ObjectHideFlags: 0
