@@ -1298,7 +1298,7 @@ public class SimManager : MonoBehaviour {
             * start of day one.
             */
 
-            else if (currentScore >= unimpairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.UNIMPAIRED) {
+            else if (dayScore >= unimpairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.UNIMPAIRED) {
 
                 // There could be a second portion to day 0 now - check if there is
                 if (impairedDayZeroThreshold > 0.0f) {
@@ -1308,13 +1308,15 @@ public class SimManager : MonoBehaviour {
                     Destroy(DayZeroSpeedCounter);
                     inDay0SpeedCaptureZone = false;
                     flowManagerComponent.cleanScene();
-                    currentCumulativePayment = currentScore;
-                    currentScore = 0.0f;
+                    dayScore = 0.0f;
                     dayZeroCurrentSection = ConfigParser.IMPAIRED;
+
+                    // Apply the second-round day 0 impairment
+
 
                     // Display the new instructions
                     Instruction [] dayZeroInstrs = new Instruction [3];
-                    impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00") + ".", 6.0f);
+                    impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00"), 6.0f);
                     dayZeroInstrs [0] = impairedRoundStart; dayZeroInstrs[1] = impairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
                     limbo(dayZeroInstrs);
                 }
@@ -1336,7 +1338,7 @@ public class SimManager : MonoBehaviour {
                 }
             }
 
-            else if (currentScore >= impairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.IMPAIRED) {
+            else if (dayScore >= impairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.IMPAIRED) {
                 audioManagerComponent.playSound(AudioManager.SoundType.DAY_COMPLETE);
                 avgWalkingSpeedDay0 = avgWalkingSpeedDay0 / secondsInDay1;
                 Debug.Log("Day 0 passed.");

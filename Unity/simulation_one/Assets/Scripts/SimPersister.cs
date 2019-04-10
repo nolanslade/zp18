@@ -110,7 +110,7 @@ public class SimPersister {
                 "Today_Water_Spilled",
                 "Cumulative_Water_Delivered",
                 "Today_Water_Delivered",
-                "Total_Score",
+                "Cumulative_Score",
                 "Today_Score",
                 "Current_Pay_Per_Drop",
                 "Current_Day_Has_Pay_Treatment",    // Bool

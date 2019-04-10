@@ -34,8 +34,9 @@ public class ConfigParser
     private bool instructionsEnabled;
     private bool soundEnabled;
 
-    // Day 0 Scoring
-    public static float DAY_0_DEFAULT_SCORE = 150.0f;   // Nolan April 2019
+    // Day 0 Scoring / impairments - Nolan April 2019
+    public List<Impairment> dayZeroImpairments = new List <Impairment> ();
+    public static float DAY_0_DEFAULT_SCORE = 150.0f;  
     private float dayZeroScoreUnimpaired = 0.0f;        // How much the participant is required to earn before moving on to either the first paid day, or the impaired training period
     private float dayZeroScoreImpaired = 0.0f;          // Same, but in the impaired training period (if one is requested)
     public static int UNIMPAIRED = 0;   // For fetching day 0 score threshold (unimpaired)
@@ -207,9 +208,11 @@ public class ConfigParser
                     this.sim.Add(simParam);
                 }
 
+
+                /* ****************************************************************************************************************************** */
                 // Nolan April 2019
-                // Fixing because this is really hacky. They could write any keyword instead of score and it would still work.
-                else if((fields[i].Contains(ConfigKeyword.INDENT)) && isTut)
+                // Fixing this whole section because this is really hacky. They could write any keyword instead of score and it would still work.
+                else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isTut)
                 {
                     // Unimpaired portion of day 0 (standard tutorial round)
                     if (fields[i].ToUpper().Contains(ConfigKeyword.SCORE.ToUpper()) && !(fields[i].ToUpper().Contains(ConfigKeyword.IMP_SCORE.ToUpper()))) {
@@ -224,10 +227,88 @@ public class ConfigParser
                         this.dayZeroScoreImpaired = float.Parse(score.Split(delimiter[1])[1]);
                     }
 
-                    else {
+                    // Parse a second-round day zero impairment
+                    else if (fields[i].ToUpper().Contains(ConfigKeyword.IMPAIRMENT.ToUpper())) {
+
+                        int trackInf = 0; int infiniteLoop = 100;
+
+                        Impairment newDayZeroImp = new Impairment ();
+
+                        line = reader.ReadLine();
+
+                        while (true) {
+                            
+                            trackInf++;
+
+                            // Set impairment type
+                            if (line.ToUpper().Contains(ConfigKeyword.TYPE.ToUpper())) {
+
+                                if (line.ToUpper().Contains(ConfigKeyword.FOG_IMP.ToUpper())) {
+                                    newDayZeroImp.setType(Impairment.ImpairmentType.VISUAL_FOG);
+                                }
+
+                                else if (line.ToUpper().Contains(ConfigKeyword.SHAKE_IMP.ToUpper())) {
+                                    newDayZeroImp.setType(Impairment.ImpairmentType.PHYSICAL_SHAKE);
+                                }
+
+                                else {
+                                    Debug.Log("UNSUPPORTED IMPAIRMENT TYPE FOR DAY ZERO: " + fields[i]);
+                                }
+
+
+                                if (newDayZeroImp.getStrength() == -99.0f) {
+                                    line = reader.ReadLine();
+                                }
+
+                                else {
+
+                                    if (newDayZeroImp.getType() == Impairment.ImpairmentType.NULL || newDayZeroImp.getStrength() == -99.0f) {
+                                        Debug.Log("Problem parsing day 0 impairment - not enough details for impairment.");
+                                    }
+
+                                    else {
+                                        Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
+                                    }
+
+                                    break; // We're done
+                                }
+                            }
+
+                            // Set impairment strength
+                            else if (line.ToUpper().Contains(ConfigKeyword.STRENGTH.ToUpper())) {
+
+                                newDayZeroImp.setStrength (
+                                    float.Parse(line.Split(':')[1].Split('#')[0].Replace("%", "").Trim())
+                                );
+
+                                if (newDayZeroImp.getType() == Impairment.ImpairmentType.NULL) {
+                                    line = reader.ReadLine();
+                                }
+
+                                else {
+
+                                    if (newDayZeroImp.getType() == Impairment.ImpairmentType.NULL || newDayZeroImp.getStrength() == -99.0f) {
+                                        Debug.Log("Problem parsing day 0 impairment - not enough details for impairment.");
+                                    }
+
+                                    else {
+                                        Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
+                                    }
+
+                                    break; // We're done
+                                }
+                            }
+
+                            if (trackInf >= infiniteLoop) { Debug.Log("Problem parsing day 0 impairment - infinite loop."); break; }
+                        }
+                    }
+
+                    else
+                    {
                         Debug.Log ("Unexpected line during tutorial parsing: \"" + fields[i] + "\"");
                     }
                 }
+                /* ****************************************************************************************************************************** */
 
                 else if ((fields[i].Contains(ConfigKeyword.INDENT)) && isDay)
                 {

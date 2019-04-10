@@ -14,10 +14,16 @@ public class Impairment {
     private float strength;
 
     public enum ImpairmentType {
+        NULL,
         VISUAL_FOG,
         PHYSICAL_GRAVITY,       // Makes things easier to drop by accident
         PHYSICAL_SHAKE,
         PHYSICAL_SPEED_PENALTY  // e.g. remove water from bucket if participant moves too quickly
+    }
+
+    public Impairment () {
+        this.type = ImpairmentType.NULL;
+        this.strength = -99.0f;
     }
 
     public Impairment (ImpairmentType t, float s) {
