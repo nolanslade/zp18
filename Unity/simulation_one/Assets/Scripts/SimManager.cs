@@ -1308,11 +1308,13 @@ public class SimManager : MonoBehaviour {
                     Destroy(DayZeroSpeedCounter);
                     inDay0SpeedCaptureZone = false;
                     flowManagerComponent.cleanScene();
+                    currentCumulativePayment = currentScore;
                     currentScore = 0.0f;
+                    dayZeroCurrentSection = ConfigParser.IMPAIRED;
 
                     // Display the new instructions
                     Instruction [] dayZeroInstrs = new Instruction [3];
-                    impairedRoundObjective = new Instruction("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
+                    impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00") + ".", 6.0f);
                     dayZeroInstrs [0] = impairedRoundStart; dayZeroInstrs[1] = impairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
                     limbo(dayZeroInstrs);
                 }
