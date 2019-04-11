@@ -52,19 +52,27 @@ Simulation
 \end{lstlisting} 
 
 \subsection*{Tutorial}
-This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this portion of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the first paid day. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score} keyword is tabbed once.
+This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this stage of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the first paid day. Optionally, \textit{Day Zero} can be split into two portions: one unimpaired portion, and one impaired portion. The impaired portion is preceded by an instruction set. The second portion will only take place if the \textit{Impairment} keyword is used when configuring the tutorial. Usage of the \textit{Impairment} keyword is described later in this document. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score}, \textit{ImpairedScore}, and \textit{Impairment} keywords are tabbed once. Sub-keywords for the optional second portion impairment, \textit{Strength} and \textit{Type}, should be tabbed three times.
 
 \subsubsection*{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number
+
+\pagebreak\subsubsection*{ImpairedScore} Sets the amount that the participant will need to earn to pass the optional second portion of the tutorial day. If not specified, the default is also \textbf{\$150.00}. \newline
 \indent Possible values: \newline
 \indent\indent Any decimal number
 
 \subsubsection*{Sample tutorial configuration:}
 \begin{lstlisting}
 Tutorial
-    Score:120
+    Score:175
+    ImpairedScore:125
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
 \end{lstlisting}
 
-\pagebreak\subsection*{Day}
+\subsection*{Day}
 Signifies a new day to be included in the experiment. Each day may include the following sub-keywords: \textit{Duration}, \textit{Impairment}, and \textit{Treatment}. The \textit{Day} keyword is not tabbed, and each associated sub-keyword is tabbed once.
 
 \subsubsection*{Duration}
