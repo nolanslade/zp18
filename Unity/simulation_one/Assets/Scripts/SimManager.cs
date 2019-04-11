@@ -660,10 +660,15 @@ public class SimManager : MonoBehaviour {
 
             // Limbo, display the instructions for how the waiting process is going to work.
             Debug.Log("Initializing limbo for waiting for treatment...");
-            Instruction[] instrs = new Instruction [2];
+            Instruction[] instrs = new Instruction [5];
             Instruction instrOne = new Instruction ("You've decided to wait for treatment.\nUntil the timer reaches 0, you'll be\nunable to pick up the bucket.", 8.0f);
             Instruction instrTwo = new Instruction ("Once the timer reaches 0, you will\nreceive treatment, and may begin\nearning money again, unimpaired.", 8.0f);
             instrs[0] = instrOne; instrs[1] = instrTwo;
+
+            Instruction cd3 = new Instruction ("Resuming in\n3", 1.0f);
+            Instruction cd2 = new Instruction ("Resuming in\n2", 1.0f);
+            Instruction cd1 = new Instruction ("Resuming in\n1", 1.0f);
+            instrs[2] = cd3; instrs[3] = cd2; instrs[4] = cd1;
             limbo(instrs);
         }
     }
