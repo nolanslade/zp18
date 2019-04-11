@@ -1312,7 +1312,7 @@ public class SimManager : MonoBehaviour {
             else if (dayScore >= unimpairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.UNIMPAIRED) {
 
                 // There could be a second portion to day 0 now - check if there is
-                if (impairedDayZeroThreshold > 0.0f) {
+                if (this.configParser.getDayZeroImpairments().Count > 0) {
 
                     // We don't want to trak speed in the impaired part of day 0
                     // Resetting score for new threshold, as well.
