@@ -97,7 +97,7 @@ public class Treatment {
     public float currentWaitTime (float currentSimTime) {
         // wait time = C * (c - bT + aT^2)
         float timeInMinutes = currentSimTime / 60.0f;
-        return wait_C * (wait_c - wait_b * timeInMinutes + wait_a * timeInMinutes * timeInMinutes);
+        return (wait_C * (wait_c - wait_b * timeInMinutes + wait_a * timeInMinutes * timeInMinutes))*60;
     }
 
 
