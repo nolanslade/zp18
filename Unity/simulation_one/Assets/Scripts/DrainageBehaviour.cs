@@ -26,7 +26,7 @@ public class DrainageBehaviour : MonoBehaviour {
         if (soundOn)
         {
             elapsed += Time.deltaTime;
-            if (elapsed >= 0.5f)
+            if (elapsed >= 0.3f)
             {
                 audioManagerComponent.stopSound();
                 soundOn = false;
