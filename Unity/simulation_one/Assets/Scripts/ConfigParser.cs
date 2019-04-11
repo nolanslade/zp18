@@ -279,7 +279,7 @@ public class ConfigParser
                             else if (line.ToUpper().Contains(ConfigKeyword.STRENGTH.ToUpper())) {
 
                                 newDayZeroImp.setStrength (
-                                    float.Parse(line.Split(':')[1].Split('#')[0].Replace("%", "").Trim())
+                                    float.Parse(line.Split(':')[1].Split('#')[0].Replace("%", "").Trim()) / 100.0f
                                 );
 
                                 if (newDayZeroImp.getType() == Impairment.ImpairmentType.NULL) {
