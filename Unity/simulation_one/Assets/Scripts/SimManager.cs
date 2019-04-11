@@ -172,6 +172,8 @@ public class SimManager : MonoBehaviour {
     private DayConfiguration currentDayConfig;
     private Impairment [] currentDayImpairments = null;
     private Treatment currentDayTreatment;
+    private List <float> earningsByDay = new List <float> ();   // Starting from day 1, track earnings per day
+    private const int EARNINGS_DISPLAY_COUNT = 3;               // Display the X most recent days' earnings
     
 
     /*
@@ -1010,6 +1012,11 @@ public class SimManager : MonoBehaviour {
             elapsedDayTime += Time.deltaTime;
 
             if (elapsedDayTime > TRANSITION_TIME) {
+
+                // Track each day's earnings
+                if (currentDay > 0) {
+                    earningsByDay.Add(dayScore);
+                }
 
                 currentDay += 1;
                 dayScore = 0.0f;
