@@ -138,7 +138,7 @@ public class SimManager : MonoBehaviour {
     public GameObject instructionManager;
     public GameObject fogImpairmentPanel;
     public GameObject sourceUI;
-    public GameObject destUI;
+    public GameObject destUI;    
     public GameObject WaterDropletCounter;
     public GameObject claustroAssets;           // Enable these if claustrophobic and nausea-sensitive
     public GameObject disableOnClaustro;        // Disable these if claustrophobic and nausea-sensitive
@@ -165,6 +165,7 @@ public class SimManager : MonoBehaviour {
     private FlowManager flowManagerComponent;       // Starts/stops tap flow, and cleans scene (erases all water) when necessary
     private InstructionManager instructionManagerComponent;
     private WaterDropletCounter waterDropletCounterComponent;
+    private MultiDayUIUpdate sourceAdvancedUIComp;
 
     // Dynamic day-by-day elements
     private GameState currentGameState;
@@ -172,7 +173,7 @@ public class SimManager : MonoBehaviour {
     private DayConfiguration currentDayConfig;
     private Impairment [] currentDayImpairments = null;
     private Treatment currentDayTreatment;
-    private List <float> earningsByDay = new List <float> ();   // Starting from day 1, track earnings per day
+    public List <float> earningsByDay = new List <float> ();   // Starting from day 1, track earnings per day
     private const int EARNINGS_DISPLAY_COUNT = 3;               // Display the X most recent days' earnings
     
 
@@ -192,6 +193,7 @@ public class SimManager : MonoBehaviour {
         this.leftHandScriptComp             = leftHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
         this.rightHandScriptComp            = rightHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
         this.waterDropletCounterComponent   = WaterDropletCounter.GetComponent<WaterDropletCounter>();
+        this.sourceAdvancedUIComp           = sourceUI.GetComponent<MultiDayUIUpdate>();
 
         // Prepare for the first day
         resetCountdown();
@@ -262,9 +264,15 @@ public class SimManager : MonoBehaviour {
                 currentGameState            = GameState.RUNNING;
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
                 Debug.Log("Starting up " + currentGameState);
+                
+                // Set up UIs
                 Debug.Log("Enabling UIs");
+                this.sourceAdvancedUIComp.setCurrentDay(0);
+                this.sourceAdvancedUIComp.setCurrentWage(currentPayRate);
                 this.destUI.SetActive(true);
                 this.sourceUI.SetActive(true);
+
+                // Start tutorial
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
 
@@ -1070,13 +1078,6 @@ public class SimManager : MonoBehaviour {
                                     fogImpStrCurrent = fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str);
                                     fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
                                     break;
-                                case Impairment.ImpairmentType.PHYSICAL_SPEED_PENALTY:
-                                    speedPenaltyFlag = true;
-                                    speedImpStrCurrent = str;
-                                    break;
-                                case Impairment.ImpairmentType.PHYSICAL_GRAVITY:
-                                    //Physics.gravity = new Vector3 (0, PHYSICS_BASE_AMT + str * gravityImpairmentMaxDrop, 0);
-                                    break;
                                 default:
                                     Debug.Log("Invalid impairment type");
                                     break;
@@ -1159,6 +1160,10 @@ public class SimManager : MonoBehaviour {
                     }
 
                     Debug.Log("Finished loading current day treatment options.");
+
+                    Debug.Log("Switching multi-day UI");
+                    this.sourceAdvancedUIComp.setCurrentDay(currentDay);
+                    this.sourceAdvancedUIComp.setCurrentWage(currentPayRate);
 
                     if (currentGameState != GameState.LIMBO) {
                         // Reset simulation parameters and play effects
