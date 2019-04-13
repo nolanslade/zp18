@@ -266,13 +266,17 @@ public class SimManager : MonoBehaviour {
                 Debug.Log("Starting up " + currentGameState);
                 
                 // Set up UIs
-                Debug.Log("Enabling UIs");
+                Debug.Log("Configuring UIs.");
+                this.sourceUI.SetActive(true);
+                this.sourceAdvancedUIComp.setTotalDays(totalDays);
                 this.sourceAdvancedUIComp.setCurrentDay(0);
                 this.sourceAdvancedUIComp.setCurrentWage(currentPayRate);
+                this.sourceAdvancedUIComp.configure();
+                Debug.Log("Activating UIs.");
                 this.destUI.SetActive(true);
-                this.sourceUI.SetActive(true);
 
                 // Start tutorial
+                Debug.Log("Initializing tutorial.");
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
 
