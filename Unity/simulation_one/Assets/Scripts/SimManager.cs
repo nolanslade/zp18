@@ -29,7 +29,7 @@ public class SimManager : MonoBehaviour {
     public float fogImpairmentMinAlpha;     // At 0% strength the fog will be this opaque
 
     private const bool usingConfigFile                  = true;      // Toggles the usage of config files - if false, uses defaults in ConfigParser.cs
-    private const float TRANSITION_TIME                 = 10.0f;     // Duration (seconds) of the transition state
+    private const float TRANSITION_TIME                 = 15.0f;     // Duration (seconds) of the transition state
     private const float DAY_ZERO_MOV_FREQ               = 0.125f;    // Calculate the participant's moving speed in day 0 on this interval for performance
     private const float COUNTDOWN_THRESHOLD             = 10.0f;     // Start countdown sound effects with this many seconds left
     private const float CRITICAL_COUNTDOWN              = 5.1f;      // The last x seconds of countdown will have a different tone
@@ -425,6 +425,20 @@ public class SimManager : MonoBehaviour {
 
     public float getRemainingTransitionTime () {
         return TRANSITION_TIME - elapsedDayTime;
+    }
+
+    // Used for detailed transition messages
+    public bool dayHasImpairment (int dayToCheck) {
+        try {
+            return !(
+                (this.configParser.getConfigs()[dayToCheck - 1].getImpairments() == null) 
+                || 
+                (this.configParser.getConfigs()[dayToCheck - 1].getImpairments().Length == 0)
+            );
+        } catch (System.Exception e) {
+            Debug.Log("*** Day Impairment Check Exception: ***");
+            Debug.Log(e);
+        } return false;
     }
 
     public int getCurrentDay () {

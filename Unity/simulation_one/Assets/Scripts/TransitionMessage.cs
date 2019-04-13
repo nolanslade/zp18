@@ -11,22 +11,19 @@ public class TransitionMessage : MonoBehaviour {
     private SimManager simScriptComp;
     private Text message;
 
-    // Use this for initialization
-    void Awake () {
-
-	}
-
     void Start() {
         message = GetComponent<Text>();
         this.countdownText = transitionCountdown.GetComponent<UnityEngine.UI.Text>();
         this.simScriptComp = simManager.GetComponent<SimManager>();
     }
 
-    // Update is called once per frame
+    // Nolan April 2019 - Adding a bit more detail to the transition message
     void Update () {
-        message.text = "Transitioning to day: " + (simScriptComp.getCurrentDay()+1).ToString();
         countdownText.text = simScriptComp.getRemainingTransitionTime().ToString("0");
-        // If new impairment, append to text that there has been an impiarment
-
+        message.text = ((simScriptComp.dayHasImpairment(simScriptComp.getCurrentDay()+1)) 
+            ? "You Are Now Impaired!\n" 
+            : "You Have Full Health.\n") 
+            + "Preparing to Start Day " 
+            + (simScriptComp.getCurrentDay()+1).ToString();
     }
 }
