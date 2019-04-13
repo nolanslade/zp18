@@ -166,6 +166,7 @@ public class SimManager : MonoBehaviour {
     private InstructionManager instructionManagerComponent;
     private WaterDropletCounter waterDropletCounterComponent;
     private MultiDayUIUpdate sourceAdvancedUIComp;
+    private MultiDayUIUpdate destAdvancedUIComp;
 
     // Dynamic day-by-day elements
     private GameState currentGameState;
@@ -194,6 +195,7 @@ public class SimManager : MonoBehaviour {
         this.rightHandScriptComp            = rightHandVirtual.GetComponent<Valve.VR.InteractionSystem.Hand>();
         this.waterDropletCounterComponent   = WaterDropletCounter.GetComponent<WaterDropletCounter>();
         this.sourceAdvancedUIComp           = sourceUI.GetComponent<MultiDayUIUpdate>();
+        this.destAdvancedUIComp             = destUI.GetComponent<MultiDayUIUpdate>();
 
         // Prepare for the first day
         resetCountdown();
@@ -260,28 +262,29 @@ public class SimManager : MonoBehaviour {
                 currentCumulativePayment    = 0.0f;                 // Holds across all days except 0
                 elapsedDayTime              = 0.0f;
                 elapsedTotalTime            = 0.0f;                 // Don't ever reset this
-
                 currentGameState            = GameState.RUNNING;
+
                 pillManagerComponent.disablePanels();       // There is no treatment/impairment on day 0
+                
                 Debug.Log("Starting up " + currentGameState);
                 
                 // Set up UIs
                 Debug.Log("Configuring UIs.");
                 this.sourceUI.SetActive(true);
+                this.destUI.SetActive(true);
                 this.sourceAdvancedUIComp.setTotalDays(totalDays);
                 this.sourceAdvancedUIComp.setCurrentDay(0);
                 this.sourceAdvancedUIComp.setCurrentWage(currentPayRate);
                 this.sourceAdvancedUIComp.configure();
-                Debug.Log("Activating UIs.");
-                this.destUI.SetActive(true);
-
+                this.destAdvancedUIComp.setTotalDays(totalDays);
+                this.destAdvancedUIComp.setCurrentDay(0);
+                this.destAdvancedUIComp.setCurrentWage(currentPayRate);
+                this.destAdvancedUIComp.configure();
+                
                 // Start tutorial
                 Debug.Log("Initializing tutorial.");
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
-
-                // Updating all instructions to use Instruction objects
-                // instructionManagerComponent.setTemporaryMessage("Objective: locate and walk to the bucket", 8.0f);
                 instructionManagerComponent.setTemporaryMessage(locateBucketInstr);
             }
         }
@@ -1168,6 +1171,8 @@ public class SimManager : MonoBehaviour {
                     Debug.Log("Switching multi-day UI");
                     this.sourceAdvancedUIComp.setCurrentDay(currentDay);
                     this.sourceAdvancedUIComp.setCurrentWage(currentPayRate);
+                    this.destAdvancedUIComp.setCurrentDay(currentDay);
+                    this.destAdvancedUIComp.setCurrentWage(currentPayRate);
 
                     if (currentGameState != GameState.LIMBO) {
                         // Reset simulation parameters and play effects
