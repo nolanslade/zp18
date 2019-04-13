@@ -117,15 +117,6 @@ public class MultiDayUIUpdate : MonoBehaviour {
 			Destroy(twoDayObjs);
         	Destroy(threeDayObjs);
         	Destroy(fourDayObjs);
-        	Destroy(twoDayEarnText_1);
-        	Destroy(twoDayEarnText_2);
-        	Destroy(threeDayEarnText_1);
-        	Destroy(threeDayEarnText_2);
-        	Destroy(threeDayEarnText_3);
-        	Destroy(fourDayEarnText_1);
-        	Destroy(fourDayEarnText_2);
-        	Destroy(fourDayEarnText_3);
-        	Destroy(fourDayEarnText_4); 
         } 
 
         else if (totalDaysInt == 2) {
@@ -144,14 +135,6 @@ public class MultiDayUIUpdate : MonoBehaviour {
         	Destroy(oneDayObjs);
         	Destroy(threeDayObjs);
         	Destroy(fourDayObjs);
-        	Destroy(oneDayEarnText);
-        	Destroy(threeDayEarnText_1);
-        	Destroy(threeDayEarnText_2);
-        	Destroy(threeDayEarnText_3);
-        	Destroy(fourDayEarnText_1);
-        	Destroy(fourDayEarnText_2);
-        	Destroy(fourDayEarnText_3);
-        	Destroy(fourDayEarnText_4);
         } 
 
         else if (totalDaysInt == 3) {
@@ -169,13 +152,6 @@ public class MultiDayUIUpdate : MonoBehaviour {
         	Destroy(oneDayObjs);
         	Destroy(twoDayObjs);
         	Destroy(fourDayObjs);
-        	Destroy(oneDayEarnText);
-        	Destroy(twoDayEarnText_1);
-        	Destroy(twoDayEarnText_2);
-        	Destroy(fourDayEarnText_1);
-        	Destroy(fourDayEarnText_2);
-        	Destroy(fourDayEarnText_3);
-        	Destroy(fourDayEarnText_4);
         } 
 
         else if (totalDaysInt > 3) {
@@ -192,12 +168,6 @@ public class MultiDayUIUpdate : MonoBehaviour {
         	Destroy(oneDayObjs);
         	Destroy(twoDayObjs);
         	Destroy(threeDayObjs);
-        	Destroy(oneDayEarnText);
-        	Destroy(twoDayEarnText_1);
-        	Destroy(twoDayEarnText_2);
-        	Destroy(threeDayEarnText_1);
-        	Destroy(threeDayEarnText_2);
-        	Destroy(threeDayEarnText_3);
         } 
 
         else {
