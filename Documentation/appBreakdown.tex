@@ -85,7 +85,8 @@ This script also offers an assortment of public methods to do things like retrie
 
 
 \subsubsection*{User Interfaces}
-\href{https://bit.ly/2OrcNdx}{\textbf{UIUpdate.cs}}: TODO \newline \newline
+\href{https://bit.ly/2G9SRs1}{\textbf{MultiDayUIUpdate.cs}}: Responsible for updating the Wall UI components with time remaining, current day, current wage, and earnings across multiple days of the experiment. Its behaviour depends on how many days are being used for the experiment; notably, the layout will display at most four days worth of earnings. If more than four days are used in the experiment configuration, then the script will display earnings for the four most recent days. In order to facilitate this main functionality, the script has public methods, which should be called only by SimManager, to set the current day, total number of days, among other critical fields. \newline \newline
+\href{https://bit.ly/2VHtW5B}{\textbf{TransitionMessage.cs}}: When in the transition state, this script will populate text fields to indicate to the participant how much time remains until the next day of the simulation. As well, it will tell the user whether or not the next day is a full health day, or an impaired day. \newline \newline
 
 
 \subsection*{Custom Configuration} % Aaska's stuff -> using the config file/parsing
