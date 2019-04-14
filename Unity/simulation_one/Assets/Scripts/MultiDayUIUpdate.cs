@@ -92,6 +92,8 @@ public class MultiDayUIUpdate : MonoBehaviour {
     private string currentDayStr;
     private int currentDayInt;
     private const string PLACE_HOLDER = "--";
+    private const string FORMAT = "0.00";
+    private const string UNIT = "$";
 
     // Reducing the amount of script calls in update() by getting the
     // non-dynamic day-by-day elements once per day.
@@ -106,7 +108,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
     }
 
     public void setCurrentWage (float w) {
-    	this.currentWageStr = w.ToString("0.00");
+    	this.currentWageStr = w.ToString(FORMAT);
     }
 
     public void setTotalDays (int t) {
@@ -208,6 +210,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
         this.timeRemComp        = this.timeRemainingText.GetComponent<UnityEngine.UI.Text>();
         this.dayTextComp        = this.dayText.GetComponent<UnityEngine.UI.Text>();
         this.wageTextComp       = this.wageText.GetComponent<UnityEngine.UI.Text>();
+        this.totalEarningsComp	= this.totalEarnings.GetComponent<UnityEngine.UI.Text>();
 
         // Each combination of texts
         this.oneDayEarnDollarsComp 		= this.oneDayEarnDollars.GetComponent<UnityEngine.UI.Text>();
@@ -249,8 +252,8 @@ public class MultiDayUIUpdate : MonoBehaviour {
 	                complete = simManComp.isComplete(); 
 	                timeRemComp.text = simManComp.getRemainingDayTime().ToString("0.0");
 	                dayTextComp.text = "Day: " + currentDayStr + " / " + totalDaysStr;
-	                wageTextComp.text = "Wage: $" + currentWageStr + " / ball";
-	                totalEarningsComp.text = "Earnings: $" + simManComp.getCurrentScore().ToString("0.00");
+	                wageTextComp.text = "Wage: " + UNIT + currentWageStr + " / ball";
+	                totalEarningsComp.text = "Earnings: " + UNIT + simManComp.getCurrentScore().ToString(FORMAT);
 	                
 	                // Set the corresponding earnings texts, depending on the experiment set up
 	                // The only non-trivial case is when there are more than four days; then,
@@ -258,7 +261,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
 	                try {
 		                if (totalDaysInt == 1) {
 		                	this.oneDayEarnTitleComp.text = (currentDayInt == 0) ? "Day 0" : "Day 1" ;
-		                	this.oneDayEarnDollarsComp.text = "$" + simManComp.getDayScore().ToString("0.00");
+		                	this.oneDayEarnDollarsComp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                } 
 
 		                else if (totalDaysInt == 2) {
@@ -266,18 +269,18 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                		case 0:
 		                			this.twoDayEarnTitle_1Comp.text = "Day 0";
 		                			this.twoDayEarnTitle_2Comp.text = "Day 1";
-		                			this.twoDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.twoDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.twoDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 1:
 		                			this.twoDayEarnTitle_1Comp.text = "Day 1";
 		                			this.twoDayEarnTitle_2Comp.text = "Day 2";
-		                			this.twoDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.twoDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.twoDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 2:
-		                			this.twoDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.twoDayEarnDollars_2Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.twoDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.twoDayEarnDollars_2Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			break;
 		                		default:
 		                			Debug.Log("UI ERROR: Invalid Day Number");
@@ -291,7 +294,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.threeDayEarnTitle_1Comp.text = "Day 0";
 		                			this.threeDayEarnTitle_2Comp.text = "Day 1";
 		                			this.threeDayEarnTitle_3Comp.text = "Day 2";
-		                			this.threeDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.threeDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.threeDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.threeDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			break;
@@ -299,19 +302,19 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.threeDayEarnTitle_1Comp.text = "Day 1";
 		                			this.threeDayEarnTitle_2Comp.text = "Day 2";
 		                			this.threeDayEarnTitle_3Comp.text = "Day 3";
-		                			this.threeDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.threeDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.threeDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.threeDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 2:
-		                			this.threeDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.threeDayEarnDollars_2Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.threeDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.threeDayEarnDollars_2Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.threeDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 3:
-		                			this.threeDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.threeDayEarnDollars_2Comp.text = simManComp.earningsByDay[1].ToString("0.00");
-		                			this.threeDayEarnDollars_3Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.threeDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.threeDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[1].ToString(FORMAT);
+		                			this.threeDayEarnDollars_3Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			break;
 		                		default:
 		                			Debug.Log("UI ERROR: Invalid Day Number");
@@ -326,7 +329,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnTitle_2Comp.text = "Day 1";
 		                			this.fourDayEarnTitle_3Comp.text = "Day 2";
 		                			this.fourDayEarnTitle_4Comp.text = "Day 3";
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
@@ -336,28 +339,28 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnTitle_2Comp.text = "Day 2";
 		                			this.fourDayEarnTitle_3Comp.text = "Day 3";
 		                			this.fourDayEarnTitle_4Comp.text = "Day 4";
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 2:
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 3:
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.earningsByDay[1].ToString("0.00");
-		                			this.fourDayEarnDollars_3Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[1].ToString(FORMAT);
+		                			this.fourDayEarnDollars_3Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 4:
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.earningsByDay[1].ToString("0.00");
-		                			this.fourDayEarnDollars_3Comp.text = simManComp.earningsByDay[2].ToString("0.00");
-		                			this.fourDayEarnDollars_4Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[1].ToString(FORMAT);
+		                			this.fourDayEarnDollars_3Comp.text = UNIT + simManComp.earningsByDay[2].ToString(FORMAT);
+		                			this.fourDayEarnDollars_4Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			break;
 		                		default:
 		                			Debug.Log("UI ERROR: Invalid Day Number");
@@ -372,7 +375,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnTitle_2Comp.text = "Day 1";
 		                			this.fourDayEarnTitle_3Comp.text = "Day 2";
 		                			this.fourDayEarnTitle_4Comp.text = "Day 3";
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
@@ -382,21 +385,21 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnTitle_2Comp.text = "Day 2";
 		                			this.fourDayEarnTitle_3Comp.text = "Day 3";
 		                			this.fourDayEarnTitle_4Comp.text = "Day 4";
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_2Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 2:
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_3Comp.text = PLACE_HOLDER;
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		case 3:
-		                			this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[0].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.earningsByDay[1].ToString("0.00");
-		                			this.fourDayEarnDollars_3Comp.text = simManComp.getDayScore().ToString("0.00");
+		                			this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[0].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[1].ToString(FORMAT);
+		                			this.fourDayEarnDollars_3Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		default:
@@ -404,10 +407,10 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnTitle_2Comp.text = "Day " + (currentDayInt-3).ToString();
 		                			this.fourDayEarnTitle_3Comp.text = "Day " + (currentDayInt-2).ToString();
 		                			this.fourDayEarnTitle_4Comp.text = "Day " + currentDayStr;
-									this.fourDayEarnDollars_1Comp.text = simManComp.earningsByDay[currentDayInt-4].ToString("0.00");
-		                			this.fourDayEarnDollars_2Comp.text = simManComp.earningsByDay[currentDayInt-3].ToString("0.00");
-		                			this.fourDayEarnDollars_3Comp.text = simManComp.earningsByDay[currentDayInt-2].ToString("0.00");
-		                			this.fourDayEarnDollars_4Comp.text = simManComp.getDayScore().ToString("0.00");
+									this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[currentDayInt-4].ToString(FORMAT);
+		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[currentDayInt-3].ToString(FORMAT);
+		                			this.fourDayEarnDollars_3Comp.text = UNIT + simManComp.earningsByDay[currentDayInt-2].ToString(FORMAT);
+		                			this.fourDayEarnDollars_4Comp.text = UNIT + simManComp.getDayScore().ToString(FORMAT);
 		                			break;
 		                	}
 		                }
