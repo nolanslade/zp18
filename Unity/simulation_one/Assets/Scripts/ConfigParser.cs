@@ -397,7 +397,9 @@ public class ConfigParser
         try
         {
             this.dayConfigs = new DayConfiguration[this.dayCount];
-            int day = 0, trackDays = -1, impair = -1;
+            int day = 0, trackDays = -1;
+            //impair = -1;
+            Impairment.ImpairmentType impType = Impairment.ImpairmentType.NULL;
             bool isImp = false;
             bool isTreat = false;
             bool isWait = false;
@@ -475,19 +477,11 @@ public class ConfigParser
                 {
                     if ((this.dayList[i].ToLower()).Contains("fog"))
                     {
-                        impair = 0;
-                    }
-                    else if ((this.dayList[i].ToLower()).Contains("gravity"))
-                    {
-                        impair = 1;
+                        impType = Impairment.ImpairmentType.VISUAL_FOG;
                     }
                     else if ((this.dayList[i].ToLower()).Contains("shake"))
                     {
-                        impair = 2;
-                    }
-                    else if ((this.dayList[i].ToLower()).Contains("speed"))
-                    {
-                        impair = 3;
+                        impType = Impairment.ImpairmentType.PHYSICAL_SHAKE; 
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.STRENGTH))
                     {
@@ -696,14 +690,13 @@ public class ConfigParser
                     Impairment[] dayImpairs;
                     Treatment dayTreats;
 
-
-                    if (impair == -1)
+                    if (impType == Impairment.ImpairmentType.NULL)
                     {
                         dayImpairs = new Impairment[0];
                     }
                     else
                     {
-                        impairObj = new Impairment((Impairment.ImpairmentType)impair, strength);
+                        impairObj = new Impairment(impType, strength);
 
                         helperArray.Add(impairObj);
 
@@ -768,16 +761,14 @@ public class ConfigParser
                         dayTreats = null;
                     }
 
-
-
-
                     this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats, watervalue);
                     isImp = false;
                     isTreat = false;
                     isCost = false;
                     isWait = false;
                     isEff = false;
-                    impair = -1;
+                    //impair = -1;
+                    impType = Impairment.ImpairmentType.NULL;
                     helperArray.Clear();
                     dur = 0.00f; watervalue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f; probability = 1.00f; effect = 1.00f ;
                     cost_C = 0.00f; cost_a = 0.00f; cost_b = 0.00f; cost_c = 0.00f; wait_C = 0.00f; wait_a = 0.00f; wait_b = 0.00f; wait_c = 0.00f;

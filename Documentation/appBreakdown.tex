@@ -40,7 +40,7 @@
 \subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
 \href{https://bit.ly/2JH9ws0}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
 \href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
-\href{}{\textbf{Hand.cs}}: TODO - Vyome
+\href{}{\textbf{Hand.cs}}: Open source Steam VR hand script to assist with interactability of hands with other assets in the scene. Modified to work with our assets and functionalities.
 
 
 \subsection*{Immersion} % Audio, haptic feedback, etc

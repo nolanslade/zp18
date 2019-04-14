@@ -58,8 +58,8 @@ public class SimManager : MonoBehaviour {
                                                                                                // zone, not the edge cases where have just entered or just left
     // All instructions for Day 0 are defined below
     private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
-    private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the bucket\nand squeeze index finger", 7.0f);
-    private Instruction fillInstr           = new Instruction ("Fill up the bucket by placing it\nunder the running water", 6.0f);
+    private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the\nbucket and squeeze index finger", 7.0f);
+    private Instruction fillInstr           = new Instruction ("Fill up the bucket with balls by\nplacing it under the pipe", 6.0f);
     private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
     private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
     private Instruction continueInstr;
@@ -696,9 +696,9 @@ public class SimManager : MonoBehaviour {
             Instruction instrTwo = new Instruction ("Once the timer reaches 0, you will\nreceive treatment, and may begin\nearning money again, unimpaired.", 8.0f);
             instrs[0] = instrOne; instrs[1] = instrTwo;
 
-            Instruction cd3 = new Instruction ("Resuming in\n3", 1.0f);
-            Instruction cd2 = new Instruction ("Resuming in\n2", 1.0f);
-            Instruction cd1 = new Instruction ("Resuming in\n1", 1.0f);
+            Instruction cd3 = new Instruction ("Resuming in\n3", 1.0f, true);
+            Instruction cd2 = new Instruction ("Resuming in\n2", 1.0f, true);
+            Instruction cd1 = new Instruction ("Resuming in\n1", 1.0f, true);
             instrs[2] = cd3; instrs[3] = cd2; instrs[4] = cd1;
             limbo(instrs);
         }
@@ -1100,7 +1100,7 @@ public class SimManager : MonoBehaviour {
                                     fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
                                     break;
                                 default:
-                                    Debug.Log("Invalid impairment type");
+                                    Debug.Log("Invalid impairment type: " + imp.getType());
                                     break;
                             }
                         }
@@ -1226,9 +1226,7 @@ public class SimManager : MonoBehaviour {
 
                     // Penalizing, if speed limit breached
                     if ((walkSpd > ((avgWalkingSpeedDay0) * (1.0f - speedImpStrCurrent)))) {
-                        //Debug.Log("#");
                         waterDropletCounterComponent.removeDropsFromContainer(1);
-                        //Debug.Log(String.Format("{0} | {1} | {2} | Removing 1 drop", walkSpd, avgWalkingSpeedDay0, (avgWalkingSpeedDay0 * (1.0f - speedImpStrCurrent))));
                     }
 
                     speedPenaltyElapsed = 0.0f;
