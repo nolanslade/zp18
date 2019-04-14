@@ -71,16 +71,17 @@ public class MultiDayUIUpdate : MonoBehaviour {
 	private UnityEngine.UI.Text fourDayEarnTitle_3Comp;
 	private UnityEngine.UI.Text fourDayEarnTitle_4Comp;
 
-
 	// Also from old UI Update
 	private SimManager simManComp;
 	public GameObject simManager;
     public GameObject timeRemainingText;
     public GameObject dayText;
     public GameObject wageText;
+	public GameObject totalEarnings;
     private UnityEngine.UI.Text timeRemComp;
     private UnityEngine.UI.Text dayTextComp;
     private UnityEngine.UI.Text wageTextComp;
+    private UnityEngine.UI.Text totalEarningsComp;
     private float elapsed;
     private bool complete = false;
     private bool displayedComplete = false;
@@ -249,6 +250,7 @@ public class MultiDayUIUpdate : MonoBehaviour {
 	                timeRemComp.text = simManComp.getRemainingDayTime().ToString("0.0");
 	                dayTextComp.text = "Day: " + currentDayStr + " / " + totalDaysStr;
 	                wageTextComp.text = "Wage: $" + currentWageStr + " / ball";
+	                totalEarningsComp.text = "Earnings: $" + simManComp.getCurrentScore().ToString("0.00");
 	                
 	                // Set the corresponding earnings texts, depending on the experiment set up
 	                // The only non-trivial case is when there are more than four days; then,
