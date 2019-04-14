@@ -35,6 +35,7 @@ public class FlowManager : MonoBehaviour {
     void Update () {
         if (flowing && elapsed > spawnFrequency) {
             Instantiate (waterDroplet, dropletSpawnPoint, Quaternion.identity);
+            audioManagerComponent.playSound(AudioManager.SoundType.WATER_FLOW);
             elapsed = 0.0f;
         } elapsed += Time.deltaTime;
 	}
@@ -50,7 +51,7 @@ public class FlowManager : MonoBehaviour {
         if (canFlow) {
             flowing = true;
             elapsed = 0.0f;
-            audioManagerComponent.playSound(AudioManager.SoundType.WATER_FLOW);
+            //audioManagerComponent.playSound(AudioManager.SoundType.WATER_FLOW);
         }
     }
 

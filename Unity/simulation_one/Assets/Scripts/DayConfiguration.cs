@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 /**
  * McDSL: VR Simulation One
@@ -27,7 +28,7 @@ public class DayConfiguration {
         this.duration = dur;
         this.impairments = imps;
         this.treatment = tr;
-        this.rewardFunctionMultiplier = rewMult;
+        this.rewardFunctionMultiplier = rewMult;        
     }
 
     public DayConfiguration(int id, float dur, Impairment[] imps, Treatment tr)

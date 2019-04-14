@@ -403,9 +403,9 @@ public class MultiDayUIUpdate : MonoBehaviour {
 		                			this.fourDayEarnDollars_4Comp.text = PLACE_HOLDER;
 		                			break;
 		                		default:
-		                			this.fourDayEarnTitle_1Comp.text = "Day " + (currentDayInt-4).ToString();
-		                			this.fourDayEarnTitle_2Comp.text = "Day " + (currentDayInt-3).ToString();
-		                			this.fourDayEarnTitle_3Comp.text = "Day " + (currentDayInt-2).ToString();
+		                			this.fourDayEarnTitle_1Comp.text = "Day " + (currentDayInt-3).ToString();
+		                			this.fourDayEarnTitle_2Comp.text = "Day " + (currentDayInt-2).ToString();
+		                			this.fourDayEarnTitle_3Comp.text = "Day " + (currentDayInt-1).ToString();
 		                			this.fourDayEarnTitle_4Comp.text = "Day " + currentDayStr;
 									this.fourDayEarnDollars_1Comp.text = UNIT + simManComp.earningsByDay[currentDayInt-4].ToString(FORMAT);
 		                			this.fourDayEarnDollars_2Comp.text = UNIT + simManComp.earningsByDay[currentDayInt-3].ToString(FORMAT);
