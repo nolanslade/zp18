@@ -19,7 +19,7 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.8";
+    public static string APPLICATION_VERSION  = "1.9";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
@@ -1346,6 +1346,7 @@ public class SimManager : MonoBehaviour {
                     inDay0SpeedCaptureZone = false;
                     flowManagerComponent.cleanScene();
                     dayScore = 0.0f;
+                    currentScore = 0.0f;
                     dayZeroCurrentSection = ConfigParser.IMPAIRED;
 
                     // Apply the second-round day 0 impairments
