@@ -24,16 +24,63 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Scene Components}
-\subsection*{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc)
+\subsection*{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc
+
+
 
 \subsection*{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
 
+\textbf{Container\_Base}: The container game object represents the bucket the subject carriers to move water from one point to another. It contains 5 cube objects that make up the walls of the bucket (\textit{Container\_Wall\_Front}, \textit{Container\_Wall\_Back}, \textit{Container\_Wall\_Right}, \textit{Container\_Wall\_Left}). It also contains an invisible collider (\textit{Water\_Droplet\_Counter}) to count water droplets that enter and exit the bucket, using the \textit{WaterDropletCounter} script.\newline \newline
+%%% What is the AttachTransformRight and AttachTransformLeft?
+\textbf{SimManager}: A game object to hold the \textit{SimManager} script.\newline \newline
+\textbf{PillManager}: A game object to hold the \textit{PillManager} script.\newline \newline
+\textbf{FlowManager}: A game object to hold the \textit{FlowManager} script.\newline \newline
+\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. Contains the \textit{FlowLimiter} script.\newline \newline
+\textbf{DestinationLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the destination to accept droplets. Contains the \textit{DestinationLimiter} script.\newline \newline
+\textbf{DayZeroSpeedCounter}: Currently not in use, to be used in future implementation of speed penalty to measure the subject's average speed during day 0 tutorial.\newline \newline
+\textbf{Drainage}: A cube object placed at the bottom of the source sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets.
+\textbf{TargetDrainage}: A cube object placed at the bottom of the destination sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets and counting delivered droplets.\newline \newline
+\textbf{CameraRig/Camera/Canvas/FogImpairmentPanel}: This canvas is attached to the camera is used to make the subject's vision appear foggy. The opacity is determined by the intensity of the fog impairment.\newline \newline
+
+
 \subsection*{Tutorials \& Instructions} % Triggers/markers, object destruction/moving through steps
+\textbf{InstructionMan}: The game object contains the \textit{InstructionManager} script.\newline \newline
+\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
+\textbf{BucketPickedUpTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
+\textbf{BucketMarker}: This game object is a red exclamation point used to notify the subject of the bucket's location.\newline \newline
+\textbf{BucketPickedUpTrigger}: %what does this do?
+\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the subject of the destination sink bucket.\newline \newline
+\textbf{CameraRig/Camera/Canvas/InstructionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{InstructionTxt} which will display instructions to the subject during the tutorial. \newline \newline
+\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until the new day begins. \newline \newline
 
 \subsection*{Receiving Treatment} % Medication station, pills/pedestals/UI, how they are used
+\textbf{TreatmentInformationCanvas}: This canvas contains a panel that is placed above the treatment table. It contains \textit{WaitRemainingPanel} for displaying the wait time when only wait time is available \textit{WaitPanel} for displaying the wait time for when both pay and wait is available. \textit{PayPanel} is for displaying the treatment cost. \textit{TreatmentInformation} is for displaying the title. \newline \newline
+\textbf{PayPills}: This game object is a prefab pill bottle. The \textit{Throwable}, \textit{Interactable} and \textit{VelocityEstimator} scripts allows it to be picked up with the controller. \newline \newline
+\textbf{PayPedestal}: This game object is a red cylinder object for the \textit{PayPills} object to be placed on. \newline \newline
+\textbf{WaitPedestal}: This game object is a blue cylinder object for the \textit{WaitPills} object to be placed on when pay is also an option. \newline \newline
+\textbf{WaitPlatform}: This game object is a blue cube object for the \textit{WaitPills} object to be placed on when it is the only option. \newline \newline
+\textbf{MedicalCross}: This game object is two red cube objects placed to appear like a cross to indicate the medical station. \newline \newline
 
 \subsection*{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
-
+\textbf{Source\_Dispense\_Pipe}: This is a pipe prefab placed above the sink that makes it appear that the water droplets are being dispensed from the pipe. No functionality is attached to this game object.\newline \newline
+\textbf{SourceTubPipe}: This is a pipe prefab placed below the source sink.\newline \newline
+\textbf{DestinationTubPipe}: This is a pipe prefab placed below the destination sink.\newline \newline
+\textbf{Window\_Frames}: Set of cube objects that make up the frames for the windows, along with two for the window glass.\newline \newline
+\textbf{Door}: A prefab door and two paintings on the left wall used when the subject suffers from motion sickness.\newline \newline
+\textbf{AudioManager}: An audio object that contains audio clips for dispensing the water, pouring the water, countdown sound, grabbing pills sound and completion jingle. The \textit{AudioManager} script to determine when to play the audio clips.\newline \newline
+\textbf{Source\_Tub}: A prefab tub under where the droplets are dispensed.\newline \newline
+\textbf{Destination\_Tub}: A prefab tub for the subject to pour droplets into.\newline \newline
+\textbf{Carpet}: A prefab carpet for the floor.\newline \newline
+\textbf{Trees}: Prefab tress for the outdoor scene. \newline \newline
+\textbf{Ceiling}: The ceiling for the house, made up of square \textit{PTK\_Wall\_Small\_1}. \newline \newline
+\textbf{Curtain\_Left}: A curtain to be placed over the left window if the subject gets motion sickness. \newline \newline
+\textbf{Curtain\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Sink}: The wall on the sink side \newline \newline
+\textbf{Wall\_Source}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Left}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Column\_Left\_Rear}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Column\_Left\_Front}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:  \newline \newline
 \section*{Script Components}
