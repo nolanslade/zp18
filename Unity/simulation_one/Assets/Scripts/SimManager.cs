@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,8 +65,13 @@ public class SimManager : MonoBehaviour {
     private Instruction continueInstr;
 
     // Second (impaired) round of day 0 has an additional instruction set
-    private Instruction impairedRoundStart      = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
-    private Instruction impairedRoundExplain    = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
+    private Instruction fogImpairedRoundStart       = new Instruction ("When the simulation resumes, you\nwill notice you have reduced vision.\nYou are impaired.", 7.5f);
+    private Instruction shakeImpairedRoundStart     = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
+    private Instruction genericImpairedRoundStart   = new Instruction ("When the simulation resumes,\nyou will be impaired.", 5.5f);
+    
+    private Instruction shakeImpairedRoundExplain   = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
+    private Instruction genericImpairedRoundExplain = new Instruction ("While you are impaired, earning money\nwill be more difficult.", 6.5f);
+    
     private Instruction impairedRoundObjective;     // It will look like this: ("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
 
     // State management
@@ -1377,8 +1382,17 @@ public class SimManager : MonoBehaviour {
                     // Display the new instructions
                     Instruction [] dayZeroInstrs = new Instruction [3];
                     impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00"), 6.0f);
-                    dayZeroInstrs [0] = impairedRoundStart; dayZeroInstrs[1] = impairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
-                    limbo(dayZeroInstrs);
+                    
+                    if (currentDayImpairments.Length == 1 && currentDayImpairments[0].getType() == Impairment.ImpairmentType.PHYSICAL_SHAKE) {
+                        dayZeroInstrs [0] = shakeImpairedRoundStart; dayZeroInstrs[1] = shakeImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        limbo(dayZeroInstrs);
+                    } else if (currentDayImpairments.Length == 1 && currentDayImpairments[0].getType() == Impairment.ImpairmentType.VISUAL_FOG) {
+                        dayZeroInstrs [0] = fogImpairedRoundStart; dayZeroInstrs[1] = genericImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        limbo(dayZeroInstrs);
+                    } else {
+                        dayZeroInstrs [0] = genericImpairedRoundStart; dayZeroInstrs[1] = genericImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        limbo(dayZeroInstrs);
+                    } 
                 }
 
                 else {
