@@ -452,11 +452,11 @@ public class ConfigParser
 
                 if (isImp)
                 {
-                    if ((this.dayList[i].ToLower()).Contains(FOG_IMP.ToLower()))
+                    if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.FOG_IMP.ToLower()))
                     {
                         impType = Impairment.ImpairmentType.VISUAL_FOG;
                     }
-                    else if ((this.dayList[i].ToLower()).Contains(SHAKE_IMP.ToLower()))
+                    else if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.SHAKE_IMP.ToLower()))
                     {
                         impType = Impairment.ImpairmentType.PHYSICAL_SHAKE; 
                     }
