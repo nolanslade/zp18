@@ -723,7 +723,7 @@ public class ConfigParser
         catch (System.IO.DirectoryNotFoundException dnfe)
         {
             Debug.Log("Parsing exception: DirectoryNotFoundException");
-]        }
+        }
 
         catch (System.IO.IOException ioe)
         {
