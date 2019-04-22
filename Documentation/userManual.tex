@@ -13,7 +13,7 @@
 \maketitle
 
 \section*{Overview}
-This document outlines how to modify the simulation configuration file in order to achieve the desired experiment format. The application expects such a file to be named \textit{sim\_config.txt}, and for it to be located in the \textit{Water\_Sim\_x.x\slash simulation\_one\_Data\slash InputData} directory. Failing to follow this naming convention or moving the file out of this location will result in the application being unable to start up properly. The configuration file supports a number of keyword-value pairs that can be easily combined to define the temporal structure of the simulation as well as auxiliary parameters. 
+This document outlines how to modify the simulation configuration file in order to achieve the desired experiment format. The application expects such a file to be named \textit{sim\_config.txt}, and for it to be located in the \textit{Ball\_Sim\_x.x\slash simulation\_one\_Data\slash InputData} directory. Failing to follow this naming convention or moving the file out of this location will result in the application being unable to start up properly. The configuration file supports a number of keyword-value pairs that can be easily combined to define the temporal structure of the simulation as well as auxiliary parameters. 
 
 \section*{Keywords}
 \subsection*{Simulation}
@@ -37,7 +37,7 @@ This section includes information pertaining to high-level details of the simula
 \indent\indent enabled \newline
 \indent\indent disabled
 
-\subsubsection*{Sound} Disables or enables all sound effects within the scene, including water flow and countdowns, among others.
+\subsubsection*{Sound} Disables or enables all sound effects within the scene, including pipe flow and countdowns, among others.
 \newline \indent Possible values: \newline
 \indent\indent enabled \newline
 \indent\indent disabled
@@ -80,8 +80,8 @@ This keyword refers to how long each day will last. This field is \textbf{mandat
 \indent Possible Values: \newline
 \indent\indent minutes:seconds, where both components must be positive integers
 
-\subsubsection*{WaterValue}
-This keyword allows for the payout per droplet to be adjusted. This is not a required field, and by default it is set to 1. \newline
+\subsubsection*{BallValue}
+This keyword allows for the payout per ball to be adjusted. This is not a required field, and by default it is set to 1. \newline
 \indent Possible Values: \newline
 \indent\indent Any decimal number
 
@@ -203,13 +203,13 @@ Tutorial
 Day
     Duration:1:30
 Day
-    WaterValue:1.50
+    BallValue:1.50
     Duration:1:30
     Impairment
         Type:Physical/Shake
         Strength:70%
 Day
-    WaterValue:1.25
+    BallValue:1.25
     Duration:2:00
     Impairment
         Type:Visual/Fog
