@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ 
+DEPRECATED - MultiDayUIUpdate.cs is now used   
+
+Nolan Apr 2019
+     
+*/
+
+
 public class UIUpdate : MonoBehaviour {
 
     public GameObject simManager;

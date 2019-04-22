@@ -424,12 +424,13 @@ public class MultiDayUIUpdate : MonoBehaviour {
 	                elapsed = 0.0f;
 	            }
 	        }
-    	}
 
-        else if (!displayedComplete) {
-            displayedComplete = true;
-            dayTextComp.text = "Day: " + totalDaysStr + " / " + totalDaysStr;
-            timeRemComp.text = "Complete!";
+            else if (!displayedComplete)
+            {
+                displayedComplete = true;
+                dayTextComp.text = "Day: " + totalDaysStr + " / " + totalDaysStr;
+                timeRemComp.text = "Complete!";
+            }
         }
 	}
 }
