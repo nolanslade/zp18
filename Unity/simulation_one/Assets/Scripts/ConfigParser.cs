@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -19,7 +19,6 @@ using System.Collections.Generic;
  */
 public class ConfigParser
 {
-
     // Parsing
     private string configFilePath;
     private string dbConnection;
@@ -42,7 +41,7 @@ public class ConfigParser
     public static int UNIMPAIRED = 0;   // For fetching day 0 score threshold (unimpaired)
     public static int IMPAIRED = 1;     // Same, but for the impaired threshold
 
-    private float watervalue;
+    private float ballValue;
     private string name;
     private string[] output;
     private string description;
@@ -52,13 +51,7 @@ public class ConfigParser
 
     /*
     * If not using a config file - use these default values (for testing)
-    *
-    * Structure (3 days):
-    * - Day one: no impairment, 1 minute, 2* multiplier
-    * - Day two: speed penalty (pay 50 / wait 15s), 2 minutes
-    * - Day three: speed penalty, fog (fog @ 80%, pay 100 / wait 25s), 2 minutes
     */
-
     public ConfigParser()
     {
 
@@ -70,26 +63,6 @@ public class ConfigParser
         lowNauseaMode = ParticipantData.nauseaSensitive;
         claustrophobicMode = ParticipantData.claustrophicSensitive;
         instructionsEnabled = true;
-
-        /*
-        // Treatment argument ordering:
-        float c_C,             // Cost function
-        float c_a,
-        float c_b,
-        float c_c,
-
-        float w_C,             // Wait function
-        float w_a,
-        float w_b,
-        float w_c,
-
-        float effProb,         // Probability that treatment will actually work
-        float eff,             // The percentage (0.0 to 1.0) that the treatment will take away, if it is effective
-        float delProb,         // Delay Penalty
-        float del,             // "
-        float deathProb        // Death Probability
-        // ... Additional parameters here
-        */
 
         // Day One
         Debug.Log("Setting Day One");
@@ -154,7 +127,6 @@ public class ConfigParser
         dbConnection = null;
         StreamReader reader = new StreamReader(this.configFilePath);
         string line = reader.ReadLine();
-        char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' }; //splitting a string requires chars therefore ConfigKeyword class cannot be used
 
         this.dayCount = 0;
         bool isSim = false;
@@ -162,15 +134,15 @@ public class ConfigParser
         bool isTut = false;
         while (line != null)
         {
-            string[] fields = line.Split(delimiter[0]);
+            string[] fields = line.Split(ConfigKeyword.NEWLINE);
 
             //splits information into 2 groups, Simulation and Day
             for (int i = 0; i < fields.Length; i++)
             {
 
-                if (fields[i].Contains("#"))
+                if (fields[i].Contains(ConfigKeyword.COMMENT))
                 {
-                    string[] split = fields[i].Split(delimiter[3]);
+                    string[] split = fields[i].Split(ConfigKeyword.HASH);
                     fields[i] = split[0];
                 }
                 if (fields[i] == string.Empty)
@@ -218,13 +190,13 @@ public class ConfigParser
                     if (fields[i].ToUpper().Contains(ConfigKeyword.SCORE.ToUpper()) && !(fields[i].ToUpper().Contains(ConfigKeyword.IMP_SCORE.ToUpper()))) {
 
                         string score = fields[i].Replace(ConfigKeyword.INDENT, "");
-                        this.dayZeroScoreUnimpaired = float.Parse(score.Split(delimiter[1])[1]);
+                        this.dayZeroScoreUnimpaired = float.Parse(score.Split(ConfigKeyword.COLON)[1]);
                     }
 
                     // Impaired tutorial stage of day 0
                     else if (fields[i].ToUpper().Contains(ConfigKeyword.IMP_SCORE.ToUpper())) {
                         string score = fields[i].Replace(ConfigKeyword.INDENT, "");
-                        this.dayZeroScoreImpaired = float.Parse(score.Split(delimiter[1])[1]);
+                        this.dayZeroScoreImpaired = float.Parse(score.Split(ConfigKeyword.COLON)[1]);
                     }
 
                     // Parse a second-round day zero impairment
@@ -328,32 +300,31 @@ public class ConfigParser
 
     }
 
-    private bool parseSim()
-    {
+
+    private bool parseSim() {
         
-        char[] delimiter = { '\n', ':', '\t', '#', ' ', '%', ',' };
         foreach (string i in this.sim)
         {
             if (i.Contains(ConfigKeyword.NAME))
             {
-                string[] split = i.Split(delimiter[1]);
+                string[] split = i.Split(ConfigKeyword.COLON);
                 this.name = split[1];
             }
             else if (i.Contains(ConfigKeyword.OUTPUT))
             {
-                string[] split = i.Split(delimiter[1]);
-                this.output = split[1].Split(delimiter[6]);
+                string[] split = i.Split(ConfigKeyword.COLON);
+                this.output = split[1].Split(ConfigKeyword.COMMA);
             }
             else if (i.Contains(ConfigKeyword.DESCRIPTION))
             {
-                string[] split = i.Split(delimiter[1]);
+                string[] split = i.Split(ConfigKeyword.COLON);
                 this.description = split[1];
             }
             else if (i.Contains(ConfigKeyword.INSTRUCTIONS))
             {
-                string[] split = i.Split(delimiter[1]);
+                string[] split = i.Split(ConfigKeyword.COLON);
                 this.instructions = split[1].ToLower();
-                if (this.instructions.Contains("disabled"))
+                if (this.instructions.Contains(ConfigKeyword.DISABLED.ToLower()))
                 {
                     this.instructionsEnabled = false;
                 }
@@ -364,9 +335,9 @@ public class ConfigParser
             }
             else if (i.Contains(ConfigKeyword.SOUND))
             {
-                string[] split = i.Split(delimiter[1]);
+                string[] split = i.Split(ConfigKeyword.COLON);
                 this.sound = split[1].ToLower();
-                if (this.sound.Contains("disabled"))
+                if (this.sound.Contains(ConfigKeyword.DISABLED.ToLower()))
                 {
                     this.soundEnabled = false;
                 }
@@ -378,7 +349,7 @@ public class ConfigParser
             }
             else if (i.Contains(ConfigKeyword.SCENE))
             {
-                string[] split = i.Split(delimiter[1]);
+                string[] split = i.Split(ConfigKeyword.COLON);
                 this.scene = split[1];
             }
         }
@@ -398,7 +369,6 @@ public class ConfigParser
         {
             this.dayConfigs = new DayConfiguration[this.dayCount];
             int day = 0, trackDays = -1;
-            //impair = -1;
             Impairment.ImpairmentType impType = Impairment.ImpairmentType.NULL;
             bool isImp = false;
             bool isTreat = false;
@@ -407,8 +377,7 @@ public class ConfigParser
             bool isEff = false;
             float dur = 0.00f, wait = 0.00f, certainty = 1.00f, strength = 0.00f;
             float cost_C = 0.00f, cost_a = 0.00f, cost_b = 0.00f, cost_c = 0.00f, wait_C = 0.00f, wait_a = 0.00f, wait_b = 0.00f, wait_c = 0.00f;
-            float watervalue = 1.00f, probability = 1.00f, effect = 1.00f;
-            char[] delimiter = { '\n', ':', '\t', '#', ' ', '%' };
+            float ballValue = 1.00f, probability = 1.00f, effect = 1.00f;
             List<Impairment> helperArray = new List<Impairment>();
 
             //    foreach (string i in this.dayList)
@@ -416,23 +385,26 @@ public class ConfigParser
             {
                 if (this.dayList[i].Contains(ConfigKeyword.DAY))
                 {
-                    string[] split = this.dayList[i].Split(delimiter[4]);
+                    string[] split = this.dayList[i].Split(ConfigKeyword.SPACE);
                     day = int.Parse(split[split.Length - 1]);
                     trackDays++;
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.DURATION))
                 {
-                    string time = this.dayList[i].Split(new char[] { ':' }, 2)[1];
-                    string[] split = time.Split(delimiter[1]);
+                    string time = this.dayList[i].Split(new char[] { ConfigKeyword.COLON }, 2)[1];
+                    string[] split = time.Split(ConfigKeyword.COLON);
                     dur = float.Parse(split[0]) * 60 + float.Parse(split[1]);
 
                 }
-                else if (this.dayList[i].Contains(ConfigKeyword.WATERVALUE))
+
+                else if (this.dayList[i].Contains(ConfigKeyword.BALLVALUE))
                 {
-                    string[] split = this.dayList[i].Split(delimiter[1]);
-                    watervalue = float.Parse(split[1]);
+                    string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
+                    ballValue = float.Parse(split[1]);
 
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.IMPAIRMENT))
                 {
                     isImp = true; 
@@ -441,6 +413,7 @@ public class ConfigParser
                     isCost = false;
                     isEff = false;
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.TREATMENT))
                 {
                     isTreat = true;
@@ -449,6 +422,7 @@ public class ConfigParser
                     isCost = false;
                     isEff = false;
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.WAIT))
                 {
                     isWait = true;
@@ -457,6 +431,7 @@ public class ConfigParser
                     isCost = false;
                     isEff = false;
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.COST))
                 {
                     isCost = true;
@@ -465,6 +440,7 @@ public class ConfigParser
                     isWait = false;
                     isEff = false;
                 }
+
                 else if (this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS))
                 {            
                     isEff = true;
@@ -473,70 +449,54 @@ public class ConfigParser
                     isWait = false;
                     isCost = false;
                 }
+
                 if (isImp)
                 {
-                    if ((this.dayList[i].ToLower()).Contains("fog"))
+                    if ((this.dayList[i].ToLower()).Contains(FOG_IMP.ToLower()))
                     {
                         impType = Impairment.ImpairmentType.VISUAL_FOG;
                     }
-                    else if ((this.dayList[i].ToLower()).Contains("shake"))
+                    else if ((this.dayList[i].ToLower()).Contains(SHAKE_IMP.ToLower()))
                     {
                         impType = Impairment.ImpairmentType.PHYSICAL_SHAKE; 
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.STRENGTH))
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
-                        string[] splitPercent = split[1].Split(delimiter[5]);
-                        if((float.Parse(splitPercent[0])) != 0)
-                        {
-                            strength = float.Parse(splitPercent[0]) / 100;
-                        }         
-                        else
-                        {
-                            strength = 0.00f;
-                        }
-                        
-
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
+                        string[] splitPercent = split[1].Split(ConfigKeyword.PERCENTAGE);
+                        strength = ((float.Parse(splitPercent[0])) != 0) ? (float.Parse(splitPercent[0]) / 100) : (0.00f) ;
                     }
-
                 }
+
                 else if (isTreat)
                 {
                      if (this.dayList[i].Contains(ConfigKeyword.CERTAINTY))
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
-                        string[] splitPercent = split[1].Split(delimiter[5]);
-                        if((float.Parse(splitPercent[0])) != 0)
-                        {
-                            certainty = float.Parse(splitPercent[0]) / 100;
-                        }         
-                        else
-                        {
-                            certainty = 0.00f;
-                        }
-
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
+                        string[] splitPercent = split[1].Split(ConfigKeyword.PERCENTAGE);
+                        certainty = ((float.Parse(splitPercent[0])) != 0) ? (float.Parse(splitPercent[0]) / 100) : (0.00f) ;
                     }
-
-
                 }
 
                 else if (isWait)
                 {
                     if (this.dayList[i].Contains(ConfigKeyword.C))
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                         wait_C = float.Parse(split[1]);
                     }
-                    else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.WAIT) == false && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
+                    
+                    else if (this.dayList[i].Contains(ConfigKeyword.a) && !this.dayList[i].Contains(ConfigKeyword.WAIT) && !this.dayList[i].Contains(ConfigKeyword.c) && !this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             wait_a = 1.00f /(dur / 60.0f);
 
                         }
+
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                             
                             // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
                             wait_a = float.Parse(split[1]);
@@ -545,18 +505,18 @@ public class ConfigParser
                             //wait_a = (float) dt_wait_a.Compute (split[1], "");
                             //Debug.Log("Evaluated wait_a: " + wait_a.ToString());
                         }
-
                     }
+
                     else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             wait_b = 2;
 
                         }
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
 
                             // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
                             wait_b = float.Parse(split[1]);
@@ -566,16 +526,17 @@ public class ConfigParser
                             //Debug.Log("Evaluated wait_b: " + wait_b.ToString());
                         }
                     }
+
                     else if (this.dayList[i].Contains(ConfigKeyword.c))
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             wait_c = dur / 60.0f;
 
                         }
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                             
                             // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
                             wait_c = float.Parse(split[1]);
@@ -586,23 +547,24 @@ public class ConfigParser
                         }
                     }
                 }
+
                 else if (isCost)
                 {
 
                     if (this.dayList[i].Contains(ConfigKeyword.C) && this.dayList[i].Contains(ConfigKeyword.COST) == false)
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                         cost_C = float.Parse(split[1]);
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.a) && this.dayList[i].Contains(ConfigKeyword.c) == false && this.dayList[i].Contains(ConfigKeyword.b) == false)
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             cost_a = 1.00f / (dur / 60.0f);
                         }
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                             
                             // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
                             cost_a = float.Parse(split[1]);
@@ -615,76 +577,52 @@ public class ConfigParser
                     }
                     else if (this.dayList[i].Contains(ConfigKeyword.b))
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             cost_b = 2;
-
                         }
+
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
-
-                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                             cost_b = float.Parse(split[1]);
-
-                            //DataTable dt_cost_b = new DataTable ();
-                            //cost_b = (float) dt_cost_b.Compute (split[1], "");
-                            //Debug.Log("Evaluated cost_b: " + cost_b.ToString());
                         }
                     }
+
                     else if (this.dayList[i].Contains(ConfigKeyword.c) )
                     {
-                        if ((this.dayList[i].ToLower()).Contains("default"))
+                        if ((this.dayList[i].ToLower()).Contains(ConfigKeyword.DEFAULT.ToLower()))
                         {
                             cost_c = dur/60.0f;
 
                         }
+
                         else
                         {
-                            string[] split = this.dayList[i].Split(delimiter[1]);
-                            
-                            // Updating to allow for expressions inside these fields, e.g. "1/15" instead of "0.066667"
+                            string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
                             cost_c = float.Parse(split[1]);
-                            //DataTable dt_cost_c = new DataTable ();
-                            //cost_c = (float) dt_cost_c.Compute (split[1], "");
-                            //Debug.Log("Evaluated cost_c: " + cost_c.ToString());
                         }
-
                     }
-
                 }
+
                 else if (isEff)
                 {
                     if (this.dayList[i].Contains(ConfigKeyword.PROBABILITY))
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
-                        string[] splitPercent = split[1].Split(delimiter[5]);
-                        if((float.Parse(splitPercent[0])) != 0)
-                        {
-                            probability = float.Parse(splitPercent[0]) / 100;
-                        }         
-                        else
-                        {
-                            probability = 0.00f;
-                        }
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
+                        string[] splitPercent = split[1].Split(ConfigKeyword.PERCENTAGE);
+                        probability = ((float.Parse(splitPercent[0])) != 0) ? (float.Parse(splitPercent[0]) / 100) : (0.00f) ;
                     } 
-                    else if (this.dayList[i].Contains(ConfigKeyword.EFFECT) && this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS) == false)
+
+                    else if (this.dayList[i].Contains(ConfigKeyword.EFFECT) && !this.dayList[i].Contains(ConfigKeyword.EFFECTIVENESS))
                     {
-                        string[] split = this.dayList[i].Split(delimiter[1]);
-                        string[] splitPercent = split[1].Split(delimiter[5]);
-                        if((float.Parse(splitPercent[0])) != 0)
-                        {
-                            effect = float.Parse(splitPercent[0]) / 100;
-                        }         
-                        else
-                        {
-                            effect = 0.00f;
-                        }
-                        
+                        string[] split = this.dayList[i].Split(ConfigKeyword.COLON);
+                        string[] splitPercent = split[1].Split(ConfigKeyword.PERCENTAGE);
+                        effect = ((float.Parse(splitPercent[0])) != 0) ? (float.Parse(splitPercent[0]) / 100) : (0.00f) ;
                     }
                 }
 
-                if ((i + 1) == this.dayList.Count || (trackDays >= 0 && this.dayList[i + 1].Contains(ConfigKeyword.DAY) == true))
+                if ((i + 1) == this.dayList.Count || (trackDays >= 0 && this.dayList[i + 1].Contains(ConfigKeyword.DAY)))
                 {
                     Impairment impairObj;
                     Impairment[] dayImpairs;
@@ -694,12 +632,11 @@ public class ConfigParser
                     {
                         dayImpairs = new Impairment[0];
                     }
+
                     else
                     {
                         impairObj = new Impairment(impType, strength);
-
                         helperArray.Add(impairObj);
-
                         dayImpairs = helperArray.ToArray();
                     }
 
@@ -720,6 +657,7 @@ public class ConfigParser
                           0.0f,
                           0.0f);
                     }
+
                     else if(cost_C == 0.00f && cost_a == 0.00f && cost_b == 0.00f && cost_c == 0.00f && wait_C != 0.00f)
                     {
                         dayTreats = new Treatment(
@@ -736,8 +674,8 @@ public class ConfigParser
                           0.0f,
                           0.0f,
                           0.0f);
-
                     }
+
                     else if (cost_C != 0.00f && wait_C == 0.00f && wait_a == 0.00f && wait_b == 0.00f && wait_c == 0.00f)
                     {
                         dayTreats = new Treatment(
@@ -754,55 +692,47 @@ public class ConfigParser
                           0.0f,
                           0.0f,
                           0.0f);
-
                     }
+
                     else 
                     {
                         dayTreats = null;
                     }
 
-                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats, watervalue);
+                    this.dayConfigs[trackDays] = new DayConfiguration(day, dur, dayImpairs, dayTreats, ballValue);
                     isImp = false;
                     isTreat = false;
                     isCost = false;
                     isWait = false;
                     isEff = false;
-                    //impair = -1;
                     impType = Impairment.ImpairmentType.NULL;
                     helperArray.Clear();
-                    dur = 0.00f; watervalue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f; probability = 1.00f; effect = 1.00f ;
+                    dur = 0.00f; ballValue = 1.00f; wait = 0.00f; certainty = 1.00f; strength = 0.00f; probability = 1.00f; effect = 1.00f ;
                     cost_C = 0.00f; cost_a = 0.00f; cost_b = 0.00f; cost_c = 0.00f; wait_C = 0.00f; wait_a = 0.00f; wait_b = 0.00f; wait_c = 0.00f;
                 }
-
-
-
-
             }
+
             return true;
         }
 
         catch (UnauthorizedAccessException uae)
         {
             Debug.Log("Parsing exception: UnauthorizedAccessException");
-            return false;
         }
 
         catch (System.IO.DirectoryNotFoundException dnfe)
         {
             Debug.Log("Parsing exception: DirectoryNotFoundException");
-            return false;
-        }
+]        }
 
         catch (System.IO.IOException ioe)
         {
             Debug.Log("Parsing exception: IOException");
-            return false;
         }
 
         catch (Exception e)
         {
             Debug.Log("Parsing exception: Exception");
-            return false;
         }
 
         return false;
@@ -868,9 +798,9 @@ public class ConfigParser
     }
 
 
-    public float getWaterValue()
+    public float getBallValue()
     {
-        return this.watervalue;
+        return this.ballValue;
     }
 
 
@@ -913,13 +843,6 @@ public class ConfigParser
 
     public int numDays()
     {
-        if (this.dayConfigs != null)
-        {
-            return this.dayConfigs.Length;
-        }
-        else
-        {
-            return -1;
-        }
+        return (this.dayConfigs != null) ? (this.dayConfigs.Length) : (-1);
     }
 }
