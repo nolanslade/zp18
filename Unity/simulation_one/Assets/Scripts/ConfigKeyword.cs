@@ -9,7 +9,6 @@ using System;
  */
 public sealed class ConfigKeyword {
 
-    char[] delimiter = { '\n', ':', '\t', '#', ' ', '%', ',' };
     public static readonly char NEWLINE             = '\n';
     public static readonly char COLON               = ':';
     public static readonly char TAB                 = '\t';
