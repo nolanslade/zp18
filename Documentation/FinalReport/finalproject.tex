@@ -1,0 +1,550 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\title{Application of Virtual Reality in Experimental Economics}
+\author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
+\date{April 2019}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+\maketitle
+ 
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Objective}
+The project aims to conduct controlled laboratory experiments in order to gain insight into how people make decisions when physically impaired in some way. As a result of the inherent, notably ethical, difficulties presented by actually impairing an experimental participant in the real world, a digital environment serves as a compromise. Our component of the project will be to develop a virtual reality-based environment to be used as a setting for such experiments. This advancement in the project will offer participants a more immersive environment than previously, where they completed the experiment using a two-dimensional computer monitor and game controller. Ideally, in a more immersive environment, researchers would observe more natural decision making from participants.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.27]{vrecon_flowchart.png}
+\caption{Input to Output Flowchart}
+\label{fig:flowchart}
+\end{figure}
+
+\subsection{Experiment Overview}
+At a high level, the controlled experiments involve a singular participant repetitively completing a basic task and subsequently being given a reward, all within a virtual environment. The duration of the experiment is separated into discrete blocks of time, called ‘days’. In each day, the participant may be faced with one or more impairments, and may be able to alleviate them using a treatment, available at a cost. Requirements for each of these components are now described.
+
+\subsection{Task}
+The basic task must be a simple, effort-based operation quantifiable over the lifetime of the experiment. As such, the ‘effort’ component must be clearly defined: what constitutes a participant exerting greater effort? 
+
+
+\subsection{Days}
+
+The simulation is split into a set number of days, each with a given length. The number of days and their lengths are set by the researcher.
+
+The days are used to determine when the participant becomes impaired and when treatments become available, either free or paid.
+
+For a particular day, the participant is aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
+
+\subsection{Reward}
+For every completed iteration, the participant should be rewarded based on their performance. Following the above, a participant exerting greater effort will finish the experiment with a higher amount of total compensation. The reward serves as motivation for the participant to keep repeating the task, and also as a means of establishing an opportunity cost to paying for and subsequently receiving a treatment. 
+
+
+\subsection{Environment}
+The virtual reality environment should be developed for the HTC Vive. More specifically, the environment must fit within the HTC Vive-equipped Interview Room located in the McDSL Lab. The dimensions of the interview room are approximately 10’ long by 9’ wide. In the ideal case, the shape of the virtual world should closely match the interview room in order to maximize participant immersion.
+
+Additionally, the virtual environment should include measures to reduce claustrophobia, as well as motion-induced nausea.
+
+\subsection{Days}
+The simulation should be split into a set number of days, each with a given length customizable by the researcher. The days should be used to determine when the participant becomes impaired and when treatments become available, either free or paid. For a particular day, the participant should be aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
+
+
+\subsection{Impairments}
+The participant should become impaired on the days configured by the researcher. The intensity of the impairment will be configured by the researcher.
+
+Speed penalty:  This should inhibit the participant's mobility by penalizing them if they exceed an arbitrary speed threshold.
+
+Vision Impairment: This should inhibit the participant’s sight, the researcher can configure the level of intensity.
+
+
+\subsection{Treatment}
+Treatments should be offered on days determined by the researcher. The participant will be informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table where the participant can see clearly. 
+
+A clear indication should be provided to the participant of when the treatment becomes available and the price to pay as well as the duration to wait for treatment
+
+If the user chooses to pay for the treatment, their earned money should decrease by the price determined by the researcher and the treatment should be administered. If the user chooses to wait for the treatment, their actions must be paused for the duration configured by the researcher. By the end of their wait, the treatment should have been administered.
+formed if they are becoming impaired or if a treatment has become available in this manner.
+
+\subsection{Configuration File}
+The researcher should be able to use a configuration file that outlines the functionality of the simulations in terms of days, impairments, treatments, and any other simulation variables.
+
+\section{Our Implementation}
+Develop a configurable virtual reality environment as a setting for controlled laboratory investigations. Created for the HTC Vive virtual reality platform with the Unity Game Engine.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.27]{vrecon_flowchart.png}
+\caption{Input to Output Flowchart}
+\label{fig:flowchart}
+\end{figure}
+
+\subsection{People}
+\emph{Participant} - The subject who is participating in the study by using the virtual reality simulation.\newline
+\emph{Researcher} - The person who is conducting the experiments and creating the configuration file.
+
+\subsection{Environment}
+
+The virtual reality environment is developed using the Unity game engine for the HTC Vive. The environment must fit within the HTC Vive-equipped Interview Room located in the McDSL Lab. The measurements of the lab are 10’ long and 9’ wide. The measurements in the Virtual World are multiplied by 18.77.
+
+The virtual building has windows on the right wall with forest outside, to reduce the potential for claustrophobia. These windows can be covered if they cause motion sickness. This is set in the configuration file by the researcher based on prior interview.
+
+The height of the source and sink are halfway to headset height when the participant stands straight. This is configured in the tutorial.
+
+\subsection{Task}
+
+The implemented task is moving buckets of water from a tap (source) to a destination (sink). A successful delivery of a droplet of water from the source to sink earns the participant a number lab dollars configured by the researcher (1 lab dollar by default).
+
+The source is a tap that releases a water droplet every 10th of a second. The destination is a sink that collects the water and calculates how much water is delivered.
+
+The bucket of water can fit approximately 65 droplets of water. It can be grabbed by the participant using the trigger buttons on the HTC Vive hand controller to simulate gripping.
+
+Gravity is simulated to be slightly lighter than the real world and therefore the participant may spill water from the bucket if it is tipped.
+
+
+\subsection{Days}
+
+The simulation is split into a set number of days, each with a given length. The number of days and their lengths are set by the researcher.
+
+The days are used to determine when the participant becomes impaired and when treatments become available, either free or paid.
+
+For a particular day, the participant is aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
+
+\subsection{Lab Money}
+
+The participant earns lab money for every water droplet successfully delivered from the source to the sink. Treatments for impairments cost lab money, either a set amount or a fraction determined by the researcher. The participant’s goal is to maximize their earnings of lab money. They are aware of how much money they have earned and the cost of treatment at the time it becomes available.
+
+\subsection{Impairments}
+
+The participant will become impaired on the days configured by the researcher. The intensity of the impairment is configured by the researcher.
+
+\emph{Speed penalty:}  We implicitly inhibit the participants mobility through penalizing them if they exceed an arbitrary speed threshold (give threshold and better explanation here please)
+
+\emph{Vision Impairment:} We inhibit the participant’s sight by using fog with a maximum intensity of (measurement). The researcher can configure the level of intensity.
+
+\subsection{Treatments}
+
+Treatments are offered on days determined by the researcher. The participant is informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table on the right (window) side indicated by the red cross symbol.
+
+When treatment is available, 2 pill bottles will be placed on the table. One will be indicated with the price of treatment and the other with the time to wait for free treatment (configured by the researcher). If the user picks up the pay bottle, then treatment is administered and their lab dollars decrease by the appropriate amount. If the participant picks up the wait bottle, then they are placed in pause mode without the overlay (i.e. the source ceases to release water) for the communicated amount of wait time. After that period of time the treatment is administered and their lab dollars remain the same.\newline
+
+The cost of the treatment is calculated using: 
+\[ C = (\Omega - DT + \frac{1}{\Omega}T^2)\]
+where the variables are determined by the researcher.
+
+
+\subsection{Configuration File}
+The researcher creates a configuration file that outlines the functionality of days, impairments and treatments. 
+
+\subsubsection{Simulation}
+The Simulation keyword is used once at the very beginning of the configuration. Below this keyword, values such as configuration ID and output type can
+be specified. All keywords under this are tabbed once.
+
+\subsubsubsection{Tutorial}
+The Tutorial keyword is used once after the Simulation configurations have been written. Below this keyword, values for Score needed to complete the tutorial are found. Additionally, the ImpairmentScore needed to complete the tutorial is also found with the type of impairment that the researcher chooses. All keywords under this are tabbed once.
+
+\subsubsection{Day}
+This keyword is used to separate configurations on a per simulation-day basis.
+The Day keyword is equivalent to Simulation in rank, meaning that it should not
+be indented. Day length and impairment parameters are included underneath
+this keyword.
+
+\subsubsection{Impairment}
+The Impairment keyword is to be used within per-Day configurations, meaning
+that it should be tabbed once. Parameters such as impairment type and strength
+factor can then be specified.
+
+\subsubsection{Treatment}
+The Treatment keyword is to be used within per-Day configurations, meaning
+that it should be tabbed once. If the treatment keyword is present for a day,
+that means the treatment is available. Parameters such as Wait can then be specified.
+
+\subsubsection{Cost}
+The Cost keyword is to be used within treatment configurations, meaning that
+it should be tabbed twice. The Cost keyword has four parameters which correspond to the cost of treatment, each tabbed three times.If the cost is a fixed value, instead of a variable one, C will be the only variable set to a number while everything else is given the value “default”
+
+\subsubsection{Wait}
+The Wait keyword is to be used within treatment configurations, meaning that
+it should be tabbed twice. The Wait keyword has four parameters which correspond to how long the user waits before receiving treatment for free, each tabbed three times. If the wait is a fixed value, instead of a variable one, C will be the only variable set to a number while everything else is given the value “default”
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{ConfigFile.PNG}
+\caption{Example Configuration File}
+\label{fig:configfile}
+\end{figure}
+
+
+\subsection{Communicating to Participant}
+The participant is informed about the time remaining in a day, the day number and lab dollars earned through a display located above the source and sink. 
+
+The participant is informed that a day is being changed by floating text attached to the camera (i.e. it is always in their centre field of view). The participant is also informed if they are becoming impaired or if a treatment has become available in this manner.
+
+\subsection{Output}
+The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality related positional data. The exact data is TBD.
+
+%\section{Project Overview}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scene Components}
+\subsection{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc
+
+
+
+\subsection{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
+
+\textbf{Container\_Base}: The container game object represents the bucket the subject carriers to move water from one point to another. It contains 5 cube objects that make up the walls of the bucket (\textit{Container\_Wall\_Front}, \textit{Container\_Wall\_Back}, \textit{Container\_Wall\_Right}, \textit{Container\_Wall\_Left}). It also contains an invisible collider (\textit{Water\_Droplet\_Counter}) to count water droplets that enter and exit the bucket, using the \textit{WaterDropletCounter} script.\newline \newline
+%%% What is the AttachTransformRight and AttachTransformLeft?
+\textbf{SimManager}: A game object to hold the \textit{SimManager} script.\newline \newline
+\textbf{PillManager}: A game object to hold the \textit{PillManager} script.\newline \newline
+\textbf{FlowManager}: A game object to hold the \textit{FlowManager} script.\newline \newline
+\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. Contains the \textit{FlowLimiter} script.\newline \newline
+\textbf{DestinationLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the destination to accept droplets. Contains the \textit{DestinationLimiter} script.\newline \newline
+\textbf{DayZeroSpeedCounter}: Currently not in use, to be used in future implementation of speed penalty to measure the subject's average speed during day 0 tutorial.\newline \newline
+\textbf{Drainage}: A cube object placed at the bottom of the source sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets.
+\textbf{TargetDrainage}: A cube object placed at the bottom of the destination sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets and counting delivered droplets.\newline \newline
+\textbf{CameraRig/Camera/Canvas/FogImpairmentPanel}: This canvas is attached to the camera is used to make the subject's vision appear foggy. The opacity is determined by the intensity of the fog impairment.\newline \newline
+
+
+\subsection{Tutorials \& Instructions} % Triggers/markers, object destruction/moving through steps
+\textbf{InstructionMan}: The game object contains the \textit{InstructionManager} script.\newline \newline
+\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
+\textbf{BucketPickedUpTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
+\textbf{BucketMarker}: This game object is a red exclamation point used to notify the subject of the bucket's location.\newline \newline
+\textbf{BucketPickedUpTrigger}: %what does this do?
+\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the subject of the destination sink bucket.\newline \newline
+\textbf{CameraRig/Camera/Canvas/InstructionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{InstructionTxt} which will display instructions to the subject during the tutorial. \newline \newline
+\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until the new day begins. \newline \newline
+
+\subsection{Receiving Treatment} % Medication station, pills/pedestals/UI, how they are used
+\textbf{TreatmentInformationCanvas}: This canvas contains a panel that is placed above the treatment table. It contains \textit{WaitRemainingPanel} for displaying the wait time when only wait time is available \textit{WaitPanel} for displaying the wait time for when both pay and wait is available. \textit{PayPanel} is for displaying the treatment cost. \textit{TreatmentInformation} is for displaying the title. \newline \newline
+\textbf{PayPills}: This game object is a prefab pill bottle. The \textit{Throwable}, \textit{Interactable} and \textit{VelocityEstimator} scripts allows it to be picked up with the controller. \newline \newline
+\textbf{PayPedestal}: This game object is a red cylinder object for the \textit{PayPills} object to be placed on. \newline \newline
+\textbf{WaitPedestal}: This game object is a blue cylinder object for the \textit{WaitPills} object to be placed on when pay is also an option. \newline \newline
+\textbf{WaitPlatform}: This game object is a blue cube object for the \textit{WaitPills} object to be placed on when it is the only option. \newline \newline
+\textbf{MedicalCross}: This game object is two red cube objects placed to appear like a cross to indicate the medical station. \newline \newline
+
+\subsection{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
+\textbf{Source\_Dispense\_Pipe}: This is a pipe prefab placed above the sink that makes it appear that the water droplets are being dispensed from the pipe. No functionality is attached to this game object.\newline \newline
+\textbf{SourceTubPipe}: This is a pipe prefab placed below the source sink.\newline \newline
+\textbf{DestinationTubPipe}: This is a pipe prefab placed below the destination sink.\newline \newline
+\textbf{Window\_Frames}: Set of cube objects that make up the frames for the windows, along with two for the window glass.\newline \newline
+\textbf{Door}: A prefab door and two paintings on the left wall used when the subject suffers from motion sickness.\newline \newline
+\textbf{AudioManager}: An audio object that contains audio clips for dispensing the water, pouring the water, countdown sound, grabbing pills sound and completion jingle. The \textit{AudioManager} script to determine when to play the audio clips.\newline \newline
+\textbf{Source\_Tub}: A prefab tub under where the droplets are dispensed.\newline \newline
+\textbf{Destination\_Tub}: A prefab tub for the subject to pour droplets into.\newline \newline
+\textbf{Carpet}: A prefab carpet for the floor.\newline \newline
+\textbf{Trees}: Prefab tress for the outdoor scene. \newline \newline
+\textbf{Ceiling}: The ceiling for the house, made up of square \textit{PTK\_Wall\_Small\_1}. \newline \newline
+\textbf{Curtain\_Left}: A curtain to be placed over the left window if the subject gets motion sickness. \newline \newline
+\textbf{Curtain\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Sink}: The wall on the sink side \newline \newline
+\textbf{Wall\_Source}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Left}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Column\_Left\_Rear}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Column\_Left\_Front}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:  \newline \newline
+\section{Script Components}
+\subsection{Interactivity} 
+\href{https://bit.ly/2JH9ws0}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
+\href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
+\href{}{\textbf{Hand.cs}}: Open source Steam VR hand script to assist with interactability of hands with other assets in the scene. Modified to work with our assets and functionalities.
+
+
+\subsection{Immersion} % Audio, haptic feedback, etc
+\href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including water flowing, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, water could flow at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
+
+
+\subsection{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc
+\href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each drop of delivered water (float) on the given day. In addition to two constructors, this script also offers accessors for each one of these key components. \newline \newline
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs:}}: A class that is responsible for parsing the data from the input configuration file and setting experiment variables. It contains methods that divide up the parsing by Simulation and Days. The 'Simulation' part of the parser allows global variables directly related to the look and feel of the experiment to be set. Accessor are provided so they can be set by the appropriate classes. Alternatively, the 'Day' parser sets the structure of the experiment (duration, impairments, treatments, etc). 
+\newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO 
+
+\subsection{Task Design}
+\subsubsection{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
+\href{https://bit.ly/2WrbyxT}{\textbf{FlowManager.cs}}: \newline \newline 
+\href{https://bit.ly/2YtMEjd}{\textbf{DrainageBehaviour.cs}}: TODO  \newline \newline 
+\href{https://bit.ly/2TUX1h4}{\textbf{FlowLimiter.cs}}: Prevents the tap from flowing except when the participant is standing close enough. The main idea behind this script's implementation was to prevent cheating in that players are forced to physically cross the room rather than reach from one side to the other while standing relatively still. The script is meant to be attached to an invisible game object with a collider enabled (the collider must have \textit{isTrigger} set to true). Collisions will then be detected between this invisible game object and the participant's headset; no collisions will be detected with the participant's virtual hands. The script is also designed to prevent the tap from flowing if the participant is waiting for treatment, or if the simulation is not in the \textit{RUNNING} state. \newline \newline
+\href{https://bit.ly/2JGhr8M}{\textbf{DestinationLimiter.cs}}: Similar to FlowLimiter, except instead of preventing water from flowing, this script prevents the participant from being payed unless they are standing close enough to the destination sink. This script is also meant to be used on an invisible game object with a collider attached (and \textit{isTrigger} = true). 
+
+\subsubsection{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
+\href{https://bit.ly/2JFJ9mj}{\textbf{Impairment.cs}}: Encapsulates the two components of an impairment: the type (defined in the Treatment.\textit{ImpairmentType} enum), and strength (float, percentage expressed from 0.0 to 1.0). Offers public methods to retrieve and set each one of these components. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO \newline \newline % How/where do we apply them in update
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{modifyImpairmentFactors (float)}}}: Iterates over all active impairments for the current day, and decreases their respective strengths by the given factor. For example, if all impairments have a 50\% strength, calling \texit{modifyImpairmentFactors (0.75)} will yield new impairment strengths of 12.5\%; or, specifically, strength = original\_strength * (1 - factor).  \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{unapplyImpairments ()}}}: Iterates over all active impairments for the current day (if any), and deactivates them accordingly. Depending on the impairment, the operations to deactive will vary. Functionally, this method is equivalent to calling \textit{modifyImpairmentFactors (1.0)}, that is, remove 100\% of the strength for each active impairment. 
+
+\subsubsection{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
+\href{https://bit.ly/2TwrvAZ}{\textbf{Treatment.cs}}: Encapsulates all components that make up a given day's treatment options. These components include private float members for C, a, b, c of both the day's pay cost function and its wait time cost function (wait\_C, wait\_a, wait\_b, wait\_c and cost\_C, cost\_a, cost\_b, and cost\_c, respectively). If a treatment day only offers the choice of paying, then the wait members are set to a static value of Treatment.\textit{NONE}, and vice versa. Other private members include the probability of effectiveness (float 0.0 to 1.0), and effectiveness (also float 0.0 to 1.0). If a treatment's probability of effectiveness is 0.5, and its effectiveness is 0.8, then there exists a 50\% chance that the treatment will alleviate 80\% of the active impairment(s); conversely, there exists a 50\% chance the treatment will have no effect.
+
+This script also offers an assortment of public methods to do things like retrieve the treatment's current cost or its current wait time cost, determine if the treatment is effective (determined only once and then cached), or to check if the treatment has been obtained already. \newline \newline
+\href{https://bit.ly/2JDPChz}{\textbf{PillManager.cs}}: TODO 
+
+\subsubsection{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
+
+
+\subsubsection{Instructions} % Tutorial framework, how it's coded -> beginning + mid-way via limbo / treatments
+\href{https://bit.ly/2JFHEED}{\textbf{Instruction.cs}}: A simple class to encapsulate the two components of any instruction: a string \textit{message}, and a float \textit{displayDuration} (seconds). Instruction objects can be passed into later-described methods in order to display their respective messages for the desired amount of time. \newline \newline
+\href{https://bit.ly/2TzLE9i}{\textbf{InstructionManager.cs}}: Offers methods to display instructions on the participant's HUD. When these methods are called, a grey translucent panel is enabled in front of the participant's eyes, and the corresponding instruction text is placed on top. Once an instruction is set and is being displayed, this class is also responsible for disabling the instruction text and panel once the message's display duration has expired. This script is meant to be attached to an empty game object within the scene, and requires instruction text and panel game objects to be attached to it through the Unity editor. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{limbo (Instruction [])}}}: This method is to be used when instructions are required in the midst of the simulation, rather than during the tutorial day, \'Day Zero\'. The programmer must first define an array of \texit{Instruction} objects, and then pass those into the \textit{limbo} method. Once the method is called, the simulation will enter the \textit{LIMBO} state. In this state, the user is not able to complete the task or interact with the environment in any way. Instead, the grey translucent instruction panel will be enabled, and each instruction in the array will be displayed sequentially. Once all instructions have been displayed for their respective durations, the \texit{exitLimbo()} method should be called so that the simulation will resume in the \textit{RUNNING} state. \newline \newline
+\href{https://bit.ly/2Yooc2m}{\textbf{GoalMarker.cs}}: A script that defines the behaviour of a point of interest marker meant to accompany a given instruction. The marker will move smoothly up and down, keeping a constant X and Z position within the scene. It requires the programmer to set the upper and lower Y bounds, as well as how fast it should move (all public float variables). This script is designed to be attached to marker game objects within the scene - if the object is activated, it will always exhibit the behaviour defined in this script. \newline \newline
+\href{https://bit.ly/2uwAQ1u}{\textbf{InstructionTrigger.cs}}: There are different events that should trigger the next instruction set in a sequence; for example, a certain time duration having elapsed, some threshold being met, or the participant (or some other object) physically moving to a specified location within the scene. This script allows the latter, and is meant to be attached to an invisible game object within the scene (this object must have a collider that has \textit{isTrigger} enabled). In order for the script to work, the following public members must be assigned through the Unity editor: the SimManager, the next Tutorial Step to advance to (use TutorialStep.NULL unless multiple InstructionTrigger objects are being used for one instruction and could try to advance the tutorial step at the same time; in this case, it is advisable to explicitly define which step to advance to such that no duplicate advances are made) and the object to detect collisions with (such as the participant headset, or the container). Optionally, the programmer may also attach a game object to the \texit{destroyOnTrigger} member - this object will be destroyed whenever the aforementioned collision takes place. This is useful when a Goal Marker is being used in conjunction with an instruction. Once the instruction is no longer needed, such as when the participant moves to a certain location, the Goal Marker is also no longer needed and should be destroyed. 
+
+
+\subsubsection{User Interfaces}
+\href{https://bit.ly/2G9SRs1}{\textbf{MultiDayUIUpdate.cs}}: Responsible for updating the Wall UI components with time remaining, current day, current wage, and earnings across multiple days of the experiment. Its behaviour depends on how many days are being used for the experiment; notably, the layout will display at most four days worth of earnings. If more than four days are used in the experiment configuration, then the script will display earnings for the four most recent days. In order to facilitate this main functionality, the script has public methods, which should be called only by SimManager, to set the current day, total number of days, among other critical fields. \newline \newline
+\href{https://bit.ly/2VHtW5B}{\textbf{TransitionMessage.cs}}: When in the transition state, this script will populate text fields to indicate to the participant how much time remains until the next day of the simulation. As well, it will tell the user whether or not the next day is a full health day, or an impaired day. \newline \newline
+
+
+\subsection{Custom Configuration} 
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs}}: This class allows the experiment to be structured as per the user's preferences through a configuration file. This class reads the configuration file by going through the keywords, as provided by the ConfigKeyword class. By matching the keywords, it first sets the 'Simulation' preferences such as sound, description and others. Each of the variables has corresponding accessors, which provide other classes access to the ConfigParser's private variables and allow them to set the look and feel of the simulation as indicated. Next, it sets the design of the 'Tutorial' with the corresponding values of the minimum scores required to finish the tutorial. Finally, the structure of the 'Day' is set. Each day's Duration, Impairment, Treatment, and BallValue are set accordingly. These day configurations are then loaded into the DayConfigurations class.
+\href{https://bit.ly/2TWgOwJ}{\textbf{ConfigKeyword.cs}}: Sealed class that contains static readonly ENUMs of keywords used by the ConfigParser to read the input file written by the user. 
+
+
+
+\subsection{Persistence} % How do we track data / what do we track / how do we print it out
+\href{https://bit.ly/2Fhq8B2}{\textbf{ParticipantData.cs}}: Static class populated after the participant presses the start button on the welcome screen. The participant's name and sensitivity information is gathered from the input form, and kept inside public static variables \textit{name} (string), \textit{nauseaSensitive} (bool), and \textit{claustrophicSensitive} (bool). These values can be accessed at any point during runtime. \newline \newline
+\href{https://bit.ly/2WgL6qR}{\textbf{PopulateParticipantData.cs}}: Facilitates the population of the ParticipantData static class. Each field of the welcome screen input form is mapped to GameObject variable within this script. When the confirm button is pressed, the values of each form element are retrieved, and the ParticipantData variables are assigned accordingly. Once this process is complete, this script also loads the main simulation scene, using a \textit{LoadLevel} method call. \newline \newline
+\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}: Contains definitions for log file naming, output data directories, as well as output data string formats. When instantiated, this class validates the output directory, and creates a new text file for persistence, which is named using the start time and participant name (if available). Once the output file is created, the constructor calls the \textit{writeIntroduction()} method, which summarizes the participant and application information, and prints CSV column headers.
+
+This class offers a public method \texit{persist()} - it takes a number of important simulation metrics as arguments, and persists them into the output file in CSV format.
+
+
+
+
+
+
+
+\section{User Manual: Configuration File Breakdown}
+This document outlines how to modify the simulation configuration file in order to achieve the desired experiment format. The application expects such a file to be named \textit{sim\_config.txt}, and for it to be located in the \textit{Ball\_Sim\_x.x\slash simulation\_one\_Data\slash InputData} directory. Failing to follow this naming convention or moving the file out of this location will result in the application being unable to start up properly. The configuration file supports a number of keyword-value pairs that can be easily combined to define the temporal structure of the simulation as well as auxiliary parameters. 
+
+\subsection{Simulation}
+This section includes information pertaining to high-level details of the simulation. This keyword is not tabbed; each of the following four keywords are tabbed once.
+
+\subsubsection{Name} For user convenience - offers a simple way of differentiating multiple configuration file setups. No restrictions on value. 
+
+%\noindent \textbf{Output}: How the experimenter wants the data from the simulation to be produce\newline
+%\indent -Possible Values: (both can be used, separated by a comma)\newline
+%\indent\indent .txt \newline
+%\indent\indent database \newline
+%
+%\noindent Example:
+%\begin{lstlisting}
+%Output:.txt,database
+%\end{lstlisting}
+
+\subsubsection{Description} Similar to the above: offers a way to describe a given simulation configuration for documentation purposes. No restrictions on value. 
+
+\subsubsection{Instructions} Toggles whether or not instructions will appear throughout the experiment. These include both the \textit{Day Zero} tutorial and pre-treatment instruction sets.
+\newline \indent Possible values: \newline
+\indent\indent enabled \newline
+\indent\indent disabled
+
+\subsubsection{Sound} Disables or enables all sound effects within the scene, including pipe flow and countdowns, among others.
+\newline \indent Possible values: \newline
+\indent\indent enabled \newline
+\indent\indent disabled
+
+\subsubsection{Sample Simulation Configuration:}
+\begin{lstlisting}
+Simulation
+    Name:April 2019 configuration.
+    Description:Stronger impairments.
+    Instructions:enabled
+    Sound:enabled
+\end{lstlisting} 
+
+\subsection{Tutorial}
+This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this stage of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the first paid day. Optionally, \textit{Day Zero} can be split into two portions: one unimpaired portion, and one impaired portion. The impaired portion is preceded by an instruction set. The second portion will only take place if the \textit{Impairment} keyword is used when configuring the tutorial. Usage of the \textit{Impairment} keyword is described later in this document. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score}, \textit{ImpairedScore}, and \textit{Impairment} keywords are tabbed once. Sub-keywords for the optional second portion impairment, \textit{Strength} and \textit{Type}, should be tabbed three times.
+
+\subsubsection{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number
+
+\subsubsection{ImpairedScore} Sets the amount that the participant will need to earn to pass the optional second portion of the tutorial day. If not specified, the default is also \textbf{\$150.00}. \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number
+
+\subsubsection{Sample tutorial configuration:}
+\begin{lstlisting}
+Tutorial
+    Score:175
+    ImpairedScore:125
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
+\end{lstlisting}
+
+\subsection{Day}
+Signifies a new day to be included in the experiment. Each day may include the following sub-keywords: \textit{Duration}, \textit{Impairment}, and \textit{Treatment}. The \textit{Day} keyword is not tabbed, and each associated sub-keyword is tabbed once.
+
+\subsubsection{Duration}
+This keyword refers to how long each day will last. This field is \textbf{mandatory}. \newline
+\indent Possible Values: \newline
+\indent\indent minutes:seconds, where both components must be positive integers
+
+\subsubsection{BallValue}
+This keyword allows for the payout per ball to be adjusted. This is not a required field, and by default it is set to 1. \newline
+\indent Possible Values: \newline
+\indent\indent Any decimal number
+
+\subsubsection{Impairment}
+This keyword will determine which impairments will be in effect during the day. There can be one or more impairments imposed on a single day, and each one requires its own \textit{Impairment} keyword. \textit{Impairment} is tabbed once. Associated sub-keywords, \textit{Type} and \textit{Strength}, are tabbed twice. \newline
+
+\subsubsubsection{\textbf{Type}} \newline
+\indent Possible values: \newline
+\indent\indent Physical/Shake \newline
+\indent\indent Visual/Fog \newline
+%\indent\indent Physical/Speed\newline
+%\indent\indent Physical/Gravity\newline
+
+
+\subsubsubsection{\textbf{Strength}} \newline
+\indent Possible values: \newline
+\indent\indent Any integer between 0-100 followed by a \% sign \newline
+    
+%\noindent Example:
+%\begin{lstlisting}
+%    Impairment
+%        Type:Physical/Speed
+%        Strength:75%
+%    Impairment
+%        Type:Visual/Fog
+%        Strength:5%
+%\end{lstlisting}
+
+\subsubsection{Treatment}
+This keyword is used to specify which treatment options will be available to the participant on the given day. The cost of obtaining a treatment follows the functional form of $C(c - bT + aT^2)$, where by default, the values of a, b, and c are 1\slash day length in minutes, 2, and day length in minutes, respectively. The functional form is consistent across both pay-style treatments (where cost is in dollars), and wait-style treatments (where cost is in seconds). When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory}; and, if all three of their respective a, b, and c values are excluded entirely, they will be set to default. 
+
+Typically, a treatment alleviates 100\% of all active impairments, with 100\% certainty. If desired, these two values can be modified using the \textit{Effectiveness} keyword, with sub-keywords \textit{Effect}, and \textit{Probability}, respectively. These two fields are not mandatory and will default to 100\% each if excluded.
+
+\textit{Treatment} is tabbed once while sub-keywords \textit{Effectiveness}, \textit{Wait}, and \textit{Cost} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c}, \textit{Effect}, and \textit{Probability} are tabbed three times. \newline
+
+%\subsubsection{Treatment}
+%This keyword is used to specify which treatment options will be available to the participant on the given day. When the \textit{Wait} or \textit{Cost} keywords are included, their respective \textbf{C} values are \textbf{mandatory} values.  \textit{Treatment} is tabbed once while sub-keywords \textit{Wait}, \textit{Cost}, \textit{Certainty} and \textit{Effectiveness} are tabbed twice. \textit{C}, \textit{a}, \textit{b}, \textit{c} are tabbed three times, as they are specific to exactly one treatment.
+
+%\subsubsubsection{\textbf{Certainty}} \newline
+%\indent Possible values:\newline
+%\indent\indent Any integer between 0-100 followed by a \% sign \newline
+
+%\noindent Example: 
+%\begin{lstlisting}
+%    Treatment
+%        Certainty:80%
+%\end{lstlisting}
+
+\subsubsubsection{\textbf{C}} \newline
+\indent Possible values: \newline
+\indent\indent Any decimal number \newline\newline
+\subsubsubsection{\indent\textbf{a, b, c}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number \newline
+\indent\indent  default \newline\newline
+\subsubsubsection{\indent\textbf{Effect}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number, followed by a \% sign \newline\newline
+\subsubsubsection{\indent\textbf{Probability}} \newline
+\indent  Possible values: \newline
+\indent\indent  Any decimal number, followed by a \% sign \newline
+
+%\noindent \textbf{Wait/Cost} \newline
+%\noindent Example: Not a valid input
+%\begin{lstlisting}
+%    C:100
+%    b:100
+%    c:default
+%\end{lstlisting}
+%- "a" must be included, no option to omit only one of a, b, or c\newline
+
+%\noindent \textbf{a, b, and c Included} \newline
+%\noindent Example:
+%\begin{lstlisting}
+%    Treatment
+%        Wait
+%            C:100
+%            a:default
+%            b:default
+%            c:10
+%        Cost
+%            C:56
+%            a:34
+%            b:54
+%            c:default
+% \end{lstlisting}   
+% \noindent \textbf{a, b, and c Not Included} \newline
+% \noindent Example:
+% \begin{lstlisting}
+%    Treatment
+%        Wait
+%            C:100
+%        Cost
+%            C:56
+% \end{lstlisting} 
+ 
+%\noindent \textbf{Effectiveness} 
+%    
+%\noindent Probability\newline
+%\indent-Possible values:\newline
+%\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline
+%\noindent Effect\newline
+%\indent-Possible values:\newline
+%\indent\indent Any whole/decimal number between 0-100 followed by a "\%" sign \newline    
+    
+\pagebreak\subsection{Sample Configuration File}
+\begin{lstlisting}
+Simulation
+    Name:Full sample configuration file
+    Description:Sample 3-day (plus intro) configuration file  
+    Instructions:enabled
+    Sound:enabled
+Tutorial
+    Score:180
+    ImpairedScore:125
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
+Day
+    Duration:1:30
+Day
+    BallValue:1.50
+    Duration:1:30
+    Impairment
+        Type:Physical/Shake
+        Strength:70%
+Day
+    BallValue:1.25
+    Duration:2:00
+    Impairment
+        Type:Visual/Fog
+        Strength:75%
+    Impairment
+        Type:Physical/Shake
+        Strength:50%
+    Treatment
+        Effectiveness
+            Probability:50%
+            Effect:90%
+        Wait
+            C:0.5
+            a:0.1111
+            b:3
+            c:1.5
+        Cost
+            C:80
+            a:default
+            b:default
+            c:default
+\end{lstlisting}   
+    
+
+\end{document}
