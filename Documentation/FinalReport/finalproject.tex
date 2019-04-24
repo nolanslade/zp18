@@ -145,8 +145,9 @@ The researcher creates a configuration file that outlines the functionality of d
 The Simulation keyword is used once at the very beginning of the configuration. Below this keyword, values such as configuration ID and output type can
 be specified. All keywords under this are tabbed once.
 
-\subsubsubsection{Tutorial}
-The Tutorial keyword is used once after the Simulation configurations have been written. Below this keyword, values for Score needed to complete the tutorial are found. Additionally, the ImpairmentScore needed to complete the tutorial is also found with the type of impairment that the researcher chooses. All keywords under this are tabbed once.
+\subsubsection{Tutorial}
+The Tutorial keyword is used once after the Simulation configurations have been written. The Tutorial keyword is equivalent to Simulation in rank, meaning that it should not
+be indented. Below this keyword, values for the Score needed to complete the tutorial is found. Additionally, the ImpairmentScore needed to complete the tutorial is also found with the type of impairment imposed during this portion. All keywords under this are tabbed once, while Impairment information is tabbed twice.
 
 \subsubsection{Day}
 This keyword is used to separate configurations on a per simulation-day basis.
@@ -166,11 +167,15 @@ that means the treatment is available. Parameters such as Wait can then be speci
 
 \subsubsection{Cost}
 The Cost keyword is to be used within treatment configurations, meaning that
-it should be tabbed twice. The Cost keyword has four parameters which correspond to the cost of treatment, each tabbed three times.If the cost is a fixed value, instead of a variable one, C will be the only variable set to a number while everything else is given the value “default”
+it should be tabbed twice. The Cost keyword has four parameters which correspond to the cost of treatment, each tabbed three times. The parameters are C, a, b, and c. Defaulting parameters is only permitted to a, b, and c. This can be done by setting those values to "default", they will be calculated as such:
+    a = 1/day length
+    b = 2
+    c = day length
+    
 
 \subsubsection{Wait}
 The Wait keyword is to be used within treatment configurations, meaning that
-it should be tabbed twice. The Wait keyword has four parameters which correspond to how long the user waits before receiving treatment for free, each tabbed three times. If the wait is a fixed value, instead of a variable one, C will be the only variable set to a number while everything else is given the value “default”
+it should be tabbed twice. The Wait keyword has four parameters which correspond to how long the user waits before receiving treatment for free, each tabbed three times. Similar to the Cost keyword, a, b, and c are the only values that are permitted the "default" option. The calculation of the default values are the same as Cost. 
 
 
 \begin{figure}[h!]
@@ -187,7 +192,7 @@ The participant is informed about the time remaining in a day, the day number an
 The participant is informed that a day is being changed by floating text attached to the camera (i.e. it is always in their centre field of view). The participant is also informed if they are becoming impaired or if a treatment has become available in this manner.
 
 \subsection{Output}
-The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality related positional data. The exact data is TBD.
+The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality related positional data. Some data that is included is price of treatment, spill rate, earnings, and other information the researcher may find useful.
 
 %\section{Project Overview}
 
@@ -267,8 +272,8 @@ The data from the simulation is outputted into a csv file. This includes the dat
 \href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each drop of delivered water (float) on the given day. In addition to two constructors, this script also offers accessors for each one of these key components. \newline \newline
 \href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs:}}: A class that is responsible for parsing the data from the input configuration file and setting experiment variables. It contains methods that divide up the parsing by Simulation and Days. The 'Simulation' part of the parser allows global variables directly related to the look and feel of the experiment to be set. Accessor are provided so they can be set by the appropriate classes. Alternatively, the 'Day' parser sets the structure of the experiment (duration, impairments, treatments, etc). 
 \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: TODO \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: TODO \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: It creates the configuration parser object to read the configuration file for the simulation. On success of the parameters being set, it returns true, otherwise returns false on errors. Instructions, sound, and tutorial scores are all set in this method. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: An accessor created to allow other classes to access the day configuration for the current day as managed by the SimManager. \newline \newline
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO 
 
 \subsection{Task Design}
