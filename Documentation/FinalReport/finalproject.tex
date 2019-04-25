@@ -20,27 +20,12 @@
 \section{Objective}
 The project aims to conduct controlled laboratory experiments in order to gain insight into how people make decisions when physically impaired in some way. As a result of the inherent, notably ethical, difficulties presented by actually impairing an experimental participant in the real world, a digital environment serves as a compromise. Our component of the project will be to develop a virtual reality-based environment to be used as a setting for such experiments. This advancement in the project will offer participants a more immersive environment than previously, where they completed the experiment using a two-dimensional computer monitor and game controller. Ideally, in a more immersive environment, researchers would observe more natural decision making from participants.
 
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.27]{vrecon_flowchart.png}
-\caption{Input to Output Flowchart}
-\label{fig:flowchart}
-\end{figure}
-
 \subsection{Experiment Overview}
 At a high level, the controlled experiments involve a singular participant repetitively completing a basic task and subsequently being given a reward, all within a virtual environment. The duration of the experiment is separated into discrete blocks of time, called ‘days’. In each day, the participant may be faced with one or more impairments, and may be able to alleviate them using a treatment, available at a cost. Requirements for each of these components are now described.
 
 \subsection{Task}
 The basic task must be a simple, effort-based operation quantifiable over the lifetime of the experiment. As such, the ‘effort’ component must be clearly defined: what constitutes a participant exerting greater effort? 
 
-
-\subsection{Days}
-
-The simulation is split into a set number of days, each with a given length. The number of days and their lengths are set by the researcher.
-
-The days are used to determine when the participant becomes impaired and when treatments become available, either free or paid.
-
-For a particular day, the participant is aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
 
 \subsection{Reward}
 For every completed iteration, the participant should be rewarded based on their performance. Following the above, a participant exerting greater effort will finish the experiment with a higher amount of total compensation. The reward serves as motivation for the participant to keep repeating the task, and also as a means of establishing an opportunity cost to paying for and subsequently receiving a treatment. 
@@ -94,17 +79,16 @@ The virtual reality environment is developed using the Unity game engine for the
 
 The virtual building has windows on the right wall with forest outside, to reduce the potential for claustrophobia. These windows can be covered if they cause motion sickness. This is set in the configuration file by the researcher based on prior interview.
 
-The height of the source and sink are halfway to headset height when the participant stands straight. This is configured in the tutorial.
 
 \subsection{Task}
 
-The implemented task is moving buckets of water from a tap (source) to a destination (sink). A successful delivery of a droplet of water from the source to sink earns the participant a number lab dollars configured by the researcher (1 lab dollar by default).
+The implemented task is moving buckets of balls from a tap (source) to a destination (sink). A successful delivery of a ball from the source to sink earns the participant a number lab dollars configured by the researcher (1 lab dollar by default).
 
-The source is a tap that releases a water droplet every 10th of a second. The destination is a sink that collects the water and calculates how much water is delivered.
+The source is a tap that releases a ball every 10th of a second. The destination is a sink that collects the balls and calculates how many are delivered.
 
-The bucket of water can fit approximately 65 droplets of water. It can be grabbed by the participant using the trigger buttons on the HTC Vive hand controller to simulate gripping.
+The bucket can fit approximately 65 balls. It can be grabbed by the participant using the trigger buttons on the HTC Vive hand controller to simulate gripping.
 
-Gravity is simulated to be slightly lighter than the real world and therefore the participant may spill water from the bucket if it is tipped.
+Gravity is simulated to be slightly lighter than the real world and therefore the participant may spill balls from the bucket if it is tipped.
 
 
 \subsection{Days}
@@ -117,21 +101,20 @@ For a particular day, the participant is aware of what day number it is, the tim
 
 \subsection{Lab Money}
 
-The participant earns lab money for every water droplet successfully delivered from the source to the sink. Treatments for impairments cost lab money, either a set amount or a fraction determined by the researcher. The participant’s goal is to maximize their earnings of lab money. They are aware of how much money they have earned and the cost of treatment at the time it becomes available.
+The participant earns lab money for every ball successfully delivered from the source to the sink. Treatments for impairments cost lab money, either a set amount or a fraction determined by the researcher. The participant’s goal is to maximize their earnings of lab money. They are aware of how much money they have earned and the cost of treatment at the time it becomes available.
 
 \subsection{Impairments}
 
 The participant will become impaired on the days configured by the researcher. The intensity of the impairment is configured by the researcher.
 
-\emph{Speed penalty:}  We implicitly inhibit the participants mobility through penalizing them if they exceed an arbitrary speed threshold (give threshold and better explanation here please)
-
+\emph{Physical Shake:}  We inhibit the participant's dexterity by implementing haptic feedback on the controllers. The researcher can configure the level of intensity.
 \emph{Vision Impairment:} We inhibit the participant’s sight by using fog with a maximum intensity of (measurement). The researcher can configure the level of intensity.
 
 \subsection{Treatments}
 
 Treatments are offered on days determined by the researcher. The participant is informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table on the right (window) side indicated by the red cross symbol.
 
-When treatment is available, 2 pill bottles will be placed on the table. One will be indicated with the price of treatment and the other with the time to wait for free treatment (configured by the researcher). If the user picks up the pay bottle, then treatment is administered and their lab dollars decrease by the appropriate amount. If the participant picks up the wait bottle, then they are placed in pause mode without the overlay (i.e. the source ceases to release water) for the communicated amount of wait time. After that period of time the treatment is administered and their lab dollars remain the same.\newline
+When treatment is available, 2 pill bottles will be placed on the table. One will be indicated with the price of treatment and the other with the time to wait for free treatment (configured by the researcher). If the user picks up the pay bottle, then treatment is administered and their lab dollars decrease by the appropriate amount. If the participant picks up the wait bottle, then they are placed in pause mode without the overlay (i.e. the source ceases to release balls) for the communicated amount of wait time. After that period of time the treatment is administered and their lab dollars remain the same.\newline
 
 The cost of the treatment is calculated using: 
 \[ C = (\Omega - DT + \frac{1}{\Omega}T^2)\]
@@ -158,6 +141,13 @@ The participant is informed that a day is being changed by floating text attache
 
 \subsection{Output}
 The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality related positional data. Some data that is included is price of treatment, spill rate, earnings, and other information the researcher may find useful.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.27]{Output.png}
+\caption{Some of the data collected in the csv file}
+\label{fig:flowchart}
+\end{figure}
 
 %\section{Project Overview}
 
@@ -224,15 +214,13 @@ The data from the simulation is outputted into a csv file. This includes the dat
 \textbf{Destination\_Tub}: A prefab tub for the subject to pour droplets into.\newline \newline
 \textbf{Carpet}: A prefab carpet for the floor.\newline \newline
 \textbf{Trees}: Prefab tress for the outdoor scene. \newline \newline
-\textbf{Ceiling}: The ceiling for the house, made up of square \textit{PTK\_Wall\_Small\_1}. \newline \newline
+\textbf{Ceiling}: The ceiling for the house, made up of square
 \textbf{Curtain\_Left}: A curtain to be placed over the left window if the subject gets motion sickness. \newline \newline
 \textbf{Curtain\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Sink}: The wall on the sink side \newline \newline
-\textbf{Wall\_Source}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Left}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Column\_Left\_Rear}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Column\_Left\_Front}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\textbf{Wall\_Sink}: The sink side wall where the destination tub is located \newline \newline
+\textbf{Wall\_Source}: The source side wall where the source tub is located  \newline \newline
+\textbf{Wall\_Treatment}: The right wall where the treatment will become available.
+\textbf{Wall\_Scene}: The left wall where windows are located (which may be covered in the case that the subject gets motion sickness).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:  \newline \newline
 \section{Script Components}
