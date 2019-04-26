@@ -9,7 +9,7 @@
     urlcolor=blue,
 }
 
-\title{Water Simulation: Application Breakdown}
+\title{Ball Simulation: Application Breakdown}
 \author{Aaska Shah\\Kerala Brendon\\Nolan Slade\\Vyome Kishore}
 \date{March 2019}
 
@@ -17,116 +17,103 @@
 
 \maketitle
 
-%% What we could do is include hyperlinks to the classes we mention on GitHub so they
-%% could immediately jump to where we're talking about / make the changes they want to
-
 \section*{Overview}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Scene Components}
-\subsection*{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc
+Presented in this document is a detailed overview of our application both in terms of its Unity scene components, and its scripts. For the scene component breakdown, it's important to note that many objects are omitted simply because of how many objects are present in the scene. However, all components that are critical to the functionality of the simulation are included.
 
 
-
-\subsection*{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
-
-\textbf{Container\_Base}: The container game object represents the bucket the subject carriers to move water from one point to another. It contains 5 cube objects that make up the walls of the bucket (\textit{Container\_Wall\_Front}, \textit{Container\_Wall\_Back}, \textit{Container\_Wall\_Right}, \textit{Container\_Wall\_Left}). It also contains an invisible collider (\textit{Water\_Droplet\_Counter}) to count water droplets that enter and exit the bucket, using the \textit{WaterDropletCounter} script.\newline \newline
-%%% What is the AttachTransformRight and AttachTransformLeft?
-\textbf{SimManager}: A game object to hold the \textit{SimManager} script.\newline \newline
-\textbf{PillManager}: A game object to hold the \textit{PillManager} script.\newline \newline
-\textbf{FlowManager}: A game object to hold the \textit{FlowManager} script.\newline \newline
-\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. Contains the \textit{FlowLimiter} script.\newline \newline
-\textbf{DestinationLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the destination to accept droplets. Contains the \textit{DestinationLimiter} script.\newline \newline
-\textbf{DayZeroSpeedCounter}: Currently not in use, to be used in future implementation of speed penalty to measure the subject's average speed during day 0 tutorial.\newline \newline
-\textbf{Drainage}: A cube object placed at the bottom of the source sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets.
-\textbf{TargetDrainage}: A cube object placed at the bottom of the destination sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets and counting delivered droplets.\newline \newline
-\textbf{CameraRig/Camera/Canvas/FogImpairmentPanel}: This canvas is attached to the camera is used to make the subject's vision appear foggy. The opacity is determined by the intensity of the fog impairment.\newline \newline
+\section*{Scene Component Breakdown}
+\subsection*{VR Equipment Interface}
+\textbf{SteamVR}: \href{https://bit.ly/2VnzLbI}{SteamVR plugin} developed by Valve Software, which allows the Unity engine to interface with the HTC Vive, or more generally, most popular VR equipment sets. \newline \newline
+\textbf{CameraRig}: Works in conjunction with the aforementioned SteamVR component. This set of objects includes a headset tracker, which tracks position relative to the centre of the room in meters (\textit{Camera}), as well as controller trackers that work in a similar fashion (\textit{Controller (left\slash right)}). The CameraRig object is translated and rotated according to the transform provided by the \textit{Camera} object, such that the participant is able to walk naturally across the scene. \newline \newline
+\textbf{Virtual\_Hand\_Left\slash Right}: Since the \textit{Controller (left\slash right)} object transforms are required in order to know the position and rotational values of the Vive's physical controllers, they themselves cannot be translated within the scene like the CameraRig. In order to render the hands in the correct location within the scene, these two game objects are translated instead. These two hands are the ones that the participant sees during the lifetime of the simulation. 
 
 
-\subsection*{Tutorials \& Instructions} % Triggers/markers, object destruction/moving through steps
-\textbf{InstructionMan}: The game object contains the \textit{InstructionManager} script.\newline \newline
-\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
-\textbf{BucketPickedUpTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
-\textbf{BucketMarker}: This game object is a red exclamation point used to notify the subject of the bucket's location.\newline \newline
-\textbf{BucketPickedUpTrigger}: %what does this do?
-\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the subject of the destination sink bucket.\newline \newline
-\textbf{CameraRig/Camera/Canvas/InstructionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{InstructionTxt} which will display instructions to the subject during the tutorial. \newline \newline
-\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until the new day begins. \newline \newline
+\subsection*{Core Task Functionality} 
+\textbf{Container\_Base}: The container game object represents the bucket the participant uses to carry bouncy balls from one side of the room to the other. It contains 5 rectangular prism objects that make up the walls of the bucket: (\textit{Container\_Wall\_Front\slash Back\slash Right\slash Left}). It also contains an invisible collider object, \textit{Water\_Droplet\_Counter}, which is used to keep track of how many balls are currently inside of the bucket.\newline \newline
+\textbf{SimManager}: Arguably the most important game object in the application - this object manages the state of the simulation, and keeps track of critical variables throughout its lifetime. Many other game objects reference the Simulation Manager in order to carry out their respective tasks.\newline \newline
+\textbf{PillManager}: Manages treatment functionality including, but not limited to rendering visible components, and determining current pay and wait-time costs.\newline \newline
+\textbf{FlowManager}: Responsible for starting and stopping the instantiation of bouncy balls from the source pipe. This component is required as there are certain times when instantiation, \textit{flow}, should not be enabled. These include when the participant is standing too far away, or when they are transitioning between days. \newline \newline
+\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. The reasoning behind this object's inclusion is to discourage cheating, where a participant would try to reach the source pipe without actually walking to it. \newline \newline
+\textbf{DestinationLimiter}: Similar to the FlowLimiter, except instead of preventing flow from being activated, it prevents the participant from being payed unless they are standing close enough to the destination tub.\newline \newline
+\textbf{DayZeroSpeedCounter}: Currently not in use, but functional: measures the participant's average speed during day 0 tutorial. It is designed to provide the most accurate measurement possible, in that it only keeps track of speed and elapsed time when the participant is actually walking in between the source and destination.\newline \newline
+\textbf{TargetDrainage}: Facilitates participant reward payout when it makes contact with a bouncy ball (assuming the participant is standing close enough). Regardless of whether a reward is actually payed out, this game object is also responsible for destroying individual ball objects once a collision occurs. \newline \newline
+\textbf{Drainage}: Exhibits similar behaviour to the TargetDrainage object, except it does not trigger a reward payout. \newline \newline
+\textbf{GameInfoMultiDay\slash \_Dest}: Wall interfaces that present important information to the user throughout the lifetime of the simulation, including the current day, the remaining day time, their current wage, and earnings.
 
-\subsection*{Receiving Treatment} % Medication station, pills/pedestals/UI, how they are used
-\textbf{TreatmentInformationCanvas}: This canvas contains a panel that is placed above the treatment table. It contains \textit{WaitRemainingPanel} for displaying the wait time when only wait time is available \textit{WaitPanel} for displaying the wait time for when both pay and wait is available. \textit{PayPanel} is for displaying the treatment cost. \textit{TreatmentInformation} is for displaying the title. \newline \newline
-\textbf{PayPills}: This game object is a prefab pill bottle. The \textit{Throwable}, \textit{Interactable} and \textit{VelocityEstimator} scripts allows it to be picked up with the controller. \newline \newline
-\textbf{PayPedestal}: This game object is a red cylinder object for the \textit{PayPills} object to be placed on. \newline \newline
-\textbf{WaitPedestal}: This game object is a blue cylinder object for the \textit{WaitPills} object to be placed on when pay is also an option. \newline \newline
-\textbf{WaitPlatform}: This game object is a blue cube object for the \textit{WaitPills} object to be placed on when it is the only option. \newline \newline
-\textbf{MedicalCross}: This game object is two red cube objects placed to appear like a cross to indicate the medical station. \newline \newline
 
-\subsection*{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
-\textbf{Source\_Dispense\_Pipe}: This is a pipe prefab placed above the sink that makes it appear that the water droplets are being dispensed from the pipe. No functionality is attached to this game object.\newline \newline
-\textbf{SourceTubPipe}: This is a pipe prefab placed below the source sink.\newline \newline
-\textbf{DestinationTubPipe}: This is a pipe prefab placed below the destination sink.\newline \newline
-\textbf{Window\_Frames}: Set of cube objects that make up the frames for the windows, along with two for the window glass.\newline \newline
-\textbf{Door}: A prefab door and two paintings on the left wall used when the subject suffers from motion sickness.\newline \newline
-\textbf{AudioManager}: An audio object that contains audio clips for dispensing the water, pouring the water, countdown sound, grabbing pills sound and completion jingle. The \textit{AudioManager} script to determine when to play the audio clips.\newline \newline
-\textbf{Source\_Tub}: A prefab tub under where the droplets are dispensed.\newline \newline
-\textbf{Destination\_Tub}: A prefab tub for the subject to pour droplets into.\newline \newline
-\textbf{Carpet}: A prefab carpet for the floor.\newline \newline
-\textbf{Trees}: Prefab tress for the outdoor scene. \newline \newline
-\textbf{Ceiling}: The ceiling for the house, made up of square \textit{PTK\_Wall\_Small\_1}. \newline \newline
-\textbf{Curtain\_Left}: A curtain to be placed over the left window if the subject gets motion sickness. \newline \newline
-\textbf{Curtain\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Sink}: The wall on the sink side \newline \newline
-\textbf{Wall\_Source}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Left}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Wall\_Right}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Column\_Left\_Rear}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
-\textbf{Column\_Left\_Front}: A curtain to be placed over the right window if the subject gets motion sickness. \newline \newline
+\subsection*{Tutorials \& Instructions} 
+\textbf{InstructionMan}: Manages the displaying of instructions throughout the tutorial stage of the simulation.\newline \newline
+\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the participant is standing close to the bucket, signifying they have completed that portion of the tutorial.\newline \newline
+\textbf{BucketMarker}: This game object is a red exclamation point used to notify the participant of the bucket's location.\newline \newline
+\textbf{BucketPickedUpTrigger}: Used to detect when the bucket is actually picked up by the participant - consists of two rectangular prism-shaped colliders positioned immediately above and below the bucket, such that any movement would cause a collision.\newline \newline
+\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the participant of the destination tub.\newline \newline
+\textbf{FarSinkMarkerTrigger}: Similar in functionality to the \textit{BucketMarkerTrigger}. Used to advance to the next tutorial step as soon as the participant is standing close enough to the destination tub.\newline \newline
+\textbf{CameraRig\slash Camera\slash Canvas\slash InstructionPanel}: This canvas is attached to the \texit{Camera} object such that it appears in view at all times and moves with the headset. It contains \textit{InstructionTxt}, which will display instructions to the participant when required. \newline \newline
+\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until a new day begins. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%    \href{}{\textbf{.cs}}:  \newline \newline
-\section*{Script Components}
-\subsection*{Interactivity} % Virtual hands, camera behaviour, picking up things (vyome's stuff)
+
+\subsection*{Receiving Treatment}
+\textbf{TreatmentInformationCanvas}: This canvas is located just above the treatment station cabinet. It contains two other panels: \textit{WaitRemainingPanel} for displaying the wait-style treatment cost and \textit{PayPanel} for displaying the pay-style treatment cost. \textit{TreatmentInformation} is for displaying the title. \newline \newline
+\textbf{Pay\slash WaitPills}: These game objects are simple prescription pill bottles that the participant may interact with to receive treatment. There is a bottle for both pay and wait styles of treatment. \newline \newline
+\textbf{Pay\slash WaitPedestal}: These objects are colour-coded to match the UIs holding the pay and wait-time costs. The bottles for pay and wait-style treatment will be placed atop their respectively-coloured pedestals such that the participant is able to clearly distinguish the functionalities of the bottles. \newline \newline
+\textbf{WaitPlatform}: This is the platform that the bucket will rest on until the wait-time has elapsed, should the user choose to wait for free treatment. The platform is only rendered if the participant chooses this particular style of treatment. When the bucket is placed on this platform, it cannot be picked up until the wait-time has expired.
+
+
+\subsection*{Other Features} 
+\textbf{Source\_Dispense\_Pipe}: This is a simple pipe model placed above the source sink, which serves as a point to instantiate bouncy balls. No functionality is attached to this game object.\newline \newline
+\textbf{Door}: A prefab door and two paintings that are only rendered if the participant indicates they are highly sensitive to both motion sickness and claustrophobia.\newline \newline
+\textbf{AudioManager}: Manages the playing of an array of sound effects for a variety of events throughout the lifetime of the simulation. \newline \newline
+\textbf{WaterAudioMan}: Similar to the standard AudioManager, except responsible for different sound effects, notably the dispensing of bouncy balls. Since a given audio manager game object can only play one sound effect at a time, it's critical to have at least two included in the scene such that no two sound effects will conflict with each other. For example, a countdown sound effect could be played at the same time that the participant is filling their bucket with bouncy balls. \newline \newline
+\textbf{Source\_Tub}: A prefab tub over which the bouncy balls are instantiated. \newline \newline
+\textbf{Destination\_Tub}: A prefab tub for the subject to pour balls into. 
+
+
+\pagebreak\section*{Script Component Breakdown}
+\subsection*{Interactivity} 
 \href{https://bit.ly/2JH9ws0}{\textbf{CameraBehaviour.cs}}: Locates the physical headset object (inside SteamVR CameraRig), then, on every frame, scales its transform positions by the Unity-Vive scale constant (SimManager.UNITY\_VIVE\_SCALE) to accurately map the headset's position to the virtual environment. \newline \newline
 \href{https://bit.ly/2U3xT7n}{\textbf{HandTracker.cs}}: This script is attached to each virtual hand game object within the scene. Its job is to take the corresponding physical controller's transform (inside SteamVR CameraRig), then, as in CameraBehaviour, scale the transform values so that virtual controller is placed properly within the scene. Additionally, once the virtual controller's transform has been determined on every frame, the script modifies the transform using user-defined floating point rotation and translation values so that the models of the hands appear to be in a natural position.\newline In addition to positioning a virtual hand, HandTracker also handles haptic feedback for its respective controller, according to the strength of an active impairment. The intensity of the haptic feedback is directly proportional to the strength of such an impairment. \newline \newline
-\href{}{\textbf{Hand.cs}}: Open source Steam VR hand script to assist with interactability of hands with other assets in the scene. Modified to work with our assets and functionalities.
+\href{https://bit.ly/2XLGcmi}{\textbf{Hand.cs}}: Open source Steam VR hand script to assist with interactability of hands with other assets in the scene. Modified to work with our assets and functionalities.
 
 
-\subsection*{Immersion} % Audio, haptic feedback, etc
-\href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including water flowing, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, water could flow at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
+\subsection*{Immersion} 
+\href{https://bit.ly/2HHzDwj}{\textbf{AudioManager.cs}}: Offers a public method to play an array of sound effects, including ball instantiation, medicine consumption, day start, day end, simulation end, as well as countdowns. Each one of these sound effects is attached within the editor onto an unassigned public AudioClip variable. Multiple AudioManagers can be placed within the scene in case of potential conflicts; for example, a ball could spawn at the same time a countdown is taking place. The script also includes methods to mute all sounds, as well as stop the current sound. All supported sound effects are defined in the AudioManager.\textit{SoundType} enumerated type. Each AudioManager is designed to be attached to an empty game object within the scene.
 
 
-\subsection*{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc
-\href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each drop of delivered water (float) on the given day. In addition to two constructors, this script also offers accessors for each one of these key components. \newline \newline
-\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs : \textit{ ()}}}: TODO \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: TODO \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: TODO \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO 
+\subsection*{Experiment Setup} 
+\href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each delivered ball (float) on the given day. In addition to two constructors, this script also offers accessors for each component. \newline \newline
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs:}}: A class that is responsible for parsing the data from the input configuration file and setting experiment variables. It contains methods that divide up the parsing by \textit{Simulation} and \textit{Days}. The \textit{Simulation} part of the parser allows global variables directly related to the look and feel of the experiment to be set. Conversely, the \textit{Day} parser sets the structure of the experiment on a day-by-day basis (duration, impairments, treatments, etc). 
+\newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: Creates the configuration parser object to read the configuration file for the simulation. On success of all parameters being set, it returns true, otherwise returns false. Instructions, sound, and tutorial scores are all set in this method. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: An accessor created to allow other classes to access the day configuration for the current day as defined by the SimManager. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: A method that is called on every frame. Responsible for the main event-driven loop that runs the simulation. It keeps track of the state of the game and transitions between them accordingly. It also manages critical variables that may be persisted into an output file. Essentially, it is the heart of the simulation.
 
 \subsection*{Task Design}
-\subsubsection*{Task Framework} % how the participant can actually do the task. i.e. flow manager, drainage, etc.
-\href{https://bit.ly/2WrbyxT}{\textbf{FlowManager.cs}}: \newline \newline 
-\href{https://bit.ly/2YtMEjd}{\textbf{DrainageBehaviour.cs}}: TODO  \newline \newline 
+\subsubsection*{Task Framework}
+\href{https://bit.ly/2WrbyxT}{\textbf{FlowManager.cs}}: This manages the flow of the bouncy balls from the source pipe. It offers methods to either stop or start the instantiation of bouncy balls. As well, it offers a method to clean the scene; that is, remove all balls from the scene and stop their instantiation. \newline \newline 
+\href{https://bit.ly/2YtMEjd}{\textbf{DrainageBehaviour.cs}}: Logic for the destination tub: the participant is payed depending on how many balls have been successfully captured inside the tub, and also on whether or not the drainage object is flagged as being a target. Also handles the destruction of balls once a collision occurs. \newline \newline 
 \href{https://bit.ly/2TUX1h4}{\textbf{FlowLimiter.cs}}: Prevents the tap from flowing except when the participant is standing close enough. The main idea behind this script's implementation was to prevent cheating in that players are forced to physically cross the room rather than reach from one side to the other while standing relatively still. The script is meant to be attached to an invisible game object with a collider enabled (the collider must have \textit{isTrigger} set to true). Collisions will then be detected between this invisible game object and the participant's headset; no collisions will be detected with the participant's virtual hands. The script is also designed to prevent the tap from flowing if the participant is waiting for treatment, or if the simulation is not in the \textit{RUNNING} state. \newline \newline
-\href{https://bit.ly/2JGhr8M}{\textbf{DestinationLimiter.cs}}: Similar to FlowLimiter, except instead of preventing water from flowing, this script prevents the participant from being payed unless they are standing close enough to the destination sink. This script is also meant to be used on an invisible game object with a collider attached (and \textit{isTrigger} = true). 
+\href{https://bit.ly/2JGhr8M}{\textbf{DestinationLimiter.cs}}: Similar to FlowLimiter, except instead of preventing balls from being instantiated, this script prevents the participant from being payed unless they are standing close enough to the destination sink. This script is also meant to be used on an invisible game object with a collider attached (and \textit{isTrigger} = true). 
 
-\subsubsection*{Impairment} % how we actually coded each impairment, how they get changed per day, etc (sim man)
+\subsubsection*{Impairment} 
 \href{https://bit.ly/2JFJ9mj}{\textbf{Impairment.cs}}: Encapsulates the two components of an impairment: the type (defined in the Treatment.\textit{ImpairmentType} enum), and strength (float, percentage expressed from 0.0 to 1.0). Offers public methods to retrieve and set each one of these components. \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: TODO \newline \newline % How/where do we apply them in update
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{Update ()}}}: During the transition between days, the method will check if impairments exist in the configuration of the day and will apply them accordingly. \newline \newline 
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{modifyImpairmentFactors (float)}}}: Iterates over all active impairments for the current day, and decreases their respective strengths by the given factor. For example, if all impairments have a 50\% strength, calling \texit{modifyImpairmentFactors (0.75)} will yield new impairment strengths of 12.5\%; or, specifically, strength = original\_strength * (1 - factor).  \newline \newline
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{unapplyImpairments ()}}}: Iterates over all active impairments for the current day (if any), and deactivates them accordingly. Depending on the impairment, the operations to deactive will vary. Functionally, this method is equivalent to calling \textit{modifyImpairmentFactors (1.0)}, that is, remove 100\% of the strength for each active impairment. 
 
-\subsubsection*{Offering Treatment} % how do we present info / code costs, etc etc / determine which panels to show
+\subsubsection*{Offering Treatment} 
 \href{https://bit.ly/2TwrvAZ}{\textbf{Treatment.cs}}: Encapsulates all components that make up a given day's treatment options. These components include private float members for C, a, b, c of both the day's pay cost function and its wait time cost function (wait\_C, wait\_a, wait\_b, wait\_c and cost\_C, cost\_a, cost\_b, and cost\_c, respectively). If a treatment day only offers the choice of paying, then the wait members are set to a static value of Treatment.\textit{NONE}, and vice versa. Other private members include the probability of effectiveness (float 0.0 to 1.0), and effectiveness (also float 0.0 to 1.0). If a treatment's probability of effectiveness is 0.5, and its effectiveness is 0.8, then there exists a 50\% chance that the treatment will alleviate 80\% of the active impairment(s); conversely, there exists a 50\% chance the treatment will have no effect.
 
 This script also offers an assortment of public methods to do things like retrieve the treatment's current cost or its current wait time cost, determine if the treatment is effective (determined only once and then cached), or to check if the treatment has been obtained already. \newline \newline
-\href{https://bit.ly/2JDPChz}{\textbf{PillManager.cs}}: TODO 
+\href{https://bit.ly/2JDPChz}{\textbf{PillManager.cs}}: The class contains logic pertaining to how the participant is able to receive treatment. The bottles only show up on the days that they have the option to receive treatment. The days of treatment, panels are show behind the bottles that show the price or wait time of the treatment. Actions are triggered depending on what the participant chooses to do.
 
-\subsubsection*{Receiving Treatment} % how do they trigger an obtain attempt, what happens on a successful attempt
+\subsubsection*{Receiving Treatment} 
+To trigger any action, the participant must pick up the pill bottle they wish to choose. If they choose the pay bottle but do not have enough money to pay for treatment, an error event is triggered and the participant is given auditory feedback. Once a successful transaction has occurred, the appropriate panels disappear. For pay-style treatment, all panels disappear and the participant can continue the simulation normally. However, when wait is chosen, only the pay components disappear, and the bucket is placed on a platform on the table. The participant is unable to perform the basic task until the countdown has expired.
 
 
-\subsubsection*{Instructions} % Tutorial framework, how it's coded -> beginning + mid-way via limbo / treatments
+\subsubsection*{Instructions} 
 \href{https://bit.ly/2JFHEED}{\textbf{Instruction.cs}}: A simple class to encapsulate the two components of any instruction: a string \textit{message}, and a float \textit{displayDuration} (seconds). Instruction objects can be passed into later-described methods in order to display their respective messages for the desired amount of time. \newline \newline
 \href{https://bit.ly/2TzLE9i}{\textbf{InstructionManager.cs}}: Offers methods to display instructions on the participant's HUD. When these methods are called, a grey translucent panel is enabled in front of the participant's eyes, and the corresponding instruction text is placed on top. Once an instruction is set and is being displayed, this class is also responsible for disabling the instruction text and panel once the message's display duration has expired. This script is meant to be attached to an empty game object within the scene, and requires instruction text and panel game objects to be attached to it through the Unity editor. \newline \newline
-\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{limbo (Instruction [])}}}: This method is to be used when instructions are required in the midst of the simulation, rather than during the tutorial day, \'Day Zero\'. The programmer must first define an array of \texit{Instruction} objects, and then pass those into the \textit{limbo} method. Once the method is called, the simulation will enter the \textit{LIMBO} state. In this state, the user is not able to complete the task or interact with the environment in any way. Instead, the grey translucent instruction panel will be enabled, and each instruction in the array will be displayed sequentially. Once all instructions have been displayed for their respective durations, the \texit{exitLimbo()} method should be called so that the simulation will resume in the \textit{RUNNING} state. \newline \newline
+\href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{limbo (Instruction [])}}}: This method is to be used when instructions are required in the midst of the simulation, rather than during the tutorial day, \textit{Day Zero}. The programmer must first define an array of \texit{Instruction} objects, and then pass those into the \textit{limbo} method. Once the method is called, the simulation will enter the \textit{LIMBO} state. In this state, the user is not able to complete the task or interact with the environment in any way. Instead, the grey translucent instruction panel will be enabled, and each instruction in the array will be displayed sequentially. Once all instructions have been displayed for their respective durations, the \texit{exitLimbo()} method should be called so that the simulation will resume in the \textit{RUNNING} state. \newline \newline
 \href{https://bit.ly/2Yooc2m}{\textbf{GoalMarker.cs}}: A script that defines the behaviour of a point of interest marker meant to accompany a given instruction. The marker will move smoothly up and down, keeping a constant X and Z position within the scene. It requires the programmer to set the upper and lower Y bounds, as well as how fast it should move (all public float variables). This script is designed to be attached to marker game objects within the scene - if the object is activated, it will always exhibit the behaviour defined in this script. \newline \newline
 \href{https://bit.ly/2uwAQ1u}{\textbf{InstructionTrigger.cs}}: There are different events that should trigger the next instruction set in a sequence; for example, a certain time duration having elapsed, some threshold being met, or the participant (or some other object) physically moving to a specified location within the scene. This script allows the latter, and is meant to be attached to an invisible game object within the scene (this object must have a collider that has \textit{isTrigger} enabled). In order for the script to work, the following public members must be assigned through the Unity editor: the SimManager, the next Tutorial Step to advance to (use TutorialStep.NULL unless multiple InstructionTrigger objects are being used for one instruction and could try to advance the tutorial step at the same time; in this case, it is advisable to explicitly define which step to advance to such that no duplicate advances are made) and the object to detect collisions with (such as the participant headset, or the container). Optionally, the programmer may also attach a game object to the \texit{destroyOnTrigger} member - this object will be destroyed whenever the aforementioned collision takes place. This is useful when a Goal Marker is being used in conjunction with an instruction. Once the instruction is no longer needed, such as when the participant moves to a certain location, the Goal Marker is also no longer needed and should be destroyed. 
 
@@ -136,14 +123,15 @@ This script also offers an assortment of public methods to do things like retrie
 \href{https://bit.ly/2VHtW5B}{\textbf{TransitionMessage.cs}}: When in the transition state, this script will populate text fields to indicate to the participant how much time remains until the next day of the simulation. As well, it will tell the user whether or not the next day is a full health day, or an impaired day. \newline \newline
 
 
-\subsection*{Custom Configuration} % Aaska's stuff -> using the config file/parsing
+\subsection*{Custom Configuration} 
+\href{https://bit.ly/2TWgOwJ}{\textbf{ConfigKeyword.cs}}: Sealed class that contains static read-only keywords used by the ConfigParser to read the input file written by the user. \newline \newline
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs}}: This class allows the experiment to be structured as per the researcher's preferences through a configuration file. This class reads the configuration file by scanning for keywords, as provided by the ConfigKeyword class. During the parsing process, it first sets the \textit{Simulation} preferences such as whether or not sound is enabled. Next, it sets the structure of the tutorial, \textit{Day Zero}, with the corresponding values of the minimum scores required to move on to the first paid day of the experiment. Finally, the structure of each \textit{Day} is set. Key variables per day include duration, active impairments, treatment options, and payout per ball. When the parser finishes a given day, it creates an object of type \textit{DayConfiguration} to encapsulate all of this information.
 
 
-\subsection*{Persistence} % How do we track data / what do we track / how do we print it out
-\href{https://bit.ly/2Fhq8B2}{\textbf{ParticipantData.cs}}: Static class populated after the participant presses the start button on the welcome screen. The participant's name and sensitivity information is gathered from the input form, and kept inside public static variables \textit{name} (string), \textit{nauseaSensitive} (bool), and \textit{claustrophicSensitive} (bool). These values can be accessed at any point during runtime. \newline \newline
+
+\subsection*{Persistence} 
+\href{https://bit.ly/2Fhq8B2}{\textbf{ParticipantData.cs}}: Static class populated after the participant presses the start button on the welcome screen. The participant's name and sensitivity information is gathered from the input form, and kept inside public static variables \textit{name} (string), \textit{nauseaSensitive} (bool), and \textit{claustrophobicSensitive} (bool). These values can be accessed at any point during runtime. \newline \newline
 \href{https://bit.ly/2WgL6qR}{\textbf{PopulateParticipantData.cs}}: Facilitates the population of the ParticipantData static class. Each field of the welcome screen input form is mapped to GameObject variable within this script. When the confirm button is pressed, the values of each form element are retrieved, and the ParticipantData variables are assigned accordingly. Once this process is complete, this script also loads the main simulation scene, using a \textit{LoadLevel} method call. \newline \newline
-\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}: Contains definitions for log file naming, output data directories, as well as output data string formats. When instantiated, this class validates the output directory, and creates a new text file for persistence, which is named using the start time and participant name (if available). Once the output file is created, the constructor calls the \textit{writeIntroduction()} method, which summarizes the participant and application information, and prints CSV column headers.
-
-This class offers a public method \texit{persist()} - it takes a number of important simulation metrics as arguments, and persists them into the output file in CSV format.
+\href{https://bit.ly/2OdbwH6}{\textbf{SimPersister.cs}}: Contains definitions for log file naming, output data directories, as well as output data string formats. When instantiated, this class validates the output directory, and creates a new text file for persistence, which is named using the start time and participant name (if available). Once the output file is created, the constructor calls the \textit{writeIntroduction()} method, which summarizes the participant and application information, and prints CSV column headers. This class offers a public method \texit{persist()} - it takes a number of important simulation metrics as arguments, and persists them into the output file in CSV format.
 
 \end{document}
