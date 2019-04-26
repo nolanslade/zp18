@@ -162,32 +162,30 @@ The data from the simulation is persisted into a csv file. This includes the dat
 \subsection{VR Equipment Interface}
 \textbf{SteamVR}: \href{https://bit.ly/2VnzLbI}{SteamVR plugin} developed by Valve Software, which allows the Unity engine to interface with the HTC Vive, or more generally, most popular VR equipment sets. \newline \newline
 \textbf{CameraRig}: Works in conjunction with the aforementioned SteamVR component. This set of objects includes a headset tracker, which tracks position relative to the centre of the room in meters (\textit{Camera}), as well as controller trackers that work in a similar fashion (\textit{Controller (left\slash right)}). The CameraRig object is translated and rotated according to the transform provided by the \textit{Camera} object, such that the participant is able to walk naturally across the scene. The same is true for each of the two controllers. \newline \newline
-\textbf{Virtual\_Hand\_Left\slash Right}: \newline \newline
+\textbf{Virtual\_Hand\_Left\slash Right}: Since the \textit{Controller (left\slash right)} object transforms are required in order to know the position and rotational values of the Vive's physical controllers, they themselves cannot be translated within the scene like the CameraRig. In order to render the hands in the correct location within the scene, these two game objects are translated instead. These two hands are the ones that the participant sees during the lifetime of the simulation. 
 
 
-\subsection{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
-\textbf{Container\_Base}: The container game object represents the bucket the subject carriers to move water from one point to another. It contains 5 cube objects that make up the walls of the bucket (\textit{Container\_Wall\_Front}, \textit{Container\_Wall\_Back}, \textit{Container\_Wall\_Right}, \textit{Container\_Wall\_Left}). It also contains an invisible collider (\textit{Water\_Droplet\_Counter}) to count water droplets that enter and exit the bucket, using the \textit{WaterDropletCounter} script.\newline \newline
-%%% What is the AttachTransformRight and AttachTransformLeft?
-\textbf{SimManager}: A game object to hold the \textit{SimManager} script.\newline \newline
-\textbf{PillManager}: A game object to hold the \textit{PillManager} script.\newline \newline
-\textbf{FlowManager}: A game object to hold the \textit{FlowManager} script.\newline \newline
-\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. Contains the \textit{FlowLimiter} script.\newline \newline
-\textbf{DestinationLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the destination to accept droplets. Contains the \textit{DestinationLimiter} script.\newline \newline
-\textbf{DayZeroSpeedCounter}: Currently not in use, to be used in future implementation of speed penalty to measure the subject's average speed during day 0 tutorial.\newline \newline
-\textbf{Drainage}: A cube object placed at the bottom of the source sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets.
-\textbf{TargetDrainage}: A cube object placed at the bottom of the destination sink to hold the \textit{DrainageBehaviour} script which controls disappearing droplets and counting delivered droplets.\newline \newline
-\textbf{CameraRig/Camera/Canvas/FogImpairmentPanel}: This canvas is attached to the camera is used to make the subject's vision appear foggy. The opacity is determined by the intensity of the fog impairment.\newline \newline
+\subsection{Core Task Functionality} 
+\textbf{Container\_Base}: The container game object represents the bucket the participant carriers to move bouncy balls from one side of the room to the other. It contains 5 rectangular prism objects that make up the walls of the bucket: (\textit{Container\_Wall\_Front\slash Back\slash Right\slash Left}). It also contains an invisible collider object, \textit{Water\_Droplet\_Counter}, which is used to keep track of how many balls are currently inside of the bucket.\newline \newline
+\textbf{SimManager}: Arguably the most important game object in the application - this object manages the state of the simulation, and keeps track of critical variables throughout its lifetime. Many other game objects reference the Simulation Manager in order to carry out their respective tasks.\newline \newline
+\textbf{PillManager}: Manages treatment functionality including, but not limited to rendering visible components, and determining current pay and wait-time costs.\newline \newline
+\textbf{FlowManager}: Responsible for starting and stopping the instantiation of bouncy balls from the source pipe. This component is required as there are certain times when instantiation, \'flow\', should not be enabled. These include when the participant is standing too far away, or when they are transitioning between days. \newline \newline
+\textbf{FlowLimiter}: An invisible cube object with a collider to determine if the headset is close enough to the source for the flow to be activated. The reasoning behind this object's inclusion is to discourage \'cheating\', where a participant would try to reach the source pipe without actually walking to it. \newline \newline
+\textbf{DestinationLimiter}: Similar to the FlowLimiter, except instead of preventing flow from being activated, it prevents the participant from being payed unless they are standing close enough to the destination tub.\newline \newline
+\textbf{DayZeroSpeedCounter}: Currently not in use, but functional: measures the participant's average speed during day 0 tutorial. It is designed to provide the most accurate measurement possible, in that it only keeps track of speed and elapsed time when the participant is actually walking in between the source and destination.\newline \newline
+\textbf{TargetDrainage}: Facilitates participant reward payout when it makes contact with a bouncy ball (assuming the participant is standing close enough). Regardless of whether a reward is actually payed out, this game object is also responsible for destroying individual ball objects once a collision occurs. \newline \newline
+\textbf{Drainage}: Exhibits similar behaviour to the TargetDrainage object, except it does not trigger a reward payout.
 
 
-\subsection{Tutorials \& Instructions} % Triggers/markers, object destruction/moving through steps
-\textbf{InstructionMan}: The game object contains the \textit{InstructionManager} script.\newline \newline
-\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
-\textbf{BucketPickedUpTrigger}: This game object is an invisible cube with a collider to determine if the headset has approached the bucket marker.\newline \newline
-\textbf{BucketMarker}: This game object is a red exclamation point used to notify the subject of the bucket's location.\newline \newline
-\textbf{BucketPickedUpTrigger}: %what does this do?
-\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the subject of the destination sink bucket.\newline \newline
-\textbf{CameraRig/Camera/Canvas/InstructionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{InstructionTxt} which will display instructions to the subject during the tutorial. \newline \newline
-\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until the new day begins. \newline \newline
+\subsection{Tutorials \& Instructions} 
+\textbf{InstructionMan}: Manages the displaying of instructions throughout the tutorial stage of the simulation.\newline \newline
+\textbf{BucketMarkerTrigger}: This game object is an invisible cube with a collider to determine if the participant is standing close to the bucket, signifying they have completed that portion of the tutorial.\newline \newline
+\textbf{BucketMarker}: This game object is a red exclamation point used to notify the participant of the bucket's location.\newline \newline
+\textbf{BucketPickedUpTrigger}: Used to detect when the bucket is actually picked up by the participant - consists of two rectangular prism-shaped colliders positioned immediately above and below the bucket, such that any movement would cause a collision.\newline \newline
+\textbf{FarSinkMarker}: This game object is a red exclamation point used to notify the participant of the destination tub.\newline \newline
+\textbf{CameraRig\slash Camera\slash Canvas\slash InstructionPanel}: This canvas is attached to the \texit{Camera} object such that it appears in view at all times and moves with the headset. It contains \textit{InstructionTxt}, which will display instructions to the participant when required. \newline \newline
+\textbf{CameraRig/Camera/Canvas/TransitionPanel}: This canvas is attached to the camera so that it appears in the view at all times and moves with the headset. It contains \textit{TransitionCountdown} which will display the number of seconds until a new day begins. 
+
 
 \subsection{Receiving Treatment} % Medication station, pills/pedestals/UI, how they are used
 \textbf{TreatmentInformationCanvas}: This canvas contains a panel that is placed above the treatment table. It contains \textit{WaitRemainingPanel} for displaying the wait time when only wait time is available \textit{WaitPanel} for displaying the wait time for when both pay and wait is available. \textit{PayPanel} is for displaying the treatment cost. \textit{TreatmentInformation} is for displaying the title. \newline \newline
@@ -195,7 +193,7 @@ The data from the simulation is persisted into a csv file. This includes the dat
 \textbf{PayPedestal}: This game object is a red cylinder object for the \textit{PayPills} object to be placed on. \newline \newline
 \textbf{WaitPedestal}: This game object is a blue cylinder object for the \textit{WaitPills} object to be placed on when pay is also an option. \newline \newline
 \textbf{WaitPlatform}: This game object is a blue cube object for the \textit{WaitPills} object to be placed on when it is the only option. \newline \newline
-\textbf{MedicalCross}: This game object is two red cube objects placed to appear like a cross to indicate the medical station. \newline \newline
+\textbf{MedicalCross}: This game object is two red cube objects placed to appear like a cross to indicate the medical station. 
 
 \subsection{Other Features} % Curtains for motion sickness, door for claustrophobia, audio,....
 \textbf{Source\_Dispense\_Pipe}: This is a pipe prefab placed above the sink that makes it appear that the water droplets are being dispensed from the pipe. No functionality is attached to this game object.\newline \newline
