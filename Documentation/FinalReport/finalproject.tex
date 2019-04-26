@@ -21,7 +21,7 @@
 The project aims to conduct controlled laboratory experiments in order to gain insight into how people make decisions when physically impaired in some way. As a result of the inherent, notably ethical, difficulties presented by actually impairing an experimental participant in the real world, a digital environment serves as a compromise. Our component of the project will be to develop a virtual reality-based environment to be used as a setting for such experiments. This advancement in the project will offer participants a more immersive environment than previously, where they completed the experiment using a two-dimensional computer monitor and game controller. Ideally, in a more immersive environment, researchers would observe more natural decision making from participants.
 
 \subsection{Experiment Overview}
-At a high level, the controlled experiments involve a singular participant repetitively completing a basic task and subsequently being given a reward, all within a virtual environment. The duration of the experiment is separated into discrete blocks of time, called ‘days’. In each day, the participant may be faced with one or more impairments, and may be able to alleviate them using a treatment, available at a cost. Requirements for each of these components are now described.
+At a high level, the controlled experiments involve a singular participant repetitively completing a basic task and subsequently being given a reward, all within a virtual environment. The duration of the experiment is separated into discrete blocks of time called \textit{days}. Each day, the participant may be faced with one or more impairments, and may be presented with the option to alleviate them using a \textit{treatment}, available at a cost. Requirements for each of these components are now described.
 
 \subsection{Task}
 The basic task must be a simple, effort-based operation quantifiable over the lifetime of the experiment. As such, the ‘effort’ component must be clearly defined: what constitutes a participant exerting greater effort? 
@@ -32,35 +32,28 @@ For every completed iteration, the participant should be rewarded based on their
 
 
 \subsection{Environment}
-The virtual reality environment should be developed for the HTC Vive. More specifically, the environment must fit within the HTC Vive-equipped Interview Room located in the McDSL Lab. The dimensions of the interview room are approximately 10’ long by 9’ wide. In the ideal case, the shape of the virtual world should closely match the interview room in order to maximize participant immersion.
+The virtual reality environment should be developed for the HTC Vive. More specifically, the environment must fit within the HTC Vive-equipped Interview Room located in the McMaster Decision Science Laboratory. The dimensions of the interview room are approximately 10’ long by 9’ wide. In the ideal case, the shape of the virtual world should closely match the interview room in order to maximize participant immersion.
 
 Additionally, the virtual environment should include measures to reduce claustrophobia, as well as motion-induced nausea.
 
 \subsection{Days}
-The simulation should be split into a set number of days, each with a given length customizable by the researcher. The days should be used to determine when the participant becomes impaired and when treatments become available, either free or paid. For a particular day, the participant should be aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
+The simulation should allow for a configurable temporal structure comprised of days, each with a desired length and parameter set. The days should be used to determine when the participant becomes impaired and when treatments become available, either free or paid. For a particular day, the participant should be aware of what day number it is, their current earnings, the time remaining in a day, whether they have become impaired and if treatment is available.
 
 
 \subsection{Impairments}
-The participant should become impaired on the days configured by the researcher. The intensity of the impairment will be configured by the researcher.
-
-Speed penalty:  This should inhibit the participant's mobility by penalizing them if they exceed an arbitrary speed threshold.
-
-Vision Impairment: This should inhibit the participant’s sight, the researcher can configure the level of intensity.
+The participant should become impaired on the days configured by the researcher. The intensity and type of the impairment will be configured by the researcher.
 
 
 \subsection{Treatment}
-Treatments should be offered on days determined by the researcher. The participant will be informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table where the participant can see clearly. 
+Treatments should be offered on days determined by the researcher. The participant will be informed of the availability of treatment before the day begins. The treatment will decrease their impairment immediately by an amount determined by the researcher. The location at which to receive treatments should be clearly distinguishable and easily found. In addition, key information pertaining to the treatments must be communicated concisely; for example, the cost required to receive the treatment.
 
-A clear indication should be provided to the participant of when the treatment becomes available and the price to pay as well as the duration to wait for treatment
-
-If the user chooses to pay for the treatment, their earned money should decrease by the price determined by the researcher and the treatment should be administered. If the user chooses to wait for the treatment, their actions must be paused for the duration configured by the researcher. By the end of their wait, the treatment should have been administered.
-formed if they are becoming impaired or if a treatment has become available in this manner.
+If the user chooses to pay for the treatment, their earned money should decrease by the price determined by the researcher and the treatment should be administered. Conversely, if the user chooses to wait for the treatment, they must not be able to complete the basic task for the duration configured by the researcher. At the end of the waiting period, the treatment should be administered.
 
 \subsection{Configuration File}
-The researcher should be able to use a configuration file that outlines the functionality of the simulations in terms of days, impairments, treatments, and any other simulation variables.
+The researcher should be able to use a configuration file that outlines the functionality of the simulations in terms of days, impairments, treatments, and any other simulation variables. This is a critical component; an application that is not highly customizable will not be useful for a long period of time in the McMaster Decision Science Laboratory. Our goal is to provide a simulation environment that can be used to perform many experiments over a long lifetime.
 
 \section{Our Implementation}
-Develop a configurable virtual reality environment as a setting for controlled laboratory investigations. Created for the HTC Vive virtual reality platform with the Unity Game Engine.
+\textbf{Goal:} Develop a configurable virtual reality environment as a setting for controlled laboratory investigations. Created for the HTC Vive virtual reality platform with the Unity Game Engine.
 
 \begin{figure}[h!]
 \centering
@@ -71,59 +64,52 @@ Develop a configurable virtual reality environment as a setting for controlled l
 
 \subsection{People}
 \emph{Participant} - The subject who is participating in the study by using the virtual reality simulation.\newline
-\emph{Researcher} - The person who is conducting the experiments and creating the configuration file.
+\emph{Researcher} - The member of the McDSL who is conducting the experiments.
 
 \subsection{Environment}
 
-The virtual reality environment is developed using the Unity game engine for the HTC Vive. The environment must fit within the HTC Vive-equipped Interview Room located in the McDSL Lab. The measurements of the lab are 10’ long and 9’ wide. The measurements in the Virtual World are multiplied by 18.77.
+The virtual reality environment is developed using the Unity game engine for the HTC Vive. The environment must fit within the HTC Vive-equipped Interview Room located in the McDSL Lab. The measurements of the lab are 10’ long and 9’ wide. The measurements in the virtual world are multiplied by a programmer-specified scaling factor to achieve this.
 
-The virtual building has windows on the right wall with forest outside, to reduce the potential for claustrophobia. These windows can be covered if they cause motion sickness. This is set in the configuration file by the researcher based on prior interview.
+By default, the virtual room has windows that show a view of a forest to reduce the potential for claustrophobia. These windows can be covered if the participant indicates that they are prone to experiencing motion sickness. Similarly, if the participant indicates they are both claustrophobic and sensitive to motion sickness, the windows are removed entirely and replaced with a door (such that the participant imagines that there is a way out of the room) and modern art. 
 
 
 \subsection{Task}
 
-The implemented task is moving buckets of balls from a tap (source) to a destination (sink). A successful delivery of a ball from the source to sink earns the participant a number lab dollars configured by the researcher (1 lab dollar by default).
+The implemented task is moving buckets of bouncy balls from a source pipe to a destination tub. A successful delivery of a ball from the source to destination earns the participant a number lab dollars configured by the researcher (\$1.00 by default). The source pipe instantiates a bouncy ball every 0.1 seconds. The tub is used to collect the balls and calculate how many are delivered (as well as the subsequent payout to the participant).
 
-The source is a tap that releases a ball every 10th of a second. The destination is a sink that collects the balls and calculates how many are delivered.
-
-The bucket can fit approximately 65 balls. It can be grabbed by the participant using the trigger buttons on the HTC Vive hand controller to simulate gripping.
-
-Gravity is simulated to be slightly lighter than the real world and therefore the participant may spill balls from the bucket if it is tipped.
+The bucket can fit approximately 65 balls. It can be grabbed by the participant using the trigger buttons on the HTC Vive hand controller to simulate gripping. Gravity is simulated to be slightly lighter than the real world and therefore the participant may spill balls from the bucket if it is tipped.
 
 
 \subsection{Days}
 
-The simulation is split into a set number of days, each with a given length. The number of days and their lengths are set by the researcher.
+The simulation is split into a set number of days, each with its own length and parameters. This temporal structure is configured by the researcher.
 
-The days are used to determine when the participant becomes impaired and when treatments become available, either free or paid.
-
-For a particular day, the participant is aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
+The days are used to determine when the participant becomes impaired and when treatments become available, either free or paid. For a particular day, the participant is aware of what day number it is, the time remaining in a day, whether they have become impaired and if treatment is available.
 
 \subsection{Lab Money}
 
-The participant earns lab money for every ball successfully delivered from the source to the sink. Treatments for impairments cost lab money, either a set amount or a fraction determined by the researcher. The participant’s goal is to maximize their earnings of lab money. They are aware of how much money they have earned and the cost of treatment at the time it becomes available.
+The participant earns lab money for every ball successfully delivered from the source to the sink. Treatments for impairments cost lab money, with an amount determined through the evaluation of a cost function. The cost function is configured by the researcher. The participant’s goal is to maximize their earnings of lab money throughout the lifetime of the experiment. They are aware of how much money they have earned and the cost of treatment at the time it becomes available.
 
 \subsection{Impairments}
 
-The participant will become impaired on the days configured by the researcher. The intensity of the impairment is configured by the researcher.
+The participant will become impaired on the days configured by the researcher. The intensity and type of the impairment is configured by the researcher. Multiple impairments can be utilized on a single day.
 
-\emph{Physical Shake:}  We inhibit the participant's dexterity by implementing haptic feedback on the controllers. The researcher can configure the level of intensity.
-\emph{Vision Impairment:} We inhibit the participant’s sight by using fog with a maximum intensity of (measurement). The researcher can configure the level of intensity.
+\emph{Physical Shake:}  Inhibits the participant's dexterity by implementing haptic feedback on the controllers. If impaired in this way, the participant's maximum carrying capacity will be decreased; that is, balls will simply fly out of the bucket if they try to carry too many.
+\emph{Vision Impairment:} Inhibits the participant’s sight by using fog. With this impairment active, the participant will find it more difficult to complete the task with accuracy.
 
 \subsection{Treatments}
 
-Treatments are offered on days determined by the researcher. The participant is informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table on the right (window) side indicated by the red cross symbol.
+Treatments are offered on days determined by the researcher. The participant is informed of the availability of treatment during the day transition. The treatment will decrease their impairment immediately by an amount determined by the researcher. The treatments will be offered on a table marked by a red cross symbol.
 
-When treatment is available, 2 pill bottles will be placed on the table. One will be indicated with the price of treatment and the other with the time to wait for free treatment (configured by the researcher). If the user picks up the pay bottle, then treatment is administered and their lab dollars decrease by the appropriate amount. If the participant picks up the wait bottle, then they are placed in pause mode without the overlay (i.e. the source ceases to release balls) for the communicated amount of wait time. After that period of time the treatment is administered and their lab dollars remain the same.\newline
+When treatment is available, 2 pill bottles will be placed on the table. One will be indicated with the price of payed treatment and the other with the time to wait for free treatment (configured by the researcher). If the user picks up the pay bottle, then treatment is administered and their lab dollars decrease by the appropriate amount. If the participant picks up the wait bottle, then the bucket is taken away from them and they are unable to complete the basic task for the communicated amount of wait time. After the waiting period has expired, the treatment is administered and their lab dollars remain the same.\newline
 
 The cost of the treatment is calculated using: 
-\[ C = (\Omega - DT + \frac{1}{\Omega}T^2)\]
-where the variables are determined by the researcher.
+\[ C = (c - bT + aT^2)\]
+where each of the variables \textit{C}, \textit{c}, \textit{b}, and \textit{a} are determined by the researcher.
 
 
 \subsection{Configuration File}
-The researcher creates a configuration file that outlines the functionality of days, impairments and treatments. This is used to structure experiments based on the requirements of the researchers. The full details of this file are described in the User Manual.
-
+The researcher may modify the contents of a configuration file in order to define the temporal structure of a given experiment as well as auxiliary parameters. The full details of this file are described later in this document, in the User Manual.
 
 
 \begin{figure}[h!]
@@ -135,12 +121,12 @@ The researcher creates a configuration file that outlines the functionality of d
 
 
 \subsection{Communicating to Participant}
-The participant is informed about the time remaining in a day, the day number and lab dollars earned through a display located above the source and sink. 
+The participant is informed about the time remaining in a day, the day number and lab dollars earned through a display located above the source and destination. 
 
 The participant is informed that a day is being changed by floating text attached to the camera (i.e. it is always in their centre field of view). The participant is also informed if they are becoming impaired or if a treatment has become available in this manner.
 
 \subsection{Output}
-The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality related positional data. Some data that is included is price of treatment, spill rate, earnings, and other information the researcher may find useful.
+The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality-related positional data. Some data that is included is price of treatment, spill rate, earnings, and other information the researcher may find useful.
 
 \begin{figure}[h!]
 \centering
