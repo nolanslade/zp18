@@ -119,14 +119,27 @@ The researcher may modify the contents of a configuration file in order to defin
 \label{fig:configfile}
 \end{figure}
 
-
-\subsection{Communicating to Participant}
+\pagebreak \subsection{Communicating to Participant}
 The participant is informed about the time remaining in a day, the day number and lab dollars earned through a display located above the source and destination. 
 
-The participant is informed that a day is being changed by floating text attached to the camera (i.e. it is always in their centre field of view). The participant is also informed if they are becoming impaired or if a treatment has become available in this manner.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.3]{WallUI.png}
+\caption{The wall UI is duplicated on both sides of the room}
+\label{fig:configfile}
+\end{figure}
+
+The participant is informed that a day is being changed by floating text attached to the camera (i.e. it is always in their centre field of view). The participant is also informed if they are becoming impaired or if a treatment has become available in this manner. Instructions, present throughout different parts of the simulation, are also presented in such a fashion.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.25]{InstructionText.png}
+\caption{A sample instruction message}
+\label{fig:configfile}
+\end{figure}
 
 \subsection{Output}
-The data from the simulation is outputted into a csv file. This includes the data collected in the previous experiment plus virtual reality-related positional data. Some data that is included is price of treatment, spill rate, earnings, and other information the researcher may find useful.
+The data from the simulation is persisted into a csv file. This includes the data collected in the previous experiment plus virtual reality-related positional data. Examples of persisted fields include headset position, controller positions, current day, current levels of impairment, and costs of available treatments, among others.
 
 \begin{figure}[h!]
 \centering
@@ -140,24 +153,12 @@ The data from the simulation is outputted into a csv file. This includes the dat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scene Components}
 \subsection{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc
-\textbf{CameraRig} : Tracks the headset with the SteamVR\_Camera component. It tracks all devices that are connected such as controllers, cameras, etc.
-
-\textbf{virtualCamera} : CameraRig object that tracks position in Unity units
-
-\textbf{physicalCamera} : CameraRig child object that keeps track of physical camera positions and uses that to convert to Unity units to map to environment
-
-\textbf{leftHandTracker} : Uses HandTracker.cs to get information about the left hand controller and modify behaviour in the virutal world
-
-\textbf{rightHandTracker} : Uses HandTracker.cs to get information about the right hand controller and modify behaviour in the virutal world.
-
-\textbf{leftHandScriptComp}: Object of the Valve.VR library, gives information on what the left hand is interacting with in the physical world
-
-\textbf{rightHandScriptComp}: Object of the Valve.VR library, gives information on what the right hand is interacting with in the physical world.
-
+\textbf{SteamVR}: \href{https://bit.ly/2VnzLbI}{SteamVR plugin} developed by Valve Software, which allows the Unity engine to interface with the HTC Vive, or more generally, most popular VR equipment sets. \newline \newline
+\textbf{CameraRig}: Works in conjunction with the aforementioned SteamVR component. This set of objects includes a headset tracker, which tracks position relative to the centre of the room in meters (\textit{Camera}), as well as controller trackers that work in a similar fashion (\textit{Controller (left\slash right)}). The CameraRig object is translated and rotated according to the transform provided by the \textit{Camera} object, such that the participant is able to walk naturally across the scene. The same is true for each of the two controllers. \newline \newline
+\textbf{Virtual_Hand_Left\slash Right}: \newline \newline
 
 
 \subsection{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
-
 \textbf{Container\_Base}: The container game object represents the bucket the subject carriers to move water from one point to another. It contains 5 cube objects that make up the walls of the bucket (\textit{Container\_Wall\_Front}, \textit{Container\_Wall\_Back}, \textit{Container\_Wall\_Right}, \textit{Container\_Wall\_Left}). It also contains an invisible collider (\textit{Water\_Droplet\_Counter}) to count water droplets that enter and exit the bucket, using the \textit{WaterDropletCounter} script.\newline \newline
 %%% What is the AttachTransformRight and AttachTransformLeft?
 \textbf{SimManager}: A game object to hold the \textit{SimManager} script.\newline \newline
