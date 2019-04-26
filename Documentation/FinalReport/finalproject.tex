@@ -7,6 +7,13 @@
 
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
 
 \begin{document}
 \maketitle
@@ -152,10 +159,10 @@ The data from the simulation is persisted into a csv file. This includes the dat
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scene Components}
-\subsection{VR Equipment Interface} % Headset, controllers -> mapping to unity world (virtual hands, etc
+\subsection{VR Equipment Interface}
 \textbf{SteamVR}: \href{https://bit.ly/2VnzLbI}{SteamVR plugin} developed by Valve Software, which allows the Unity engine to interface with the HTC Vive, or more generally, most popular VR equipment sets. \newline \newline
 \textbf{CameraRig}: Works in conjunction with the aforementioned SteamVR component. This set of objects includes a headset tracker, which tracks position relative to the centre of the room in meters (\textit{Camera}), as well as controller trackers that work in a similar fashion (\textit{Controller (left\slash right)}). The CameraRig object is translated and rotated according to the transform provided by the \textit{Camera} object, such that the participant is able to walk naturally across the scene. The same is true for each of the two controllers. \newline \newline
-\textbf{Virtual_Hand_Left\slash Right}: \newline \newline
+\textbf{Virtual\_Hand\_Left\slash Right}: \newline \newline
 
 
 \subsection{Core Task Functionality} % Bucket, tap, flow manager, destination, limiters, drainage...
@@ -223,7 +230,7 @@ The data from the simulation is persisted into a csv file. This includes the dat
 
 \subsection{Experiment Setup} % Configuration classes / days / SimManager -> state tracking, etc
 \href{https://bit.ly/2FvRTWR}{\textbf{DayConfiguration.cs}}: Encapsulates basic information for each day of the simulation. Specifically, their unique number identifiers (int), durations in seconds (float), impairments, treatment options, and optionally, how much to pay the participant for each drop of delivered water (float) on the given day. In addition to two constructors, this script also offers accessors for each one of these key components. \newline \newline
-\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs:}}: A class that is responsible for parsing the data from the input configuration file and setting experiment variables. It contains methods that divide up the parsing by Simulation and Days. The 'Simulation' part of the parser allows global variables directly related to the look and feel of the experiment to be set. Accessor are provided so they can be set by the appropriate classes. Alternatively, the 'Day' parser sets the structure of the experiment (duration, impairments, treatments, etc). 
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs:}}: A class that is responsible for parsing the data from the input configuration file and setting experiment variables. It contains methods that divide up the parsing by Simulation and Days. The \'Simulation\' part of the parser allows global variables directly related to the look and feel of the experiment to be set. Accessor are provided so they can be set by the appropriate classes. Alternatively, the \'Day\' parser sets the structure of the experiment (duration, impairments, treatments, etc). 
 \newline \newline
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{establishSimulationParameters ()}}}: It creates the configuration parser object to read the configuration file for the simulation. On success of the parameters being set, it returns true, otherwise returns false on errors. Instructions, sound, and tutorial scores are all set in this method. \newline \newline
 \href{https://bit.ly/2UhmSzq}{\textbf{SimManager.cs : \textit{getCurrentDayConfiguration ()}}}: An accessor created to allow other classes to access the day configuration for the current day as managed by the SimManager. \newline \newline
@@ -266,7 +273,7 @@ To trigger any action, the participant must pick up the pill bottle they wish to
 
 
 \subsection{Custom Configuration} 
-\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs}}: This class allows the experiment to be structured as per the user's preferences through a configuration file. This class reads the configuration file by going through the keywords, as provided by the ConfigKeyword class. By matching the keywords, it first sets the 'Simulation' preferences such as sound, description and others. Each of the variables has corresponding accessors, which provide other classes access to the ConfigParser's private variables and allow them to set the look and feel of the simulation as indicated. Next, it sets the design of the 'Tutorial' with the corresponding values of the minimum scores required to finish the tutorial. Finally, the structure of the 'Day' is set. Each day's Duration, Impairment, Treatment, and BallValue are set accordingly. These day configurations are then loaded into the DayConfigurations class.
+\href{https://bit.ly/2TZaLYj}{\textbf{ConfigParser.cs}}: This class allows the experiment to be structured as per the user's preferences through a configuration file. This class reads the configuration file by going through the keywords, as provided by the ConfigKeyword class. By matching the keywords, it first sets the \'Simulation\' preferences such as sound, description and others. Each of the variables has corresponding accessors, which provide other classes access to the ConfigParser's private variables and allow them to set the look and feel of the simulation as indicated. Next, it sets the design of the \'Tutorial\' with the corresponding values of the minimum scores required to finish the tutorial. Finally, the structure of the \'Day\' is set. Each day's Duration, Impairment, Treatment, and BallValue are set accordingly. These day configurations are then loaded into the DayConfigurations class.
 \href{https://bit.ly/2TWgOwJ}{\textbf{ConfigKeyword.cs}}: Sealed class that contains static readonly ENUMs of keywords used by the ConfigParser to read the input file written by the user. 
 
 
