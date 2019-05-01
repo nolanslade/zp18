@@ -50,6 +50,7 @@ public class ConfigParser
     private string sound;
     private string scene;
 
+    // Nolan April 30 2019
     // Adding configurable instructions
     private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
     private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the\nbucket and squeeze index finger", 7.0f);
@@ -63,10 +64,30 @@ public class ConfigParser
     private Instruction genericImpairedRoundStart   = new Instruction ("When the simulation resumes,\nyou will be impaired.", 5.5f);
     private Instruction shakeImpairedRoundExplain   = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
     private Instruction genericImpairedRoundExplain = new Instruction ("While you are impaired, earning money\nwill be more difficult.", 6.5f);
-    private Instruction impairedRoundObjective;     
+    private Instruction impairedRoundObjective;  
 
+    private Instruction hybridTreatmentLocateStation    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+    private Instruction hybridTreatmentMethod           = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
+    private Instruction hybridTreatmentPayOpt           = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly by\ngrabbing the red pill bottle.", 7.0f);
+    private Instruction hybridTreatmentWaitOpt          = new Instruction ("Option 2: grab the blue pill bottle to\nwait for a duration of time to\nremove the impairment for free.", 8.0f);
+    private Instruction hybridTreatmentEnding           = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);   
 
-    // Adding configurable instructions
+    private Instruction payTreatmentLocateStation       = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+    private Instruction payTreatmentMethod              = new Instruction ("You can choose to either complete\nthis day impaired, or, pay a fee to remove\nthe impairment instantly.", 8.0f);
+    private Instruction payTreatmentEnding              = new Instruction ("If you wish to pay to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+
+    private Instruction waitTreatmentLocateStation      = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
+    private Instruction waitTreatmentMethod             = new Instruction ("You can choose to either complete\nthis day impaired, or, wait a duration of time\nto remove the impairment at no cost.", 9.0f);
+    private Instruction waitTreatmentEnding             = new Instruction ("If you wish to wait to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+    private Instruction waitTreatmentHasChosenStart     = new Instruction ("You've decided to wait for treatment.\nUntil the timer reaches 0, you'll be\nunable to pick up the bucket.", 8.0f);
+    private Instruction waitTreatmentHasChosenEnd       = new Instruction ("Once the timer reaches 0, you will\nreceive treatment, and may begin\nearning money again, unimpaired.", 8.0f);
+    
+    /*
+    * Nolan April 30 2019
+    * Adding all instructions to the config parser rather than directly
+    * in SimManager to allow configurability. Now, SimManager can call
+    * this method to retrieve the desired instruction.
+    */
     public Instruction getInstruction (Instruction.InstructionType instrType) {
         
         // Return the corresponding instruction object, which may have been customized 
@@ -103,9 +124,37 @@ public class ConfigParser
                 impairedRoundObjective = new Instruction ("New Objective: Earn another $" + dayZeroScoreImpaired.ToString("0.00"), 6.0f);
                 return impairedRoundObjective;
 
-            // Impairments for paid days 
+            // Pay and wait together treatments
+            case Instruction.InstructionType.TMT_HYBRID_LOCATE_STATION:
+                return hybridTreatmentLocateStation;
+            case Instruction.InstructionType.TMT_HYBRID_METHOD:
+                return hybridTreatmentMethod;
+            case Instruction.InstructionType.TMT_HYBRID_PAY_OPTION:
+                return hybridTreatmentPayOpt;
+            case Instruction.InstructionType.TMT_HYBRID_WAIT_OPTION:
+                return hybridTreatmentWaitOpt;
+            case Instruction.InstructionType.TMT_HYBRID_ENDING:
+                return hybridTreatmentEnding;
 
-            // Treatments
+            // Pay-Only Treatment
+            case Instruction.InstructionType.TMT_PAY_LOCATE_STATION:
+                return payTreatmentLocateStation;
+            case Instruction.InstructionType.TMT_PAY_METHOD:
+                return payTreatmentMethod;
+            case Instruction.InstructionType.TMT_PAY_ENDING:
+                return payTreatmentEnding;
+
+            // Wait-Only Treatment
+            case Instruction.InstructionType.TMT_WAIT_LOCATE_STATION:
+                return waitTreatmentLocateStation;
+            case Instruction.InstructionType.TMT_WAIT_METHOD:
+                return waitTreatmentMethod;
+            case Instruction.InstructionType.TMT_WAIT_ENDING:
+                return waitTreatmentEnding;
+            case Instruction.InstructionType.TMT_WAIT_CHOSEN_START:
+                return waitTreatmentHasChosenStart;
+            case Instruction.InstructionType.TMT_WAIT_CHOSEN_END:
+                return waitTreatmentHasChosenEnd;
 
             default:
                 Debug.Log("No instruction to fetch for type: " + instrType);
@@ -240,7 +289,6 @@ public class ConfigParser
 
                                     else {
                                         dayZeroImpairments.Add(newDayZeroImp);
-                                        Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
                                     }
 
                                     break; // We're done
@@ -266,7 +314,6 @@ public class ConfigParser
 
                                     else {
                                         dayZeroImpairments.Add(newDayZeroImp);
-                                        Debug.Log("New impairment for day 0 with type: " + newDayZeroImp.getType().ToString() + " and strength: " + newDayZeroImp.getStrength().ToString());
                                     }
 
                                     break; // We're done
@@ -316,11 +363,11 @@ public class ConfigParser
         sb.Append("\nConfiguration Parsing Summary");
 
         sb.Append("\n\n--- Simulation ---");
-        sb.Append("\nInstructions enabled: "  + this.instructionsEnabled.ToString());
+        sb.Append("\n\nInstructions enabled: "  + this.instructionsEnabled.ToString());
         sb.Append("\nSound enabled: "         + this.soundEnabled.ToString());
 
         sb.Append("\n\n--- Tutorial ---");
-        sb.Append("\nUnimpaired threshold: "  + this.dayZeroScoreUnimpaired.ToString());
+        sb.Append("\n\nUnimpaired threshold: "  + this.dayZeroScoreUnimpaired.ToString());
         sb.Append("\nImpaired threshold: "    + this.dayZeroScoreImpaired.ToString());
         sb.Append("\nImpairments: "           + this.dayZeroImpairments.Count.ToString());
         
@@ -332,7 +379,7 @@ public class ConfigParser
 
         sb.Append("\n\n--- Structure ---");
         foreach (DayConfiguration d in this.dayConfigs) {
-            sb.Append("\nDay " + d.getDayNumber().ToString());
+            sb.Append("\n\nDay " + d.getDayNumber().ToString());
             sb.Append("\n -> Duration: " + d.getDuration().ToString("0.0"));
             sb.Append("\n -> Ball value: " + d.getRewardMultiplier().ToString("0.0000"));
             sb.Append("\n -> Impairments: " + d.getImpairments().Length.ToString());
@@ -356,21 +403,40 @@ public class ConfigParser
         }
 
         sb.Append("\n\n--- Instructions ---");
-        sb.Append("\n -> Day Zero Standard");
-        sb.Append("\n" + locateBucketInstr.displayDuration.ToString("0.0") + "s: " + locateBucketInstr.message);
+        sb.Append("\n\n -> Day Zero Standard");
+        sb.Append("\n" + locateBucketInstr.displayDuration.ToString("0.0")  + "s: " + locateBucketInstr.message);
         sb.Append("\n" + holdContainerInstr.displayDuration.ToString("0.0") + "s: " + holdContainerInstr.message);
-        sb.Append("\n" + fillInstr.displayDuration.ToString("0.0") + "s: " + fillInstr.message);
-        sb.Append("\n" + goToSinkInstr.displayDuration.ToString("0.0") + "s: " + goToSinkInstr.message);
-        sb.Append("\n" + pourBucketInstr.displayDuration.ToString("0.0") + "s: " + pourBucketInstr.message);
+        sb.Append("\n" + fillInstr.displayDuration.ToString("0.0")          + "s: "  + fillInstr.message);
+        sb.Append("\n" + goToSinkInstr.displayDuration.ToString("0.0")      + "s: " + goToSinkInstr.message);
+        sb.Append("\n" + pourBucketInstr.displayDuration.ToString("0.0")    + "s: " + pourBucketInstr.message);
 
-        sb.Append("\n -> Day Zero Impaired Shake/Fog/Generic -> Start/Explain");
-        sb.Append("\n" + shakeImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + shakeImpairedRoundStart.message);
-        sb.Append("\n" + fogImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + fogImpairedRoundStart.message);
-        sb.Append("\n" + genericImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + genericImpairedRoundStart.message);
-        sb.Append("\n" + shakeImpairedRoundExplain.displayDuration.ToString("0.0") + "s: " + shakeImpairedRoundExplain.message);
+        sb.Append("\n\n -> Day Zero Impaired Shake/Fog/Generic -> Start/Explain");
+        sb.Append("\n" + shakeImpairedRoundStart.displayDuration.ToString("0.0")     + "s: " + shakeImpairedRoundStart.message);
+        sb.Append("\n" + fogImpairedRoundStart.displayDuration.ToString("0.0")       + "s: " + fogImpairedRoundStart.message);
+        sb.Append("\n" + genericImpairedRoundStart.displayDuration.ToString("0.0")   + "s: " + genericImpairedRoundStart.message);
+        sb.Append("\n" + shakeImpairedRoundExplain.displayDuration.ToString("0.0")   + "s: " + shakeImpairedRoundExplain.message);
         sb.Append("\n" + genericImpairedRoundExplain.displayDuration.ToString("0.0") + "s: " + genericImpairedRoundExplain.message);
 
-        sb.Append("\n*****************************");
+        sb.Append("\n\n -> Treatment -> Hybrid");
+        sb.Append("\n" + hybridTreatmentLocateStation.displayDuration.ToString("0.0")   + "s: " + hybridTreatmentLocateStation.message);
+        sb.Append("\n" + hybridTreatmentMethod.displayDuration.ToString("0.0")          + "s: " + hybridTreatmentMethod.message);
+        sb.Append("\n" + hybridTreatmentPayOpt.displayDuration.ToString("0.0")          + "s: " + hybridTreatmentPayOpt.message);
+        sb.Append("\n" + hybridTreatmentWaitOpt.displayDuration.ToString("0.0")         + "s: " + hybridTreatmentWaitOpt.message);
+        sb.Append("\n" + hybridTreatmentEnding.displayDuration.ToString("0.0")          + "s: " + hybridTreatmentEnding.message);
+
+        sb.Append("\n\n -> Treatment -> Pay-Only");
+        sb.Append("\n" + payTreatmentLocateStation.displayDuration.ToString("0.0")  + "s: " + payTreatmentLocateStation.message);
+        sb.Append("\n" + payTreatmentMethod.displayDuration.ToString("0.0")         + "s: " + payTreatmentMethod.message);
+        sb.Append("\n" + payTreatmentEnding.displayDuration.ToString("0.0")         + "s: " + payTreatmentEnding.message);
+
+        sb.Append("\n\n -> Treatment -> Wait-Only");
+        sb.Append("\n" + waitTreatmentLocateStation.displayDuration.ToString("0.0")     + "s: " + waitTreatmentLocateStation.message);
+        sb.Append("\n" + waitTreatmentMethod.displayDuration.ToString("0.0")            + "s: " + waitTreatmentMethod.message);
+        sb.Append("\n" + waitTreatmentEnding.displayDuration.ToString("0.0")            + "s: " + waitTreatmentEnding.message);
+        sb.Append("\n" + waitTreatmentHasChosenStart.displayDuration.ToString("0.0")    + "s: " + waitTreatmentHasChosenStart.message);
+        sb.Append("\n" + waitTreatmentHasChosenEnd.displayDuration.ToString("0.0")      + "s: " + waitTreatmentHasChosenEnd.message);
+
+        sb.Append("\n\n*****************************\n");
         Debug.Log(sb.ToString());
     }
 
@@ -455,58 +521,124 @@ public class ConfigParser
                 this.genericImpairedRoundExplain.displayDuration = float.Parse(dur);
             }
 
+            // Hybrid treatments (both pay and wait are available)
+            else if (cleanStr.StartsWith(ConfigKeyword.HYBRID_TMT_LOCATE_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.hybridTreatmentLocateStation.message = msg;
+                this.hybridTreatmentLocateStation.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.HYBRID_TMT_METHOD_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.hybridTreatmentMethod.message = msg;
+                this.hybridTreatmentMethod.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.HYBRID_TMT_PAY_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.hybridTreatmentPayOpt.message = msg;
+                this.hybridTreatmentPayOpt.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.HYBRID_TMT_WAIT_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.hybridTreatmentWaitOpt.message = msg;
+                this.hybridTreatmentWaitOpt.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.HYBRID_TMT_END_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.hybridTreatmentEnding.message = msg;
+                this.hybridTreatmentEnding.displayDuration = float.Parse(dur);
+            }
+
+            // Pay-Only Treatments
+            else if (cleanStr.StartsWith(ConfigKeyword.PAY_TMT_LOCATE_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.payTreatmentLocateStation.message = msg;
+                this.payTreatmentLocateStation.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.PAY_TMT_METHOD_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.payTreatmentMethod.message = msg;
+                this.payTreatmentMethod.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.PAY_TMT_END_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.payTreatmentEnding.message = msg;
+                this.payTreatmentEnding.displayDuration = float.Parse(dur);
+            }
+
+            // Wait-Only Treatments
+            else if (cleanStr.StartsWith(ConfigKeyword.WAIT_TMT_LOCATE_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.waitTreatmentLocateStation.message = msg;
+                this.waitTreatmentLocateStation.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.WAIT_TMT_METHOD_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.waitTreatmentMethod.message = msg;
+                this.waitTreatmentMethod.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.WAIT_TMT_END_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.waitTreatmentEnding.message = msg;
+                this.waitTreatmentEnding.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.WAIT_TMT_CHOSEN_START_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.waitTreatmentHasChosenStart.message = msg;
+                this.waitTreatmentHasChosenStart.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.WAIT_TMT_CHOSEN_END_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.waitTreatmentHasChosenEnd.message = msg;
+                this.waitTreatmentHasChosenEnd.displayDuration = float.Parse(dur);
+            }
+
             // ----------------------------------------------------------
 
-            else if (i.Contains(ConfigKeyword.NAME))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.name = split[1];
-            }
-            else if (i.Contains(ConfigKeyword.OUTPUT))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.output = split[1].Split(ConfigKeyword.COMMA);
-            }
-            else if (i.Contains(ConfigKeyword.DESCRIPTION))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.description = split[1];
-            }
-            else if (i.Contains(ConfigKeyword.INSTRUCTIONS))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.instructions = split[1].ToLower();
-                if (this.instructions.Contains(ConfigKeyword.DISABLED.ToLower()))
-                {
-                    this.instructionsEnabled = false;
-                }
-                else
-                {
-                    this.instructionsEnabled = true;
-                }
-            }
-            else if (i.Contains(ConfigKeyword.SOUND))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.sound = split[1].ToLower();
-                if (this.sound.Contains(ConfigKeyword.DISABLED.ToLower()))
-                {
-                    this.soundEnabled = false;
-                }
-                else
-                {
-                    this.soundEnabled = true;
-                }
+            /*
+            * Nolan April 30 2019
+            * Cleaning up because this is a really hacky way to parse. Contains() 
+            * is not a good idea. Should normalize the string and check using
+            * StartsWith() instead.
+            */
 
+            else if (cleanStr.StartsWith(ConfigKeyword.NAME))
+                this.name = i.Split(ConfigKeyword.COLON)[1];
+
+            else if (cleanStr.StartsWith(ConfigKeyword.OUTPUT))
+                this.output = i.Split(ConfigKeyword.COLON)[1].Split(ConfigKeyword.COMMA);
+            
+            else if (cleanStr.StartsWith(ConfigKeyword.DESCRIPTION))
+                this.description = i.Split(ConfigKeyword.COLON)[1]; 
+
+            else if (cleanStr.StartsWith(ConfigKeyword.SCENE))
+                this.scene = i.Split(ConfigKeyword.COLON)[1];
+
+            else if (cleanStr.StartsWith(ConfigKeyword.INSTRUCTIONS)) {
+                this.instructions = i.Split(ConfigKeyword.COLON)[1].ToLower().Trim();
+                this.instructionsEnabled = this.instructions.StartsWith(ConfigKeyword.ENABLED.ToLower());
             }
-            else if (i.Contains(ConfigKeyword.SCENE))
-            {
-                string[] split = i.Split(ConfigKeyword.COLON);
-                this.scene = split[1];
+
+            else if (cleanStr.StartsWith(ConfigKeyword.SOUND)) {
+                this.sound = i.Split(ConfigKeyword.COLON)[1].ToLower().Trim();
+                this.soundEnabled = this.sound.Contains(ConfigKeyword.ENABLED.ToLower());
             }
         }
-
-
 
         return true;
     }

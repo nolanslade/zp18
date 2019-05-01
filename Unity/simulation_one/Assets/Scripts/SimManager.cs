@@ -693,9 +693,9 @@ public class SimManager : MonoBehaviour {
             // Limbo, display the instructions for how the waiting process is going to work.
             Debug.Log("Initializing limbo for waiting for treatment...");
             Instruction[] instrs = new Instruction [5];
-            Instruction instrOne = new Instruction ("You've decided to wait for treatment.\nUntil the timer reaches 0, you'll be\nunable to pick up the bucket.", 8.0f);
-            Instruction instrTwo = new Instruction ("Once the timer reaches 0, you will\nreceive treatment, and may begin\nearning money again, unimpaired.", 8.0f);
-            instrs[0] = instrOne; instrs[1] = instrTwo;
+            
+            instrs[0] = this.configParser.getInstruction(Instruction.InstructionType.TMT_WAIT_CHOSEN_START); 
+            instrs[1] = this.configParser.getInstruction(Instruction.InstructionType.TMT_WAIT_CHOSEN_END);
 
             Instruction cd3 = new Instruction ("Resuming in\n3", 1.0f, true);
             Instruction cd2 = new Instruction ("Resuming in\n2", 1.0f, true);
@@ -1123,19 +1123,20 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanels(); // Activates both sets of panels/pills, etc
                             Debug.Log("Initializing limbo for pay&wait treatment...");
-                            Instruction [] instrs   = new Instruction [8];
-                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo    = new Instruction ("You can choose to either complete the\nnext day impaired, or, you can remove\nthe impairment in two ways.", 9.0f);
-                            Instruction instrThree  = new Instruction ("Option 1: pay a fee to remove the\nimpairment instantly by\ngrabbing the red pill bottle.", 7.0f);
-                            Instruction instrFour   = new Instruction ("Option 2: grab the blue pill bottle to\nwait for a duration of time to\nremove the impairment for free.", 8.0f);
-                            Instruction instrFive   = new Instruction ("You can make this decision any time\nduring the next day.", 6.0f);
+                            Instruction [] instrs = new Instruction [8];
 
                             // Adding 3-second countdown to end of treatment instructions
                             Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
                             Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
                             Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
 
-                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree; instrs[3] = instrFour; instrs[4] = instrFive;
+                            // Moving all of these to config parser to allow them to be customized
+                            instrs[0] = this.configParser.getInstruction(Instruction.InstructionType.TMT_HYBRID_LOCATE_STATION); 
+                            instrs[1] = this.configParser.getInstruction(Instruction.InstructionType.TMT_HYBRID_METHOD); 
+                            instrs[2] = this.configParser.getInstruction(Instruction.InstructionType.TMT_HYBRID_PAY_OPTION); 
+                            instrs[3] = this.configParser.getInstruction(Instruction.InstructionType.TMT_HYBRID_WAIT_OPTION); 
+                            instrs[4] = this.configParser.getInstruction(Instruction.InstructionType.TMT_HYBRID_ENDING);
+
                             instrs[5] = countDownInstrOne; instrs[6] = countDownInstrTwo; instrs[7] = countDownInstrThree;
                             limbo (instrs);
                         } 
@@ -1144,17 +1145,17 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.PAY);
                             Debug.Log("Initializing limbo for pay-only treatment...");
-                            Instruction[] instrs    = new Instruction [6];
-                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo    = new Instruction ("You can choose to either complete\nthis day impaired, or, pay a fee to remove\nthe impairment instantly.", 8.0f);
-                            Instruction instrThree  = new Instruction ("If you wish to pay to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
-                            
+                            Instruction[] instrs = new Instruction [6];
+      
                             // Adding 3-second countdown to end of treatment instructions
                             Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
                             Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
                             Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
 
-                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            instrs[0] = this.configParser.getInstruction(Instruction.InstructionType.TMT_PAY_LOCATE_STATION); 
+                            instrs[1] = this.configParser.getInstruction(Instruction.InstructionType.TMT_PAY_METHOD);
+                            instrs[2] = this.configParser.getInstruction(Instruction.InstructionType.TMT_PAY_ENDING);
+
                             instrs[3] = countDownInstrOne; instrs[4] = countDownInstrTwo; instrs[5] = countDownInstrThree;
                             limbo (instrs);
                         }
@@ -1163,17 +1164,17 @@ public class SimManager : MonoBehaviour {
                         {
                             pillManagerComponent.activatePanel(PillManager.TreatmentObtainType.WAIT);
                             Debug.Log("Initializing limbo for wait-only treatment...");
-                            Instruction[] instrs    = new Instruction [6];
-                            Instruction instrOne    = new Instruction ("Locate the medical station along\nthe wall opposite the windows.", 6.0f);
-                            Instruction instrTwo    = new Instruction ("You can choose to either complete\nthis day impaired, or, wait a duration of time\nto remove the impairment at no cost.", 9.0f);
-                            Instruction instrThree  = new Instruction ("If you wish to wait to receive treatment,\nyou can grab the pill bottle at any time\nduring the next day.", 8.0f);
+                            Instruction[] instrs = new Instruction [6];
                             
                             // Adding 3-second countdown to end of treatment instructions
                             Instruction countDownInstrOne   = new Instruction ("Resuming in:\n3", 1.0f, true);
                             Instruction countDownInstrTwo   = new Instruction ("Resuming in:\n2", 1.0f, true);
                             Instruction countDownInstrThree = new Instruction ("Resuming in:\n1", 1.0f, true);
 
-                            instrs[0] = instrOne; instrs[1] = instrTwo; instrs[2] = instrThree;
+                            instrs[0] = this.configParser.getInstruction(Instruction.InstructionType.TMT_WAIT_LOCATE_STATION); 
+                            instrs[1] = this.configParser.getInstruction(Instruction.InstructionType.TMT_WAIT_METHOD);
+                            instrs[2] = this.configParser.getInstruction(Instruction.InstructionType.TMT_WAIT_ENDING);
+
                             instrs[3] = countDownInstrOne; instrs[4] = countDownInstrTwo; instrs[5] = countDownInstrThree;
                             limbo (instrs);
                         }

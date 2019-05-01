@@ -28,13 +28,25 @@ public class Instruction {
         DZ_IMP_START_GENERIC,
         DZ_IMP_EXPLAIN_SHAKE,
         DZ_IMP_EXPLAIN_GENERIC,
-        DZ_IMP_OBJECTIVE
+        DZ_IMP_OBJECTIVE,
 
-        // Impairments (Paid days)
-        //TODO
+        // Treatment instructions
+        TMT_HYBRID_LOCATE_STATION,
+        TMT_HYBRID_METHOD,
+        TMT_HYBRID_PAY_OPTION,
+        TMT_HYBRID_WAIT_OPTION,
+        TMT_HYBRID_ENDING,
 
-        // Treatment
-        //TODO
+        TMT_PAY_LOCATE_STATION,
+        TMT_PAY_METHOD,
+        TMT_PAY_ENDING,
+
+        TMT_WAIT_LOCATE_STATION,
+        TMT_WAIT_METHOD,
+        TMT_WAIT_ENDING,
+        TMT_WAIT_CHOSEN_START,
+        TMT_WAIT_CHOSEN_END
+
     }
 
     public string message;
