@@ -42,6 +42,35 @@ This section includes information pertaining to high-level details of the simula
 \indent\indent enabled \newline
 \indent\indent disabled
 
+\subsubsection*{Instruction Customization} All \textit{Day Zero} and treatment-related instructions can be overridden, if desired. The instruction override syntax is \textit{InstructionName}:\textit{message},\textit{displayDuration}
+\newline \newline \indent Instruction Names \& Default Snippets:
+\newline \indent\indent \textbf{LocateBucketInstruction}: Objective: locate and walk to the bucket 
+\newline \indent\indent \textbf{HoldBucketInstruction}: To pick up, place one hand on the bucket... 
+\newline \indent\indent \textbf{FillBucketInstruction}: Fill up the bucket with balls by placing...
+\newline \indent\indent \textbf{LocateSinkInstruction}: Carefully turn around and carry the bucket...
+\newline \indent\indent \textbf{PourBucketInstruction}: Pour the contents of the bucket into...
+\newline \indent\indent \textbf{FogImpInstruction}: When the simulation resumes, you will notice... 
+\newline \indent\indent \textbf{ShakeImpInstruction}: You will notice your controllers are now... 
+\newline \indent\indent \textbf{GenericImpInstruction}: When the simulation resumes, you will be...
+\newline \indent\indent \textbf{ExplainShakeImpInstruction}: While you are impaired, carrying...
+\newline \indent\indent \textbf{ExplainGenericImpInstruction}: While ... impaired, earning money... 
+\newline \indent\indent \textbf{HybridTreatmentLocateInstruction}: Locate the medical station... 
+\newline \indent\indent \textbf{HybridTreatmentMethodInstruction}: You can choose to either... 
+\newline \indent\indent \textbf{HybridTreatmentPayInstruction}: Option 1: pay a fee to remove... 
+\newline \indent\indent \textbf{HybridTreatmentWaitInstruction}: Option 2: grab the blue pill... 
+\newline \indent\indent \textbf{HybridTreatmentEndInstruction}: You can make this decision any... 
+\newline \indent\indent \textbf{PayTreatmentLocateInstruction}: Locate the medical station... 
+\newline \indent\indent \textbf{PayTreatmentMethodInstruction}: You can... or, pay a fee... 
+\newline \indent\indent \textbf{PayTreatmentEndInstruction}: If you wish to pay to receive... 
+\newline \indent\indent \textbf{WaitTreatmentLocateInstruction}: Locate the medical station... 
+\newline \indent\indent \textbf{WaitTreatmentMethodInstruction}: ... or, wait a duration of time... 
+\newline \indent\indent \textbf{WaitTreatmentEndInstruction}: If you wish to wait to receive... 
+\newline \indent\indent \textbf{WaitTreatmentChosenInstruction}: You've decided to wait...
+\newline \indent\indent \textbf{WaitTreatmentResumeInstruction}: Once the timer reaches 0... 
+\newline \newline \newline \indent Possible values: \newline
+\indent\indent Message: Character string (\textbackslash n can be used to signify newlines) \newline
+\indent\indent Duration: Any positive decimal number 
+
 \subsubsection*{Sample Simulation Configuration:}
 \begin{lstlisting}
 Simulation
@@ -49,16 +78,17 @@ Simulation
     Description:Stronger impairments.
     Instructions:enabled
     Sound:enabled
+    LocateSinkInstruction:Turn and walk\ntowards tub,3.5
 \end{lstlisting} 
 
 \subsection*{Tutorial}
-This keyword refers to the \textit{Day Zero} tutorial preceding the main experiment. During this stage of the simulation, the user is required to earn a certain amount of money before being allowed to move on to the first paid day. Optionally, \textit{Day Zero} can be split into two portions: one unimpaired portion, and one impaired portion. The impaired portion is preceded by an instruction set. The second portion will only take place if the \textit{Impairment} keyword is used when configuring the tutorial. Usage of the \textit{Impairment} keyword is described later in this document. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score}, \textit{ImpairedScore}, and \textit{Impairment} keywords are tabbed once. Sub-keywords for the optional second portion impairment, \textit{Strength} and \textit{Type}, should be tabbed three times.
+This keyword refers to the \textit{Day Zero} tutorial. During this period, the user is required to earn a certain amount of money before moving on to the first paid day. Optionally, \textit{Day Zero} can be split into two portions: one unimpaired portion, and one impaired portion, which will only take place if the \textit{Impairment} keyword is used when configuring the tutorial. Usage of the \textit{Impairment} keyword is described later in this document. The \textit{Tutorial} keyword is not tabbed, while the \textit{Score}, \textit{ImpairedScore}, and \textit{Impairment} keywords are tabbed once. Sub-keywords for the optional second portion impairment, \textit{Strength} and \textit{Type}, should be tabbed three times.
 
 \subsubsection*{Score} Sets the amount that the participant will need to earn to pass the tutorial day. If not specified, the default is \textbf{\$150.00}. \newline
 \indent Possible values: \newline
 \indent\indent Any decimal number
 
-\pagebreak\subsubsection*{ImpairedScore} Sets the amount that the participant will need to earn to pass the optional second portion of the tutorial day. If not specified, the default is also \textbf{\$150.00}. \newline
+\subsubsection*{ImpairedScore} Sets the amount that the participant will need to earn to pass the optional second portion of the tutorial day. If not specified, the default is also \textbf{\$150.00}. \newline
 \indent Possible values: \newline
 \indent\indent Any decimal number
 
@@ -72,7 +102,7 @@ Tutorial
         Strength:50%
 \end{lstlisting}
 
-\subsection*{Day}
+\pagebreak\subsection*{Day}
 Signifies a new day to be included in the experiment. Each day may include the following sub-keywords: \textit{Duration}, \textit{Impairment}, and \textit{Treatment}. The \textit{Day} keyword is not tabbed, and each associated sub-keyword is tabbed once.
 
 \subsubsection*{Duration}
@@ -194,6 +224,8 @@ Simulation
     Description:Sample 3-day (plus intro) configuration file  
     Instructions:enabled
     Sound:enabled
+    ShakeImpInstruction:You now have a\nshake impairment,3.0
+    WaitTreatmentResumeInstruction:Wait until timer = 0,2.5
 Tutorial
     Score:180
     ImpairedScore:125
@@ -209,7 +241,6 @@ Day
         Type:Physical/Shake
         Strength:70%
 Day
-    BallValue:1.25
     Duration:2:00
     Impairment
         Type:Visual/Fog
