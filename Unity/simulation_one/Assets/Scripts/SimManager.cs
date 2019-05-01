@@ -19,7 +19,7 @@ using Valve.VR;
 */
 public class SimManager : MonoBehaviour {
 
-    public static string APPLICATION_VERSION  = "1.9";
+    public static string APPLICATION_VERSION  = "2.0";
     public static float UNITY_VIVE_SCALE      = 18.77f;    // Unity units / this value = metres in the physical world
 
     public bool persistenceEnabled;
@@ -55,24 +55,25 @@ public class SimManager : MonoBehaviour {
     private Vector3 day0PosB                            = new Vector3();
     private float dayZeroMovingElapsed                  = 0.0f;
     public int dayZeroMovingCount                       = 0;                                   // We only want to track position changes inside the 
-                                                                                               // zone, not the edge cases where have just entered or just left
-    // All instructions for Day 0 are defined below
-    private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
-    private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the\nbucket and squeeze index finger", 7.0f);
-    private Instruction fillInstr           = new Instruction ("Fill up the bucket with balls by\nplacing it under the pipe", 6.0f);
-    private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
-    private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
-    private Instruction continueInstr;
+       
+    /*
+    Moving these to config parser to allow for configurable instructions
+    */
 
+    // All instructions for Day 0 are defined below
+    //private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
+    //private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the\nbucket and squeeze index finger", 7.0f);
+    //private Instruction fillInstr           = new Instruction ("Fill up the bucket with balls by\nplacing it under the pipe", 6.0f);
+    //private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
+    //private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
+    //private Instruction continueInstr;
     // Second (impaired) round of day 0 has an additional instruction set
-    private Instruction fogImpairedRoundStart       = new Instruction ("When the simulation resumes, you\nwill notice you have reduced vision.\nYou are impaired.", 7.5f);
-    private Instruction shakeImpairedRoundStart     = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
-    private Instruction genericImpairedRoundStart   = new Instruction ("When the simulation resumes,\nyou will be impaired.", 5.5f);
-    
-    private Instruction shakeImpairedRoundExplain   = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
-    private Instruction genericImpairedRoundExplain = new Instruction ("While you are impaired, earning money\nwill be more difficult.", 6.5f);
-    
-    private Instruction impairedRoundObjective;     // It will look like this: ("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
+    //private Instruction fogImpairedRoundStart       = new Instruction ("When the simulation resumes, you\nwill notice you have reduced vision.\nYou are impaired.", 7.5f);
+    //private Instruction shakeImpairedRoundStart     = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
+    //private Instruction genericImpairedRoundStart   = new Instruction ("When the simulation resumes,\nyou will be impaired.", 5.5f);
+    //private Instruction shakeImpairedRoundExplain   = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
+    //private Instruction genericImpairedRoundExplain = new Instruction ("While you are impaired, earning money\nwill be more difficult.", 6.5f);
+    //private Instruction impairedRoundObjective;     // It will look like this: ("New Objective: Earn another " + impairedDayZeroThreshold.ToString("0.00") + " dollars.", 6.0f);
 
     // State management
     public enum GameState
@@ -290,7 +291,7 @@ public class SimManager : MonoBehaviour {
                 Debug.Log("Initializing tutorial.");
                 currentTutorialStep = TutorialStep.BUCKET;
                 bucketMarker.SetActive(true);
-                instructionManagerComponent.setTemporaryMessage(locateBucketInstr);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_LOCATE_BUCKET));
             }
         }
     }
@@ -334,9 +335,8 @@ public class SimManager : MonoBehaviour {
         }
 
         else {
-            Debug.Log ("Using default parameters.");
-            this.configParser = new ConfigParser();
-            return !(this.configParser.getConfigs() == null || this.configParser.getConfigs().Length == 0);
+            Debug.Log ("No configuration file path supplied.");
+            return false;
         }
     }
 
@@ -524,32 +524,32 @@ public class SimManager : MonoBehaviour {
             
             case TutorialStep.BUCKET:
                 currentTutorialStep = TutorialStep.HOLD_CONTAINER;
-                instructionManagerComponent.setTemporaryMessage(holdContainerInstr);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_HOLD_BUCKET));
                 bucketPickUpTrigger.SetActive(true);
                 bucketPickUpTriggerLower.SetActive(true);
                 break;
             
             case TutorialStep.HOLD_CONTAINER:
                 currentTutorialStep = TutorialStep.FILL;
-                instructionManagerComponent.setTemporaryMessage(fillInstr);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_FILL_BUCKET));
                 break;
             
             case TutorialStep.FILL:
                 currentTutorialStep = TutorialStep.GO_TO_SINK;
-                instructionManagerComponent.setTemporaryMessage(goToSinkInstr);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_GO_TO_SINK));
                 farSinkMarker.SetActive(true);
                 farSinkTrigger.SetActive(true);
                 break;
             
             case TutorialStep.GO_TO_SINK:
                 currentTutorialStep = TutorialStep.POUR_BUCKET;
-                instructionManagerComponent.setTemporaryMessage(pourBucketInstr);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_POUR_OUT_BUCKET));
                 break;
             
             case TutorialStep.POUR_BUCKET:
                 currentTutorialStep = TutorialStep.CONTINUE;
-                continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + unimpairedDayZeroThreshold.ToString("0.00"), 7.0f);
-                instructionManagerComponent.setTemporaryMessage(continueInstr);
+                //continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + unimpairedDayZeroThreshold.ToString("0.00"), 7.0f);
+                instructionManagerComponent.setTemporaryMessage(this.configParser.getInstruction(Instruction.InstructionType.DZ_OBJECTIVE));
                 break;
             
             case TutorialStep.CONTINUE:
@@ -589,18 +589,14 @@ public class SimManager : MonoBehaviour {
     * that we always know how much they are carrying.
     */
     public void increasePayload (int amt) {
-        this.currentPayload += amt;
+
         if (currentTutorialStep == TutorialStep.FILL && currentPayload > FILL_BUCKET_TRIGGER_THRESHOLD) {
             advanceTutorialStep();
         }
 
-        // Nolan mar 17
-        // Changing kerala's code here - not making it tutorial
-        // dependent, because instructions could be disabled
-        // if (currentTutorialStep == TutorialStep.DONE_TUTORIAL) {
-            this.cumulativePayload += amt;
-            this.dailyCumulativePayload += amt;
-        // }
+        this.currentPayload         += amt;
+        this.cumulativePayload      += amt;
+        this.dailyCumulativePayload += amt;
     }
 
 
@@ -1258,7 +1254,7 @@ public class SimManager : MonoBehaviour {
                         Debug.Log("Enabling hands: L=" + leftHandScriptComp.enabled + " R=" + rightHandScriptComp.enabled);
                         this.waitingForTreatment = false;
                         waitingForTreatmentDuration = 0.0f;
-                        Debug.Log("Treatment wait time has been passed..");
+                        Debug.Log("Treatment wait time has been passed...");
                         applyPostTreatmentActions();
                         pillManagerComponent.disablePanels();
                     }
@@ -1327,6 +1323,7 @@ public class SimManager : MonoBehaviour {
                 }
             }
 
+
             /*
             * Intro / Tutorial Day: "Day 0"
             *
@@ -1339,7 +1336,6 @@ public class SimManager : MonoBehaviour {
             * sink. Then, enter a transition state before the
             * start of day one.
             */
-
             else if (dayScore >= unimpairedDayZeroThreshold && dayZeroCurrentSection == ConfigParser.UNIMPAIRED) {
 
                 // There could be a second portion to day 0 now - check if there is
@@ -1359,38 +1355,44 @@ public class SimManager : MonoBehaviour {
                     currentDayImpairments = this.configParser.getDayZeroImpairments().ToArray();
 
                     foreach (Impairment imp in currentDayImpairments) {
-                            float str = imp.getStrength();
-                            switch (imp.getType()) {
-                                case Impairment.ImpairmentType.PHYSICAL_SHAKE:
-                                    rightHandTracker.applyImpairment(str);
-                                    leftHandTracker.applyImpairment(str);
-                                    shakeImpStrCurrent = str;
-                                    break;
-                                case Impairment.ImpairmentType.VISUAL_FOG:
-                                    fogImpairmentPanel.SetActive(true);
-                                    Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
-                                    fogImpStrCurrent = fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str);
-                                    fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
-                                    break;
-                                default:
-                                    Debug.Log("Invalid impairment type");
-                                    break;
-                            }
+                        float str = imp.getStrength();
+                        switch (imp.getType()) {
+                            case Impairment.ImpairmentType.PHYSICAL_SHAKE:
+                                rightHandTracker.applyImpairment(str);
+                                leftHandTracker.applyImpairment(str);
+                                shakeImpStrCurrent = str;
+                                break;
+                            case Impairment.ImpairmentType.VISUAL_FOG:
+                                fogImpairmentPanel.SetActive(true);
+                                Image fogImgComp = fogImpairmentPanel.GetComponent<Image>();
+                                fogImpStrCurrent = fogImpairmentMinAlpha + ((fogImpairmentMaxAlpha - fogImpairmentMinAlpha) * str);
+                                fogImgComp.color = new Color(fogImgComp.color.r, fogImgComp.color.g, fogImgComp.color.b, fogImpStrCurrent);
+                                break;
+                            default:
+                                Debug.Log("Invalid impairment type");
+                                break;
                         }
+                    }
 
 
                     // Display the new instructions
                     Instruction [] dayZeroInstrs = new Instruction [3];
-                    impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00"), 6.0f);
+                    //impairedRoundObjective = new Instruction("New Objective: Earn another $" + impairedDayZeroThreshold.ToString("0.00"), 6.0f);
                     
                     if (currentDayImpairments.Length == 1 && currentDayImpairments[0].getType() == Impairment.ImpairmentType.PHYSICAL_SHAKE) {
-                        dayZeroInstrs [0] = shakeImpairedRoundStart; dayZeroInstrs[1] = shakeImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        dayZeroInstrs[0]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_START_SHAKE); 
+                        dayZeroInstrs[1]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_EXPLAIN_SHAKE); 
+                        dayZeroInstrs[2]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_OBJECTIVE); 
                         limbo(dayZeroInstrs);
                     } else if (currentDayImpairments.Length == 1 && currentDayImpairments[0].getType() == Impairment.ImpairmentType.VISUAL_FOG) {
-                        dayZeroInstrs [0] = fogImpairedRoundStart; dayZeroInstrs[1] = genericImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        dayZeroInstrs[0]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_START_FOG); 
+                        dayZeroInstrs[1]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_EXPLAIN_GENERIC); 
+                        dayZeroInstrs[2]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_OBJECTIVE);
                         limbo(dayZeroInstrs);
                     } else {
-                        dayZeroInstrs [0] = genericImpairedRoundStart; dayZeroInstrs[1] = genericImpairedRoundExplain; dayZeroInstrs[2] = impairedRoundObjective;
+                        dayZeroInstrs[0]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_START_GENERIC); 
+                        dayZeroInstrs[1]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_EXPLAIN_GENERIC); 
+                        dayZeroInstrs[2]    = this.configParser.getInstruction(Instruction.InstructionType.DZ_IMP_OBJECTIVE);
                         limbo(dayZeroInstrs);
                     } 
                 }

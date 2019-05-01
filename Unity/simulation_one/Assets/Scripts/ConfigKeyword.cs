@@ -57,4 +57,16 @@ public sealed class ConfigKeyword {
     public static readonly string DISABLED          = "Disabled";
     public static readonly string ENABLED           = "Enabled";
 
+    public static readonly string LOCATE_BUCKET_INSTR   = "LocateBucketInstruction" .ToUpper();
+    public static readonly string HOLD_BUCKET_INSTR     = "HoldBucketInstruction"   .ToUpper();
+    public static readonly string FILL_BUCKET_INSTR     = "FillBucketInstruction"   .ToUpper();
+    public static readonly string LOCATE_SINK_INSTR     = "LocateSinkInstruction"   .ToUpper();
+    public static readonly string POUR_BUCKET_INSTR     = "PourBucketInstruction"   .ToUpper();
+
+    public static readonly string START_FOG_INSTR           = "FogImpInstruction"               .ToUpper();
+    public static readonly string START_SHAKE_INSTR         = "ShakeImpInstruction"             .ToUpper();
+    public static readonly string START_GENERIC_INSTR       = "GenericImpInstruction"           .ToUpper();
+    public static readonly string EXPLAIN_SHAKE_INSTR       = "ExplainShakeImpInstruction"      .ToUpper();
+    public static readonly string EXPLAIN_GENERIC_INSTR     = "ExplainGenericImpInstruction"    .ToUpper();
+
 }

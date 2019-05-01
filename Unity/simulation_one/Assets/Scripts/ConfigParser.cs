@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.IO;
 using UnityEngine;
 using System.Collections;
@@ -49,68 +50,67 @@ public class ConfigParser
     private string sound;
     private string scene;
 
-    /*
-    * If not using a config file - use these default values (for testing)
-    */
-    public ConfigParser()
-    {
+    // Adding configurable instructions
+    private Instruction locateBucketInstr   = new Instruction ("Objective: locate and walk to the bucket", 8.0f);
+    private Instruction holdContainerInstr  = new Instruction ("To pick up, place one hand on the\nbucket and squeeze index finger", 7.0f);
+    private Instruction fillInstr           = new Instruction ("Fill up the bucket with balls by\nplacing it under the pipe", 6.0f);
+    private Instruction goToSinkInstr       = new Instruction ("Carefully turn around and carry\nthe bucket to the opposing sink", 7.0f);
+    private Instruction pourBucketInstr     = new Instruction ("Pour the contents of the bucket\ninto the sink to earn money", 6.0f);
+    private Instruction continueInstr;
 
-        // Metrics
-        // TODO ... db stuff here
-        dbConnection = null;
-
-        // Data comes from static class, set by the main menu
-        lowNauseaMode = ParticipantData.nauseaSensitive;
-        claustrophobicMode = ParticipantData.claustrophicSensitive;
-        instructionsEnabled = true;
-
-        // Day One
-        Debug.Log("Setting Day One");
-        Impairment[] dayOneImps = new Impairment[0];
-        Treatment dayOneTreatment = null;   // TODO
-        float dayOneDur = 120.0f;
-        float dayOneMult = 2.0f;
-        int dayOne = 1;
-
-        // Day Two
-        Debug.Log("Setting Day Two");
-        float dayTwoDur = 120.0f;
-        Impairment[] dayTwoImps = new Impairment[1];
-        Treatment dayTwoTreatment = null;
-        dayTwoImps[0] = new Impairment(Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
-        int dayTwo = 2;
-
-        // Day Three
-        Debug.Log("Setting Day Three");
-        float dayThreeDur = 120.0f;
-        Impairment[] dayThreeImps = new Impairment[1];
-        Treatment dayThreeTreatment = new Treatment(
-            100.0f,
-            0.15f,
-            3.0f,
-            120.0f,
-            100.0f,
-            0.15f,
-            3.0f,
-            120.0f,
-            1.0f,
-            1.0f,
-            0.0f,
-            0.0f,
-            0.0f
-        );
-
-        dayThreeImps[0] = new Impairment(Impairment.ImpairmentType.PHYSICAL_SHAKE, 0.6f);
-        int dayThree = 3;
+    private Instruction fogImpairedRoundStart       = new Instruction ("When the simulation resumes, you\nwill notice you have reduced vision.\nYou are impaired.", 7.5f);
+    private Instruction shakeImpairedRoundStart     = new Instruction ("You will notice your controllers\nare now shaking. You are impaired.", 7.0f);
+    private Instruction genericImpairedRoundStart   = new Instruction ("When the simulation resumes,\nyou will be impaired.", 5.5f);
+    private Instruction shakeImpairedRoundExplain   = new Instruction ("While you are impaired, carrying water\nand earning money will be more difficult.", 8.0f);
+    private Instruction genericImpairedRoundExplain = new Instruction ("While you are impaired, earning money\nwill be more difficult.", 6.5f);
+    private Instruction impairedRoundObjective;     
 
 
-        // Set each day configuration with the above
-        Debug.Log("Finalizing setup...");
-        this.dayConfigs = new DayConfiguration[3];
-        this.dayConfigs[0] = new DayConfiguration(dayOne, dayOneDur, dayOneImps, dayOneTreatment, dayOneMult);
-        this.dayConfigs[1] = new DayConfiguration(dayTwo, dayTwoDur, dayTwoImps, dayTwoTreatment);
-        this.dayConfigs[2] = new DayConfiguration(dayThree, dayThreeDur, dayThreeImps, dayThreeTreatment);
-        Debug.Log("Config set up complete.");
+    // Adding configurable instructions
+    public Instruction getInstruction (Instruction.InstructionType instrType) {
+        
+        // Return the corresponding instruction object, which may have been customized 
+        // during the parsing process.
+        switch (instrType) {
+            
+            // Main tutorial instructions
+            case Instruction.InstructionType.DZ_LOCATE_BUCKET:
+                return locateBucketInstr;
+            case Instruction.InstructionType.DZ_HOLD_BUCKET:
+                return holdContainerInstr;
+            case Instruction.InstructionType.DZ_FILL_BUCKET:
+                return fillInstr;
+            case Instruction.InstructionType.DZ_GO_TO_SINK:
+                return goToSinkInstr;
+            case Instruction.InstructionType.DZ_POUR_OUT_BUCKET:
+                return pourBucketInstr;
+            case Instruction.InstructionType.DZ_OBJECTIVE:
+                continueInstr = new Instruction ("To start the experiment, repeat this\nprocess until you've earned $" + dayZeroScoreUnimpaired.ToString("0.00"), 7.0f);
+                return continueInstr;
+
+            // Impaired portion of day 0
+            case Instruction.InstructionType.DZ_IMP_START_FOG:
+                return fogImpairedRoundStart;
+            case Instruction.InstructionType.DZ_IMP_START_SHAKE:
+                return shakeImpairedRoundStart;
+            case Instruction.InstructionType.DZ_IMP_START_GENERIC:
+                return genericImpairedRoundStart;
+            case Instruction.InstructionType.DZ_IMP_EXPLAIN_SHAKE:
+                return shakeImpairedRoundExplain;
+            case Instruction.InstructionType.DZ_IMP_EXPLAIN_GENERIC:
+                return genericImpairedRoundExplain;
+            case Instruction.InstructionType.DZ_IMP_OBJECTIVE:
+                impairedRoundObjective = new Instruction ("New Objective: Earn another $" + dayZeroScoreImpaired.ToString("0.00"), 6.0f);
+                return impairedRoundObjective;
+
+            // Impairments for paid days 
+
+            // Treatments
+
+            default:
+                Debug.Log("No instruction to fetch for type: " + instrType);
+                return null;
+        }
     }
 
 
@@ -118,7 +118,7 @@ public class ConfigParser
     * If using a configuration file, then load in day configurations
     * by parsing in the file if the path argument is valid.
     */
-    public ConfigParser(string path)
+    public ConfigParser (string path)
     {
         lowNauseaMode = ParticipantData.nauseaSensitive;
         claustrophobicMode = ParticipantData.claustrophicSensitive;
@@ -297,7 +297,81 @@ public class ConfigParser
 
         parseSim();
         parseConfig();
+        printConfigSummary();
 
+    }
+
+
+    /*
+    * Nolan April 30 2019
+    * For logging / debugging purposes - always print out
+    * a summary of what we've parsed and what final values
+    * are going into the simulation.
+    */
+    private void printConfigSummary () {
+
+        StringBuilder sb = new StringBuilder ();
+
+        sb.Append("*****************************");
+        sb.Append("\nConfiguration Parsing Summary");
+
+        sb.Append("\n\n--- Simulation ---");
+        sb.Append("\nInstructions enabled: "  + this.instructionsEnabled.ToString());
+        sb.Append("\nSound enabled: "         + this.soundEnabled.ToString());
+
+        sb.Append("\n\n--- Tutorial ---");
+        sb.Append("\nUnimpaired threshold: "  + this.dayZeroScoreUnimpaired.ToString());
+        sb.Append("\nImpaired threshold: "    + this.dayZeroScoreImpaired.ToString());
+        sb.Append("\nImpairments: "           + this.dayZeroImpairments.Count.ToString());
+        
+        for (int i = 0; i < this.dayZeroImpairments.Count; i++) {
+            Impairment imp = this.dayZeroImpairments[i];
+            sb.Append("\n -> Impairment " + (i+1).ToString() + " type: " + imp.getType().ToString());
+            sb.Append("\n -> Impairment " + (i+1).ToString() + " strength: " + imp.getStrength().ToString("0.000"));
+        }
+
+        sb.Append("\n\n--- Structure ---");
+        foreach (DayConfiguration d in this.dayConfigs) {
+            sb.Append("\nDay " + d.getDayNumber().ToString());
+            sb.Append("\n -> Duration: " + d.getDuration().ToString("0.0"));
+            sb.Append("\n -> Ball value: " + d.getRewardMultiplier().ToString("0.0000"));
+            sb.Append("\n -> Impairments: " + d.getImpairments().Length.ToString());
+            
+            int x = 1;
+            foreach (Impairment i in d.getImpairments()) {
+                sb.Append("\n ---> Impairment " + x.ToString() + " type: " + i.getType().ToString());
+                sb.Append("\n ---> Impairment " + x.ToString() + " strength: " + i.getStrength().ToString("0.000"));
+                x++;
+            }
+
+            Treatment dayTreatment = d.getTreatment();
+            bool hasAny  = dayTreatment != null;
+            sb.Append("\n -> Treatment: " + hasAny.ToString());
+            if (hasAny) {
+                bool hasPay  = dayTreatment != null && dayTreatment.hasPayOption();
+                bool hasWait = dayTreatment != null && dayTreatment.hasWaitOption();
+                sb.Append("\n ---> Pay treatment available: " + hasPay.ToString());
+                sb.Append("\n ---> Wait treatment available: " + hasWait.ToString());
+            }
+        }
+
+        sb.Append("\n\n--- Instructions ---");
+        sb.Append("\n -> Day Zero Standard");
+        sb.Append("\n" + locateBucketInstr.displayDuration.ToString("0.0") + "s: " + locateBucketInstr.message);
+        sb.Append("\n" + holdContainerInstr.displayDuration.ToString("0.0") + "s: " + holdContainerInstr.message);
+        sb.Append("\n" + fillInstr.displayDuration.ToString("0.0") + "s: " + fillInstr.message);
+        sb.Append("\n" + goToSinkInstr.displayDuration.ToString("0.0") + "s: " + goToSinkInstr.message);
+        sb.Append("\n" + pourBucketInstr.displayDuration.ToString("0.0") + "s: " + pourBucketInstr.message);
+
+        sb.Append("\n -> Day Zero Impaired Shake/Fog/Generic -> Start/Explain");
+        sb.Append("\n" + shakeImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + shakeImpairedRoundStart.message);
+        sb.Append("\n" + fogImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + fogImpairedRoundStart.message);
+        sb.Append("\n" + genericImpairedRoundStart.displayDuration.ToString("0.0") + "s: " + genericImpairedRoundStart.message);
+        sb.Append("\n" + shakeImpairedRoundExplain.displayDuration.ToString("0.0") + "s: " + shakeImpairedRoundExplain.message);
+        sb.Append("\n" + genericImpairedRoundExplain.displayDuration.ToString("0.0") + "s: " + genericImpairedRoundExplain.message);
+
+        sb.Append("\n*****************************");
+        Debug.Log(sb.ToString());
     }
 
 
@@ -305,7 +379,85 @@ public class ConfigParser
         
         foreach (string i in this.sim)
         {
-            if (i.Contains(ConfigKeyword.NAME))
+            
+            // ----------------------------------------------------------
+            // Nolan April 30 2019
+            // Adding configurable instructions to the simulation section
+            // Configs will be formatted like:
+            // Key:message,duration
+
+            string cleanStr = i.Trim().ToUpper();
+            string value, msg, dur;
+
+            // Standard portion of day zero
+            if (cleanStr.StartsWith(ConfigKeyword.LOCATE_BUCKET_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.locateBucketInstr.message = msg;
+                this.locateBucketInstr.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.HOLD_BUCKET_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.holdContainerInstr.message = msg;
+                this.holdContainerInstr.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.FILL_BUCKET_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.fillInstr.message = msg;
+                this.fillInstr.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.LOCATE_SINK_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.goToSinkInstr.message = msg;
+                this.goToSinkInstr.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.POUR_BUCKET_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.pourBucketInstr.message = msg;
+                this.pourBucketInstr.displayDuration = float.Parse(dur);
+            } 
+
+            // Impaired portion of day zero
+            else if (cleanStr.StartsWith(ConfigKeyword.START_FOG_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.fogImpairedRoundStart.message = msg;
+                this.fogImpairedRoundStart.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.START_SHAKE_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.shakeImpairedRoundStart.message = msg;
+                this.shakeImpairedRoundStart.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.START_GENERIC_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.genericImpairedRoundStart.message = msg;
+                this.genericImpairedRoundStart.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.EXPLAIN_SHAKE_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.shakeImpairedRoundExplain.message = msg;
+                this.shakeImpairedRoundExplain.displayDuration = float.Parse(dur);
+            } else if (cleanStr.StartsWith(ConfigKeyword.EXPLAIN_GENERIC_INSTR)) {
+                value   = i.Split(ConfigKeyword.COLON)[1].Trim();
+                msg     = value.Split(ConfigKeyword.COMMA)[0].Trim();
+                dur     = value.Split(ConfigKeyword.COMMA)[1].Trim();
+                this.genericImpairedRoundExplain.message = msg;
+                this.genericImpairedRoundExplain.displayDuration = float.Parse(dur);
+            }
+
+            // ----------------------------------------------------------
+
+            else if (i.Contains(ConfigKeyword.NAME))
             {
                 string[] split = i.Split(ConfigKeyword.COLON);
                 this.name = split[1];
