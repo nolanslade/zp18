@@ -15,7 +15,9 @@ public class BucketCollector : MonoBehaviour {
 
     public GameObject containerObj;
     public GameObject simManager;
+    public GameObject instrManager;
     private SimManager simManComp;
+    private InstructionManager instrManComp;
 
     public float spawnX, spawnY, spawnZ;            // Absolute spawn point
 
@@ -26,6 +28,7 @@ public class BucketCollector : MonoBehaviour {
 
     private void Start () {
         this.simManComp = simManager.GetComponent<SimManager>();
+        this.instrManComp = instrManager.GetComponent<InstructionManager>();
     }
 
 
@@ -66,6 +69,10 @@ public class BucketCollector : MonoBehaviour {
             }
 
             else {
+
+                // Tell the participant what just happened
+                instrManComp.setTemporaryMessage("The bucket has been reset\nto its initial position.",3.0f);
+
                 containerObj.transform.position = new Vector3 (
                     spawnX,
                     spawnY,
